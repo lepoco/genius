@@ -28,19 +28,11 @@ jobs:
       - uses: microsoft/setup-msbuild@v1.0.2
 
       - name: Build
-        run: msbuild MaterialWPF.sln -p:Configuration=Release -m
+        run: msbuild Genius.sln -p:Configuration=Release -m
 
-      - name: Publish net50 windows
-        uses: actions/upload-artifact@v2
-        id: publish_net5
-        with:
-          name: MaterialWPF-NET5-Windows10
-          path: |
-            MaterialWPF/bin/Release/net5.0-windows10.0.17763.0
-
-      - name: Publish net50
+      - name: Publish
         uses: actions/upload-artifact@v2
         with:
-          name: MaterialWPF-NET5
+          name: Genius-NET5
           path: |
-            MaterialWPF/bin/Release/net5.0-windows
+            Genius/bin/Release/net5.0-windows

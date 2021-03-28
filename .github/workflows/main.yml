@@ -1,0 +1,46 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: windows-latest
+    if: contains(github.event.head_commit.message, 'ci skip') == false
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - uses: microsoft/setup-msbuild@v1.0.2
+
+      - name: Build
+        run: msbuild MaterialWPF.sln -p:Configuration=Release -m
+
+      - name: Publish net50 windows
+        uses: actions/upload-artifact@v2
+        id: publish_net5
+        with:
+          name: MaterialWPF-NET5-Windows10
+          path: |
+            MaterialWPF/bin/Release/net5.0-windows10.0.17763.0
+
+      - name: Publish net50
+        uses: actions/upload-artifact@v2
+        with:
+          name: MaterialWPF-NET5
+          path: |
+            MaterialWPF/bin/Release/net5.0-windows

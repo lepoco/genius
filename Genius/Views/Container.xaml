@@ -1,0 +1,64 @@
+﻿<Window
+    x:Class="Genius.Views.Container"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:materialwpf="clr-namespace:MaterialWPF.Controls;assembly=MaterialWPF"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Genius"
+    Width="1160"
+    Height="612"
+    MinWidth="900"
+    MinHeight="450"
+    Style="{StaticResource MaterialNavigationWindow}"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+    <Grid>
+        <!--  An example of splitting the window grid to make everything look nice  -->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!--  Navigation Control, displays buttons for navigating pages  -->
+        <materialwpf:Navigation
+            x:Name="rootNavigation"
+            Grid.Row="0"
+            Grid.RowSpan="2"
+            Grid.Column="0" />
+
+        <!--  Main content frame, instances of the Page class are loaded into it  -->
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Frame x:Name="rootFrame" />
+
+            <!--  Global snackbar to display the message for the user  -->
+            <materialwpf:Snackbar x:Name="rootSnackbar" Margin="0,0,0,10" />
+        </Grid>
+
+        <!--  Splash to make the app look nice on startup. You can use it while loading resources  -->
+        <materialwpf:Splash
+            x:Name="mainSplash"
+            Grid.RowSpan="2"
+            Grid.ColumnSpan="2" />
+
+        <!--  Buttons for navigating the application window (minimize, maximize, close)  -->
+        <materialwpf:WindowNavigation Grid.Row="0" Grid.Column="1" />
+
+        <!--  The application logo visible next to the Hamburger button  -->
+        <Image
+            x:Name="appLogo"
+            Grid.Row="0"
+            Grid.Column="1"
+            Height="20"
+            Margin="8,8,0,8"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
+            RenderOptions.BitmapScalingMode="HighQuality"
+            Source="pack://application:,,,/Assets/genius-logo.png"
+            Visibility="Hidden" />
+    </Grid>
+</Window>

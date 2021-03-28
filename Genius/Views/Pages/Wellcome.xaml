@@ -1,0 +1,117 @@
+﻿<Page
+    x:Class="Genius.Views.Pages.Wellcome"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:materialwpf="clr-namespace:MaterialWPF.Controls;assembly=MaterialWPF"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Wellcome"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    Style="{StaticResource MaterialPage}"
+    mc:Ignorable="d">
+
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0" Margin="0,0,4,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <TextBlock
+                Grid.Row="0"
+                FontSize="25"
+                Text="Genius" />
+            <TextBlock
+                Grid.Row="1"
+                Margin="0,4,0,0"
+                Foreground="{DynamicResource ThemeForegroundSecondary}"
+                Text="Welcome to the Genius conditional expert system creator. In this program, you can both create and run ready-made expert systems. If you want to know more, you can open the Guide and About tabs. To select a program mode, choose one of the buttons below."
+                TextAlignment="Justify"
+                TextWrapping="WrapWithOverflow" />
+            <Grid Grid.Row="2" Margin="0,12,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <materialwpf:MaterialButton
+                    x:Name="buttonDesign"
+                    Grid.Column="0"
+                    Margin="0,0,4,0"
+                    Click="ButtonDesign_Click"
+                    Content="Design module"
+                    Glyph="DeveloperTools" />
+                <materialwpf:MaterialButton
+                    x:Name="buttonAnalysis"
+                    Grid.Column="1"
+                    Margin="4,0,0,0"
+                    Click="ButtonAnalysis_Click"
+                    Content="Analysis module"
+                    Glyph="CalculatorNegate" />
+            </Grid>
+        </Grid>
+        <Grid Grid.Column="1" Margin="4,0,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <TextBlock
+                Grid.Row="0"
+                Margin="0,0,0,12"
+                FontSize="10"
+                Foreground="{DynamicResource ThemeForegroundSecondary}"
+                Text="Recent projects:" />
+            <ItemsControl Name="listProjects" Grid.Row="1">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="RecentProject">
+                        <Grid Margin="8,0,8,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                Margin="0,3,8,0"
+                                HorizontalAlignment="Right"
+                                FontSize="10"
+                                Foreground="{DynamicResource ThemeForegroundSecondary}"
+                                Text="{Binding Date}"
+                                TextAlignment="Right" />
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="{Binding Name}" />
+                                <TextBlock
+                                    FontSize="10"
+                                    Foreground="{DynamicResource ThemeForegroundSecondary}"
+                                    Text="{Binding Path}" />
+                            </StackPanel>
+                            <Grid Grid.Column="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Button
+                                    Grid.Column="0"
+                                    Margin="0,0,2,0"
+                                    Background="Transparent"
+                                    Style="{StaticResource MaterialButton}">
+                                    <materialwpf:Icon Glyph="DeveloperTools" />
+                                </Button>
+                                <Button
+                                    Grid.Column="1"
+                                    Margin="2,0,0,0"
+                                    Background="Transparent"
+                                    Style="{StaticResource MaterialButton}">
+                                    <materialwpf:Icon Glyph="CalculatorNegate" />
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
+    </Grid>
+</Page>

@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <SatelliteResourceLanguages>pl;en-US</SatelliteResourceLanguages>
+    <Platforms>x64;x86;AnyCPU</Platforms>
+    <TargetPlatformVersion>10.0</TargetPlatformVersion>
+    <Deterministic>False</Deterministic>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <RootNamespace>Genius</RootNamespace>
+    <StartupObject>Genius.App</StartupObject>
+    <ApplicationIcon>genius-icon.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\genius-banner.png" />
+    <None Remove="Assets\genius-icon.ico" />
+    <None Remove="Assets\genius-icon.png" />
+    <None Remove="Assets\genius-logo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MaterialWPF" Version="1.0.4-prerelease60" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\genius-banner.png" />
+    <Resource Include="Assets\genius-icon.ico" />
+    <Resource Include="Assets\genius-icon.png" />
+    <Resource Include="Assets\genius-logo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Views\Pages\Analysis\" />
+  </ItemGroup>
+
+</Project>

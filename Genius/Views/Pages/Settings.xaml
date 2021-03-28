@@ -1,0 +1,64 @@
+﻿<Page
+    x:Class="Genius.Views.Pages.Settings"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:materialwpf="clr-namespace:MaterialWPF.Controls;assembly=MaterialWPF"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Settings"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    Style="{StaticResource MaterialPage}"
+    mc:Ignorable="d">
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <StackPanel>
+                <Label
+                    Padding="0,0,0,4"
+                    Content="Language"
+                    Foreground="{DynamicResource ThemeForegroundSecondary}" />
+                <ComboBox SelectedIndex="0" Style="{StaticResource MaterialComboBox}">
+                    <ComboBoxItem Content="English" />
+                    <ComboBoxItem Content="Polish" IsEnabled="False" />
+                </ComboBox>
+                <Label
+                    Padding="0,12,0,4"
+                    Content="Theme"
+                    Foreground="{DynamicResource ThemeForegroundSecondary}" />
+                <ComboBox SelectedIndex="0" Style="{StaticResource MaterialComboBox}">
+                    <ComboBoxItem Content="Auto" />
+                    <ComboBoxItem Content="Dark" />
+                    <ComboBoxItem Content="Light" />
+                </ComboBox>
+                <Label
+                    Padding="0,12,0,4"
+                    Content="Automatic saving of projects"
+                    Foreground="{DynamicResource ThemeForegroundSecondary}" />
+                <ComboBox SelectedIndex="0" Style="{StaticResource MaterialComboBox}">
+                    <ComboBoxItem Content="Every 1 minute" />
+                    <ComboBoxItem Content="Every 2 minutes" />
+                    <ComboBoxItem Content="Every 5 minutes" />
+                    <ComboBoxItem Content="Every 15 minutes" />
+                    <ComboBoxItem Content="Disabled" />
+                </ComboBox>
+            </StackPanel>
+        </Grid>
+
+        <Grid
+            Grid.Row="1"
+            Margin="0,12,0,0"
+            HorizontalAlignment="Right">
+            <materialwpf:MaterialButton
+                Grid.Column="0"
+                Margin="0,0,4,0"
+                Content="Save settings"
+                Glyph="Settings" />
+        </Grid>
+    </Grid>
+</Page>

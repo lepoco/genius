@@ -9,7 +9,8 @@ namespace Genius.Code.Engine
     {
         private string
             _name,
-            _description;
+            _description,
+            _question;
 
         private KnowledgeBase _knowledgeBase;
         
@@ -31,6 +32,16 @@ namespace Genius.Code.Engine
         {
             get => this._description == null ? string.Empty : this._description;
             set => this._description = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the human-readable <see cref="Engine.System"/> description.
+        /// <para>For example, it could be "<c>A computer program designed together with the medical university to aid in the diagnosis of diseases</c>".</para>
+        /// </summary>
+        public string Question
+        {
+            get => this._question == null ? string.Empty : this._question;
+            set => this._question = value;
         }
 
         /// <summary>

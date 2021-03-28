@@ -75,7 +75,12 @@ namespace Genius.Views.Pages
 
         private void ButtonAnalysis_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-
+            Code.GH.Navigation.Items = new System.Collections.ObjectModel.ObservableCollection<MaterialWPF.UI.NavItem>
+            {
+                new MaterialWPF.UI.NavItem { Icon = MaterialWPF.UI.MaterialIcon.DialShape1, Name = "Dashboard", Tag = "dashboard", Type = typeof(Pages.Analysis.Dashboard)},
+                new MaterialWPF.UI.NavItem { Icon = MaterialWPF.UI.MaterialIcon.Diagnostic, Name = "Workflow", Tag = "workflow", Type = typeof(Pages.Analysis.Workflow)}
+            };
+            Code.GH.Navigation.Navigate("dashboard");
         }
     }
 }

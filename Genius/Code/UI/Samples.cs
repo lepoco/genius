@@ -16,6 +16,7 @@ namespace Genius.Code.UI
             {
                 Name = "Expert system supporting the diagnosis of diseases",
                 Description = "A computer program designed together with the medical university to aid in the diagnosis of diseases.",
+                Question = "Does the disease you are looking for have a symptom:",
 
                 KnowledgeBase = new Engine.KnowledgeBase
                 {

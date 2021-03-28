@@ -39,8 +39,4 @@
     <Resource Include="Assets\genius-logo.png" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Views\Pages\Analysis\" />
-  </ItemGroup>
-
 </Project>

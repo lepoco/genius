@@ -70,6 +70,11 @@ namespace Genius.Views.Pages
                 new MaterialWPF.UI.NavItem { Icon = MaterialWPF.UI.MaterialIcon.DialShape1, Name = "Products", Tag = "products", Type = typeof(Pages.Design.Products)},
                 new MaterialWPF.UI.NavItem { Icon = MaterialWPF.UI.MaterialIcon.Connected, Name = "References", Tag = "references", Type = typeof(Pages.Design.References)}
             };
+            Code.GH.Navigation.Footer = new System.Collections.ObjectModel.ObservableCollection<MaterialWPF.UI.NavItem>
+            {
+                new MaterialWPF.UI.NavItem { Icon = MaterialWPF.UI.MaterialIcon.Back, Name = "Return", Tag = "back", Action = BackToWellcome},
+            };
+
             Code.GH.Navigation.Navigate("dashboard");
         }
 
@@ -81,6 +86,17 @@ namespace Genius.Views.Pages
                 new MaterialWPF.UI.NavItem { Icon = MaterialWPF.UI.MaterialIcon.Diagnostic, Name = "Workflow", Tag = "workflow", Type = typeof(Pages.Analysis.Workflow)}
             };
             Code.GH.Navigation.Navigate("dashboard");
+            Code.GH.Navigation.Footer = new System.Collections.ObjectModel.ObservableCollection<MaterialWPF.UI.NavItem>
+            {
+                new MaterialWPF.UI.NavItem { Icon = MaterialWPF.UI.MaterialIcon.Back, Name = "Return", Tag = "back", Action = BackToWellcome},
+            };
+        }
+
+
+        private void BackToWellcome()
+        {
+            (Code.GH.App.MainWindow as Container).InitializeNavigation();
+            //Code.GH.Navigation.Footer = null;
         }
     }
 }

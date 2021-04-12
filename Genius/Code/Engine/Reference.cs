@@ -13,32 +13,32 @@ namespace Genius.Code.Engine
         /// <summary>
         /// Gets or sets reference to <see cref="Engine.Product"/> stored in <see cref="Engine.KnowledgeBase"/>.
         /// </summary>
-        public int ProductId { get; set; }
+        public new int ProductId { get; set; }
 
         /// <summary>
         /// Gets or sets reference to <see cref="Engine.Condition"/> stored in <see cref="Engine.KnowledgeBase"/>.
         /// </summary>
-        public int ConditionId { get; set; }
+        public new int ConditionId { get; set; }
 
         /// <summary>
         /// Gets or sets <see cref="Engine.Condition"/> ID's that are excluded if this one is met.
         /// </summary>
-        public int[] Exclusions { get; set; }
+        public new int[] Exclusions { get; set; }
 
         /// <summary>
         /// Gets or sets <see cref="Engine.Condition"/> ID's that must come along with this one.
         /// </summary>
-        public int[] Requirements { get; set; }
+        public new int[] Requirements { get; set; }
         
         /// <summary>
         /// Gets or sets belonging to the result. In the case of using the traditional inference method, this condition determines whether a given <see cref="Engine.Condition"/> meets the requirements of belonging to <see cref="Engine.Product"/>.
         /// </summary>
-        public bool? Fulfil { get; set; }
+        public new bool? Fulfil { get; set; }
 
         /// <summary>
         /// Gets or sets the <see cref="Engine.Condition"/> (<see cref="Engine.Reference"/>) weight, which is needed while the predictive engine uses fuzzy sets.
         /// <para>The weight, depending on the configuration, determines how much the element meets or does not meet the belonging to the <see cref="Engine.Product"/>, or whether it is indifferent to it.</para>
         /// </summary>
-        public int Weight { get; set; }
+        public new int Weight { get; set; }
     }
 }

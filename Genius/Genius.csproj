@@ -29,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MaterialWPF" Version="1.0.4-prerelease60" />
+    <PackageReference Include="MaterialWPF" Version="1.0.4-prerelease62" />
   </ItemGroup>
 
   <ItemGroup>

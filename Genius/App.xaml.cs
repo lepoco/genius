@@ -3,6 +3,7 @@
 // Copyright (C) 2021 Leszek Pomianowski
 // All Rights Reserved.
 
+using System;
 using System.Windows;
 
 namespace Genius

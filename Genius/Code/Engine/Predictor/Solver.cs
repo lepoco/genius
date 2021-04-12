@@ -20,14 +20,12 @@ namespace Genius.Code.Engine.Predictor
         private Dictionary<int, int> _activeConditions;
 
         /// <summary>
-        /// A dictionary containing all the conditions in the system, sorted by the most common.
+        /// Gets a dictionary containing all the conditions used in the system, sorted by the most common.
         /// </summary>
         public Dictionary<int, int> ActiveConditions => this._activeConditions;
 
         public Solver()
-        {
-
-        }
+        {}
 
         public void Build(Engine.ExpertSystem system = null)
         {
@@ -53,10 +51,10 @@ namespace Genius.Code.Engine.Predictor
         public void BuildPredictionDictionary()
         {
             if (this._localExpertSystem == null)
-                throw new InvalidOperationException("Expert ExpertSystem was not loaded, unable to create Prediction Dictionary. Check the Solver.LoadExpertSystem().");
+                throw new InvalidOperationException("Expert System was not loaded, unable to create Prediction Dictionary. Check the Solver.LoadExpertSystem().");
 
             if(this._localExpertSystem.KnowledgeBase.References == null || this._localExpertSystem.KnowledgeBase.References.Count == 0)
-                throw new InvalidOperationException("The Expert ExpertSystem has loaded, but the References list is empty. Check ExpertSystem.KnowledgeBase.AddReference().");
+                throw new InvalidOperationException("The Expert System has loaded, but the References list is empty. Check ExpertSystem.KnowledgeBase.AddReference().");
 
             this._references = new List<KeyValuePair<int, int>>();
 
@@ -64,13 +62,16 @@ namespace Genius.Code.Engine.Predictor
                 this._references.Add(new KeyValuePair<int, int>(this._localExpertSystem.KnowledgeBase.References[i].ProductId, this._localExpertSystem.KnowledgeBase.References[i].ConditionId));
         }
 
+        /// <summary>
+        /// Lists all <see cref="Engine.Condition"/>'s used in the system. Available later using <see cref="ActiveConditions"/>.
+        /// </summary>
         public void BuildActiveConditionsList()
         {
             if (this._localExpertSystem == null)
-                throw new InvalidOperationException("Expert ExpertSystem was not loaded, unable to create Conditions list. Check the Solver.LoadExpertSystem().");
+                throw new InvalidOperationException("Expert System was not loaded, unable to create Conditions list. Check the Solver.LoadExpertSystem().");
 
             if (this._localExpertSystem.KnowledgeBase.References == null || this._localExpertSystem.KnowledgeBase.References.Count == 0)
-                throw new InvalidOperationException("The Expert ExpertSystem has loaded, but the References list is empty. Check ExpertSystem.KnowledgeBase.AddReference().");
+                throw new InvalidOperationException("The Expert System has loaded, but the References list is empty. Check ExpertSystem.KnowledgeBase.AddReference().");
 
             this._activeConditions = new Dictionary<int, int> { };
 
@@ -83,7 +84,7 @@ namespace Genius.Code.Engine.Predictor
             }
 
             //Sort the answers by the most frequent ones.
-            this._activeConditions = this._activeConditions.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+            this._activeConditions = this._activeConditions.OrderByDescending(x => x.Value).ToDictionary(pair => pair.Key, pair => pair.Value);
         }
 
         /// <summary>

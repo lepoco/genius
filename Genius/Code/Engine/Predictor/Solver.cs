@@ -15,6 +15,7 @@ namespace Genius.Code.Engine.Predictor
     {
         private Engine.System _localExpertSystem;
         private Dictionary<int, Predictor.Response> _responses;
+        private List<KeyValuePair<int, int>> _references;
 
         public Solver()
         {
@@ -36,7 +37,32 @@ namespace Genius.Code.Engine.Predictor
         public void BuildPredictionDictionary()
         {
             if (this._localExpertSystem == null)
-                throw new InvalidOperationException("Expert System was not loaded, unable to create Prediction Dictionary. Use the LoadExpertSystem().");
+                throw new InvalidOperationException("Expert System was not loaded, unable to create Prediction Dictionary. Check the Solver.LoadExpertSystem().");
+
+            if(this._localExpertSystem.KnowledgeBase.References == null || this._localExpertSystem.KnowledgeBase.References.Count == 0)
+                throw new InvalidOperationException("The Expert System has loaded, but the References list is empty. Check System.KnowledgeBase.AddReference().");
+
+            this._references = new List<KeyValuePair<int, int>>();
+
+            for (int i = 0; i < this._localExpertSystem.KnowledgeBase.References.Count; i++)
+                this._references.Add(new KeyValuePair<int, int>(this._localExpertSystem.KnowledgeBase.References[i].ProductId, this._localExpertSystem.KnowledgeBase.References[i].ConditionId));
+        }
+
+        /// <summary>
+        /// Adds a new <see cref="Predictor.Response"/> to the <see cref="Engine.Condition"/> or updates it.
+        /// </summary>
+        /// <param name="conditionId">Identifier of the <see cref="Engine.Condition"/> that was answered.</param>
+        /// <param name="response">The <see cref="Predictor.Response"/> to the <see cref="Engine.Condition"/> that was given.</param>
+        public void AddResponse(int conditionId, Predictor.Response response)
+        {
+            if (this._responses == null)
+                this._responses = new Dictionary<int, Response> { };
+
+            //Substitute the response if an answer has already been given.
+            if (this._responses.ContainsKey(conditionId))
+                this._responses[conditionId] = response;
+            else
+                this._responses.Add(conditionId, response);
         }
     }
 }

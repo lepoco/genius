@@ -16,7 +16,7 @@ namespace Genius.Code.Engine.Predictor
         Unknown = 0,
         
         /// <summary>
-        /// It is not known whether the answer meets the condition or not
+        /// It is not known whether the answer meets the condition or not.
         /// </summary>
         Indeterminate,
 

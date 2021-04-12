@@ -35,7 +35,7 @@
                 <StackPanel>
                     <TextBlock Foreground="{DynamicResource ThemeForegroundSecondary}" Text="conditions" />
                     <TextBlock
-                        x:Name="textProductsCount"
+                        x:Name="textConditionsCount"
                         FontSize="18"
                         Text="..." />
                 </StackPanel>
@@ -50,7 +50,7 @@
                 <StackPanel>
                     <TextBlock Foreground="{DynamicResource ThemeForegroundSecondary}" Text="products" />
                     <TextBlock
-                        x:Name="textConditionsCount"
+                        x:Name="textProductsCount"
                         FontSize="18"
                         Text="..." />
                 </StackPanel>

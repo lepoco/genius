@@ -63,9 +63,6 @@ namespace Genius.Views.Pages.Analysis
         private void ActionButton_Click(object sender, RoutedEventArgs e)
         {
             string tag = (sender as MaterialWPF.Controls.MaterialButton).Tag.ToString();
-#if DEBUG
-            System.Diagnostics.Debug.WriteLine("Clicked: " + tag);
-#endif
 
             switch (tag)
             {

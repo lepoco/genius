@@ -12,8 +12,8 @@ namespace Genius
     /// </summary>
     public partial class App : Application
     {
-        private Code.Engine.System _currentExpertSystem;
-        internal Code.Engine.System CurrentExpertSystem
+        private Code.Engine.ExpertSystem _currentExpertSystem;
+        internal Code.Engine.ExpertSystem CurrentExpertSystem
         {
             get
             {

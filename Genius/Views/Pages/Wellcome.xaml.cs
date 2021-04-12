@@ -36,7 +36,7 @@ namespace Genius.Views.Pages
 
             recentProjects.Add(new RecentProject
             {
-                Name = "Sample Expert System",
+                Name = "Sample Expert ExpertSystem",
                 Path = @"C:\Users\Raven\Documents\Genius\Sample.genius",
                 Date = "2020.03.04 15:54"
             });

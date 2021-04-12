@@ -5,7 +5,7 @@
 
 namespace Genius.Code.Engine
 {
-    public sealed class System : Interfaces.IExpertSystem
+    public sealed class ExpertSystem : Interfaces.IExpertSystem
     {
         private string
             _name,

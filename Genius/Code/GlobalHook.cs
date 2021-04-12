@@ -47,9 +47,9 @@ namespace Genius.Code
         }
 
         /// <summary>
-        /// Currently edited or used Expert System.
+        /// Currently edited or used Expert ExpertSystem.
         /// </summary>
-        internal static Code.Engine.System CurrentExpertSystem
+        internal static Code.Engine.ExpertSystem CurrentExpertSystem
         {
             get => GH.App.CurrentExpertSystem;
         }

@@ -10,9 +10,9 @@ namespace Genius.Code.UI
 {
     public static class Samples
     {
-        public static Engine.System SampleExpert
+        public static Engine.ExpertSystem SampleExpert
         {
-            get => new Engine.System
+            get => new Engine.ExpertSystem
             {
                 Name = "Expert system supporting the diagnosis of diseases",
                 Description = "A computer program designed together with the medical university to aid in the diagnosis of diseases.",

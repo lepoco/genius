@@ -1,0 +1,27 @@
+.hero {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  background-size: cover;
+
+  &.light {
+    color: $c-dark;
+  }
+
+  &.dark {
+    color: $c-white;
+  }
+
+  p {
+    text-align: center;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: $f-secondary;
+    font-weight: 700;
+    text-align: center;
+  }
+}

@@ -1,0 +1,29 @@
+.offline {
+  display: none;
+}
+
+body.--offline {
+  overflow: hidden;
+
+  .offline {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    padding: 2rem;
+    background: #fff;
+
+    .container {
+      align-items: center;
+      display: flex;
+    }
+
+    img, svg {
+      width: 120px;
+      max-width: 100%;
+    }
+  }
+}

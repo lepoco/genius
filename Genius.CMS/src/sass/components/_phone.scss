@@ -1,0 +1,39 @@
+.phone {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60vh;
+  width: auto;
+
+  &__container,
+  &__container img {
+    height: 100%;
+  }
+
+  &__container {
+    position: relative;
+  }
+
+  &__container &__notch {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 5rem;
+  }
+
+  &__container &__notch &__notch-body {
+    width: 40%;
+    height: 30%;
+    margin: 0 auto;
+    background-color: $c-light;
+    border-bottom-left-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+  }
+
+  &__container img {
+    display: block;
+    border: .5rem solid $c-light;
+    border-radius: 2.5rem;
+    box-shadow: 1.2rem 1.2rem 2rem .1rem rgba(0,0,0,.1);
+  }
+}

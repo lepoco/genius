@@ -1,0 +1,28 @@
+.account {
+  &__banner {
+    display: flex;
+    align-items: center;
+
+    @include media-breakpoint-down(md) {
+      display: block;
+    }
+
+    &__picture {
+      img {
+        max-width: 100%;
+        width: 10rem;
+        height: 10rem;
+        border-radius: 5rem;
+        object-fit: cover;
+      }
+
+      @include media-breakpoint-up(md) {
+        margin-right: 4rem;
+      }
+
+      @include media-breakpoint-down(md) {
+        margin-bottom: 2rem;
+      }
+    }
+  }
+}

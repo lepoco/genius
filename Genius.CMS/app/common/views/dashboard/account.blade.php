@@ -11,7 +11,7 @@
     <div class="col-12 dashboard__section">
       <div class="dashboard__banner h-100 p-5 bg-light -rounded-2">
         <div class="dashboard__banner__picture">
-          <img class="editable__picture" src="{{ ! empty($user->getImage(false)) ? $user->getImage(true) : '' }}" alt="Stack Overflow logo and icons and such" onerror="if (this.src != 'error.jpg') this.src = '@asset('img/pexels-watch-pay.jpeg')';">
+          <img class="editable__picture" src="{{ ! empty($user->getImage(false)) ? $user->getImage(true) : '' }}" alt="Stack Overflow logo and icons and such" onerror="if (this.src != 'error.jpg') this.src = '@asset('img/pexels-photo-7360385.jpeg')';">
         </div>
         <div>
           <h4>@translate('Hello,') <span class="editable__displayname">{{ $user->getDisplayName() }}</span></h4>
@@ -44,10 +44,7 @@
         </div>
 
         <button type="submit" class="btn btn-dark btn-mobile -lg-mr-1">@translate('Update')</button>
-        <a href="@url('dashboard/billing')" class="btn btn-outline-dark btn-mobile -lg-mr-1">@translate('Edit your billing details')</a>
         <a href="@url('dashboard/password')" class="btn btn-outline-dark btn-mobile">@translate('Change your password')</a>
-        {{-- <a href="@dashurl('account/two-step')" class="btn btn-outline-dark btn-mobile" type="button">@translate('Two-step
-          authentication')</a> --}}
       </form>
     </div>
   </div>

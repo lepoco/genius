@@ -19,6 +19,10 @@
             <a class="nav-link{{ $pagenow === 'dashboard.main' ? ' active' : '' }}"
               href="@url('dashboard')">@translate('Dashboard')</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link{{ $pagenow === 'dashboard.account' ? ' active' : '' }}"
+              href="@url('dashboard/account')">@translate('Account')</a>
+          </li>
           @endif
 
         </ul>

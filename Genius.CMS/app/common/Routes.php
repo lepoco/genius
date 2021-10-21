@@ -52,13 +52,8 @@ final class Routes extends Router
       'require_login' => true
     ],
     [
-      'path' => '/dashboard/billing',
-      'namespace' => 'Dashboard\\Billing',
-      'require_login' => true
-    ],
-    [
-      'path' => '/dashboard/payments',
-      'namespace' => 'Dashboard\\Payments',
+      'path' => '/dashboard/create',
+      'namespace' => 'Dashboard\\Create',
       'require_login' => true
     ],
 

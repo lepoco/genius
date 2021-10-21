@@ -20,13 +20,6 @@
         </div>
       </div>
     </div>
-    <div class="col-12 -mt-5">
-      Your wallets
-      <hr>
-      <div class="row">
-        <div class="col-12 col-lg-6"></div>
-      </div>
-    </div>
   </div>
 </div>
 

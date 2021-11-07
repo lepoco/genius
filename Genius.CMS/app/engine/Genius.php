@@ -10,4 +10,13 @@ namespace Engine;
  */
 final class Genius
 {
+  public function addSystem(): void
+  {
+
+  }
+
+  public function getSystem(): void
+  {
+    
+  }
 }

@@ -10,6 +10,7 @@ use App\Core\Http\Router;
  * @author  Pomianowski <kontakt@rapiddev.pl>
  * @license GPL-3.0 https://www.gnu.org/licenses/gpl-3.0.txt
  * @since   1.1.0
+ * @see https://github.com/bramus/router
  */
 final class Routes extends Router
 {
@@ -30,9 +31,35 @@ final class Routes extends Router
       'redirect_logged' => true
     ],
     [
+      'path' => '/register/confirmation',
+      'namespace' => 'RegisterConfirmation',
+      'redirect_logged' => true,
+      'require_nonce' => true
+    ],
+    [
       'path' => '/signin',
       'namespace' => 'SignIn',
       'redirect_logged' => true
+    ],
+    [
+      'path' => '/contact',
+      'namespace' => 'Contact',
+    ],
+    [
+      'path' => '/licenses',
+      'namespace' => 'Licenses',
+    ],
+    [
+      'path' => '/terms',
+      'namespace' => 'Terms',
+    ],
+    [
+      'path' => '/privacy',
+      'namespace' => 'Privacy',
+    ],
+    [
+      'path' => '/legal',
+      'namespace' => 'Legal',
     ],
 
     // Dashboard | User
@@ -52,8 +79,38 @@ final class Routes extends Router
       'require_login' => true
     ],
     [
-      'path' => '/dashboard/create',
-      'namespace' => 'Dashboard\\Create',
+      'path' => '/dashboard/billing',
+      'namespace' => 'Dashboard\\Billing',
+      'require_login' => true
+    ],
+    [
+      'path' => '/dashboard/payments',
+      'namespace' => 'Dashboard\\Payments',
+      'require_login' => true
+    ],
+    [
+      'path' => '/dashboard/transactions',
+      'namespace' => 'Dashboard\\Transactions',
+      'require_login' => true
+    ],
+    [
+      'path' => '/dashboard/transaction/{uuid}',
+      'namespace' => 'Dashboard\\Transaction',
+      'require_login' => true
+    ],
+    [
+      'path' => '/dashboard/add',
+      'namespace' => 'Dashboard\\Add',
+      'require_login' => true
+    ],
+    [
+      'path' => '/dashboard/topup',
+      'namespace' => 'Dashboard\\Topup',
+      'require_login' => true
+    ],
+    [
+      'path' => '/dashboard/exchange',
+      'namespace' => 'Dashboard\\Exchange',
       'require_login' => true
     ],
 

@@ -20,6 +20,8 @@ final class Image
    */
   public static function scale(string $sourcePath, int $width, int $height, bool $crop = true): string
   {
+    // TODO: Class to refactor
+
     $sourceImage = null;
     $imageData = getimagesize($sourcePath);
 

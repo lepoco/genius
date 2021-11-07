@@ -1,3 +1,7 @@
+.-w-100 {
+  width: 100%;
+}
+
 .-flex {
   display: flex;
 }
@@ -11,12 +15,32 @@
   justify-content: center;
 }
 
+.-flex-beetween {
+  justify-content: space-between;
+}
+
 .-font-primary {
   font-family: $f-primary;
 }
 
 .-font-secondary {
   font-family: $f-secondary;
+}
+
+.-color-white {
+  color: $c-white;
+}
+
+.-color-light {
+  color: $c-light;
+}
+
+.-color-dark {
+  color: $c-dark;
+}
+
+.-color-secondary {
+  color: $c-secondary;
 }
 
 .-text-center {

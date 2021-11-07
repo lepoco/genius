@@ -2,8 +2,10 @@
 
 namespace App\Core\View\Blade;
 
-use App\Core\Facades\{Option, Request};
+use App\Core\Facades\{Config, Option, Translate, Response, Request};
 use App\Core\Data\Encryption;
+use App\Core\Http\Redirect;
+use Illuminate\Support\Str;
 
 /**
  * Dynamically creates directives for Blade.
@@ -15,17 +17,29 @@ use App\Core\Data\Encryption;
  */
 final class Directives
 {
+
+  /**
+   * Creates url.
+   * Triggered once.
+   */
+  public function url(string $path = ''): string
+  {
+    return Redirect::url($path);
+  }
+
   /**
    * Creates media url.
    * Triggered once.
    */
-  public function media(string $path = ''): string
+  public function media(string $asset = ''): string
   {
-    if (empty($path)) {
-      return self::getAssetsUrl() . 'img/';
+    $url = '#';
+
+    if (!empty($asset)) {
+      $url = Redirect::url('img/' . $asset . '?v=' . Option::remember('app_version', fn () => Config::get('app.version', '0.0.0')));
     }
 
-    return self::getAssetsUrl() . 'img/' . $path;
+    return '<img lazy src="' . $url . '" alt="' . Str::before($asset, '.') . ' icon" />';
   }
 
   /**
@@ -34,26 +48,32 @@ final class Directives
    */
   public function asset(string $path = ''): string
   {
-    $assetsUrl = rtrim(Option::get('base_url', Request::root()), '/') . '/';
-
     if (empty($path)) {
-      return self::getAssetsUrl();
+      return Redirect::url();
     }
 
-    return self::getAssetsUrl() . $path;
+    return Redirect::url($path . '?v=' . Option::remember('app_version', fn () => Config::get('app.version', '0.0.0')));
   }
 
   /**
    * Creates url.
    * Triggered once.
    */
-  public function url(string $path = ''): string
+  public static function csp(): string
   {
-    if (empty($path)) {
-      return rtrim(Option::get('base_url', Request::root()), '/') . '/';
-    }
+    return Response::getNonce();
+  }
 
-    return rtrim(Option::get('base_url', Request::root()), '/') . '/' . $path;
+  /**
+   * Returns the current language domain.
+   * Triggered every time.
+   */
+  public static function domain(bool $short = false): string
+  {
+    $domain = Translate::domain();
+    $domain = !empty($domain) ? $domain : 'en_US';
+
+    return $short ? substr($domain, 0, 2) : $domain;
   }
 
   /**
@@ -65,6 +85,8 @@ final class Directives
     if (empty($text)) {
       return 'translator_string';
     }
+
+    $text = Translate::string($text);
 
     $text = str_replace(
       [
@@ -93,6 +115,15 @@ final class Directives
   }
 
   /**
+   * Print current URL without query.
+   * Triggered every time.
+   */
+  public static function currenturl()
+  {
+    return Request::url();
+  }
+
+  /**
    * Asks for options value to the database or the cache.
    * Triggered every time.
    */
@@ -118,9 +149,4 @@ final class Directives
   // {
   //   return 'endif';
   // }
-
-  private static function getAssetsUrl(): string
-  {
-    return $assetsUrl = rtrim(Option::get('base_url', Request::root()), '/') . '/';
-  }
 }

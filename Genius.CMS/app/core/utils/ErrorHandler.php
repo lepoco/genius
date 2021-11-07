@@ -4,7 +4,6 @@ namespace App\Core\Utils;
 
 use App\Core\Utils\Path;
 use Illuminate\Http\Request;
-use Symfony\Component\VarDumper\VarDumper;
 
 /**
  * Provides static error/exception triggers for Symfony VarDumper.
@@ -47,14 +46,16 @@ final class ErrorHandler
       return true;
     }
 
-    VarDumper::dump([
-      'ERROR' => [
-        'errno' => $errno,
-        'errstr' => $errstr,
-        'errfile' => $errfile,
-        'errline' => $errline
-      ]
-    ]);
+    if (class_exists('\Symfony\Component\VarDumper\VarDumper')) {
+      \Symfony\Component\VarDumper\VarDumper::dump([
+        'ERROR' => [
+          'errno' => $errno,
+          'errstr' => $errstr,
+          'errfile' => $errfile,
+          'errline' => $errline
+        ]
+      ]);
+    }
 
     return true;
   }
@@ -73,12 +74,14 @@ final class ErrorHandler
       return true;
     }
 
-    VarDumper::dump($exception);
+    if (class_exists('\Symfony\Component\VarDumper\VarDumper')) {
+      \Symfony\Component\VarDumper\VarDumper::dump($exception);
+    }
 
     return true;
   }
 
-  private static function log(string $type = 'ERROR', string $message, array $context = []): void
+  private static function log(string $type = 'ERROR', string $message = '', array $context = []): void
   {
     $rawMessage = '';
 

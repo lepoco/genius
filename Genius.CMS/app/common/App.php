@@ -27,9 +27,13 @@ final class App extends Bootstrap implements \App\Core\Schema\App
         new Config([
           'app' => [
             'name' => 'Genius',
-            'version' => '1.1.0',
+            'version' => '2.0.0',
             'log_level' => 'debug',
             'debug' => true
+          ],
+          'i18n' => [
+            'default' => 'en_US',
+            'path' => Path::getAppPath('common/languages')
           ],
           'database' => [
             'default' => 'default',
@@ -73,16 +77,6 @@ final class App extends Bootstrap implements \App\Core\Schema\App
                 'days' => 31
               ]
             ]
-          ],
-          'session' => [
-            'driver' => 'cookie',
-            'path' => '/',
-            'cookie' => 'pkx_session',
-            'lifetime' => 60,
-            'same_site' => 'Lax',
-            'encrypt' => false,
-            'expire_on_close' => false,
-            'secure' => true
           ],
           'view' => [
             'paths' => [Path::getAppPath('common/views')],

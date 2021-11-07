@@ -2,11 +2,10 @@
 
 namespace App\Core\View;
 
-use App\Core\Facades\{App, Logs, Response};
+use App\Core\Facades\{App, Logs, Response, Translate, Statistics};
 use App\Core\Facades\Request as IlluminateRequest;
 use App\Core\Http\Status;
 use App\Core\View\Renderable;
-use App\Core\Data\Encryption;
 use Illuminate\Support\Str;
 
 /**
@@ -45,6 +44,8 @@ abstract class Request extends Renderable implements \App\Core\Schema\Request
   protected const ERROR_FILE_INVALID             = 'E23';
   protected const ERROR_FILE_INVALID_MIME_TYPE   = 'E24';
   protected const ERROR_FILE_TOO_LARGE           = 'E25';
+  protected const ERROR_VALUE_TOO_BIG            = 'E26';
+  protected const ERROR_VALUE_TOO_LOW            = 'E27';
 
   protected const CODE_SUCCESS                   = 'S01';
 
@@ -65,9 +66,11 @@ abstract class Request extends Renderable implements \App\Core\Schema\Request
     Logs::info('New request.', ['action' => $this->getAction(), 'ip' => IlluminateRequest::ip()]);
 
     $this->initialize();
-    $this->validateNonce();
+    $this->validateRequestNonce();
 
     $this->addContent('hash', Str::random(32));
+
+    Statistics::push(\App\Core\Data\Statistics::TYPE_REQUEST, 'REQUEST:' . $this->getAction());
 
     if (method_exists($this, 'process')) {
       $this->{'process'}();
@@ -96,7 +99,7 @@ abstract class Request extends Renderable implements \App\Core\Schema\Request
       $this->addContent('notice', 'not-exists');
       $this->addContent('fields', $notSetField);
 
-      $this->addContent('message', 'Some fields are missing.');
+      $this->addContent('message', Translate::string('Some fields are missing.'));
       $this->finish(self::ERROR_MISSING_ARGUMENTS, Status::UNPROCESSABLE_ENTITY);
     }
 
@@ -117,7 +120,7 @@ abstract class Request extends Renderable implements \App\Core\Schema\Request
       $this->addContent('error', 'Empty field');
       $this->addContent('notice', 'empty');
       $this->addContent('fields', $emptyField);
-      $this->addContent('message', 'Not all fields are correctly filled.');
+      $this->addContent('message', Translate::string('Not all fields are correctly filled.'));
       $this->finish(self::ERROR_EMPTY_ARGUMENTS, Status::UNPROCESSABLE_ENTITY);
     }
 
@@ -150,7 +153,7 @@ abstract class Request extends Renderable implements \App\Core\Schema\Request
       $this->addContent('error', 'Incorrect field');
       $this->addContent('notice', 'non_filtered');
       $this->addContent('fields', $incorrectFields);
-      $this->addContent('message', 'Some fields contain characters that are not allowed.');
+      $this->addContent('message', Translate::string('Some fields contain characters that are not allowed.'));
       $this->finish(self::ERROR_SPECIAL_CHARACTERS, Status::UNPROCESSABLE_ENTITY);
     }
 
@@ -191,7 +194,7 @@ abstract class Request extends Renderable implements \App\Core\Schema\Request
     ];
   }
 
-  private function validateNonce(): void
+  private function validateRequestNonce(): void
   {
     if ($this->getAction() == 'Install') {
       return;
@@ -202,9 +205,9 @@ abstract class Request extends Renderable implements \App\Core\Schema\Request
       $this->finish(self::ERROR_NONCE_MISSING, Status::BAD_REQUEST);
     }
 
-    if (!Encryption::compare('ajax_' . strtolower($this->getAction()) . '_nonce', IlluminateRequest::get('nonce'), 'nonce')) {
+    if (!$this->validateNonce('ajax_' . strtolower($this->getAction()) . '_nonce', IlluminateRequest::get('nonce'))) {
       $this->addContent('error', 'Invalid nonce');
-      $this->addContent('message', 'The time verification key does not match, please try refreshing the page.');
+      $this->addContent('message', Translate::string('The time verification key does not match, please try refreshing the page.'));
       $this->finish(self::ERROR_NONCE_INVALID, Status::BAD_REQUEST);
     }
   }

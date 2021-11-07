@@ -157,7 +157,7 @@ final class Encryption
     }
 
     if (strpos($pattern, 'S') !== false) {
-      $characters .= '!@#$%^&*()_+-=;:,.<>?~';
+      $characters .= '!@#%^&*_+-=;:,.?~';
     }
 
     $rand = '';

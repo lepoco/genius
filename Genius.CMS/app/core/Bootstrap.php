@@ -2,20 +2,18 @@
 
 namespace App\Core;
 
-use App\Core\Http\{Router, Response};
-use App\Core\Data\Options;
+use App\Core\Http\{Router, Response, Session};
+use App\Core\Data\{Container, Statistics, Options};
 use App\Core\Facades\App;
-use App\Core\Data\Container;
+use App\Core\Email\Mailer;
+use App\Core\i18n\Translate;
+use App\Core\Cache\Redis;
 use Illuminate\Config\Repository;
 use Illuminate\Http\Request;
 use Illuminate\Database\Capsule\Manager;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Cookie\CookieJar;
-use Illuminate\Cache\CacheManager;
 use Illuminate\Log\LogManager;
-use Illuminate\Session\SessionManager;
-use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 
 /**
  * Creates all connections and application objects.
@@ -31,6 +29,8 @@ abstract class Bootstrap implements \App\Core\Schema\App
 
   protected bool $connected;
 
+  protected bool $installed;
+
   protected Container $container;
 
   protected Router $router;
@@ -41,9 +41,9 @@ abstract class Bootstrap implements \App\Core\Schema\App
 
   protected Response $response;
 
-  protected NativeSessionStorage $nativeSession;
+  protected Session $session;
 
-  protected CacheManager $cache;
+  protected Redis $cache;
 
   protected LogManager $logs;
 
@@ -53,20 +53,23 @@ abstract class Bootstrap implements \App\Core\Schema\App
 
   protected FileSystem $filesystem;
 
+  protected Translate $translate;
+
+  protected Statistics $statistics;
+
+  protected Mailer $mailer;
+
   abstract public function init(): void;
 
   /**
    * Application specific constructor. Creates instances of base objects and assigns them to Facades.
    */
-  final public function setup(): self
+  public function setup(): self
   {
-    $this
-      ->setStatus(0)
-      ->init();
+    $this->status = 0;
 
-    $this
-      ->setupRequest()
-      ->setupContainer();
+    $this->init();
+    $this->setupContainer();
 
     App::set($this);
 
@@ -76,12 +79,36 @@ abstract class Bootstrap implements \App\Core\Schema\App
   /**
    * Attempts to connect to the database and creates the Database, Options, and Cache objects.
    */
-  public function connect(): self
+  public function connect(bool $soft = false): self
   {
+    if (!$soft) {
+      $this
+        ->setCache(new Redis())
+        ->setSession(new Session());
+    }
+
     $this
       ->setDatabase(new Manager($this->container))
-      ->setCache(new CacheManager($this->container))
       ->setOptions(new Options());
+
+    $this->isConnected(true);
+
+    $timeNow = time();
+
+    if ($this->isInstalled() && $this->session->has('last_opened')) {
+      $maxDiff = (int) $this->options->get('signout_time', 15);
+      $maxDiff = $maxDiff < 1 ? 60 : $maxDiff * 60;
+
+      if (($timeNow - $this->session->get('last_opened')) > $maxDiff) {
+        $this->destroy();
+      }
+    }
+
+    if (!$this->session->has('language')) {
+      $this->session->put('language', $this->configuration->get('i18n.default', 'en_US'));
+    }
+
+    $this->session->put('last_opened', $timeNow);
 
     return $this;
   }
@@ -91,6 +118,35 @@ abstract class Bootstrap implements \App\Core\Schema\App
    */
   public function print(): self
   {
+    $this->translate = new Translate();
+
+    $langauge = $this->session->get('language', $this->configuration->get('i18n.default', 'en_US'));
+
+    // TODO: Detect browser specific language
+    // TODO: Or, set language on front via dropdown
+
+    if ($this->isInstalled()) {
+      $user = \App\Core\Auth\Account::current();
+
+      if (!empty($user)) {
+        $langauge = $user->getLanguage();
+      }
+    }
+
+    $this->translate
+      ->setDomain($langauge)
+      ->setPath($this->configuration->get('i18n.path', ''))
+      ->initialize();
+
+    $this->statistics = new Statistics($this->isInstalled());
+    $this->mailer = new Mailer();
+
+    $this->response->prepareCSP(
+      [],
+      ['*.googleapis.com', '*.gstatic.com'],
+      ['*.googleapis.com', '*.gstatic.com']
+    );
+
     $this
       ->router
       ->setup()
@@ -106,9 +162,9 @@ abstract class Bootstrap implements \App\Core\Schema\App
    */
   public function close(bool $exit = true): void
   {
-    $this->request->session()->put('_rendered', time());
+    $this->session->put('_rendered', time());
 
-    $this->request->session()->save();
+    $this->session->save();
 
     $this->response->send();
 
@@ -122,17 +178,8 @@ abstract class Bootstrap implements \App\Core\Schema\App
    */
   public function destroy(): void
   {
-    $sessionId = $this->request->session()->getId();
-    $sessionCookie = $this->response->getCookie($this->configuration->get('session.cookie', 'pkx_session'));
-
-    $this->nativeSession->clear();
-    $this->request->session()->invalidate();
-
-    $this->response->removeCookie($sessionId);
-
-    if (!empty($sessionCookie)) {
-      $this->response->removeCookie($sessionCookie->getName());
-    }
+    $this->session->clear();
+    $this->session->invalidate();
   }
 
   /**
@@ -140,9 +187,7 @@ abstract class Bootstrap implements \App\Core\Schema\App
    */
   public function regenerate(): void
   {
-    $this->request->session()->regenerateToken();
-    $this->request->session()->regenerate();
-    $this->nativeSession->regenerate();
+    $this->session->regenerate();
   }
 
   /**
@@ -161,46 +206,9 @@ abstract class Bootstrap implements \App\Core\Schema\App
   }
 
   /**
-   * Reassign the objects to the controller.
-   */
-  final public function rebind(string $abstract = ''): bool
-  {
-    if (empty($abstract) || 'config' === $abstract) {
-      $this->container->bind('config', fn () => $this->configuration, true);
-    }
-
-    if (empty($abstract) || 'files' === $abstract) {
-      $this->container->bind('files', fn () => $this->filesystem, true);
-    }
-
-    if (empty($abstract) || 'events' === $abstract) {
-      $this->container->bind('events', fn () => new Dispatcher(), true);
-    }
-
-    if (empty($abstract) || 'cookie' === $abstract) {
-      $this->container->bind('cookie', fn () => (new CookieJar())->setDefaultPathAndDomain(
-        $this->configuration->get('session.path'),
-        $this->configuration->get('session.domain'),
-        $this->configuration->get('session.secure'),
-        $this->configuration->get('session.same_site')
-      ), true);
-    }
-
-    if (empty($abstract) || 'session' === $abstract) {
-      $this->setSession(new SessionManager($this->container));
-    }
-
-    if (empty($abstract) || 'logs' === $abstract) {
-      $this->setLogs(new LogManager($this->container));
-    }
-
-    return $this->isConnected(true);
-  }
-
-  /**
    * Checks whether the database is connected.
    */
-  public function isConnected(bool $forceReCheck = false): bool
+  final public function isConnected(bool $forceReCheck = false): bool
   {
     if (!$forceReCheck && isset($this->connected)) {
       return $this->connected;
@@ -227,15 +235,53 @@ abstract class Bootstrap implements \App\Core\Schema\App
     return $this->connected;
   }
 
-  final protected function setStatus(int $status): self
+  /**
+   * Checks whether the database is connected and initialized.
+   */
+  final public function isInstalled(bool $forceReCheck = false): bool
   {
-    $this->status = $status;
+    if (!$forceReCheck && isset($this->installed)) {
+      return $this->installed;
+    }
 
-    return $this;
+    if (!$this->isConnected()) {
+      return false;
+    }
+
+    $this->installed = $this->database->schema()->hasTable('options') && $this->database->schema()->hasTable('users');
+
+    return $this->installed;
+  }
+
+  /**
+   * Reassign the objects to the controller.
+   */
+  final public function rebind(string $abstract = ''): bool
+  {
+    if (empty($abstract) || 'config' === $abstract) {
+      $this->container->bind('config', fn () => $this->configuration, true);
+    }
+
+    if (empty($abstract) || 'files' === $abstract) {
+      $this->container->bind('files', fn () => $this->filesystem, true);
+    }
+
+    if (empty($abstract) || 'events' === $abstract) {
+      $this->container->bind('events', fn () => new Dispatcher(), true);
+    }
+
+    if (empty($abstract) || 'logs' === $abstract) {
+      $this->setLogs(new LogManager($this->container));
+    }
+
+    return true;
   }
 
   final protected function setupContainer(): self
   {
+    $this->request = Request::capture();
+    $this->response = new Response('', 200, $this->request->headers->all());
+
     $this->filesystem = new Filesystem();
     $this->container = new Container();
 
@@ -247,52 +293,18 @@ abstract class Bootstrap implements \App\Core\Schema\App
     return $this;
   }
 
-  final protected function setupRequest(): self
-  {
-    $this->request = Request::capture();
-    $this->response = new Response('', 200, $this->request->headers->all());
-
-    return $this;
-  }
-
-  protected function setLogs(LogManager $logManager): self
+  final protected function setLogs(LogManager $logManager): self
   {
     $this->logs = $logManager;
 
     return $this;
   }
 
-  protected function setSession(SessionManager $session): self
+  protected function setSession(Session $session): self
   {
-    $id = $this->request->cookies->get($session->getName());
+    $this->session = $session;
 
-    if (!empty($id)) {
-      $session->setId($id);
-    }
-
-    $session->setRequestOnHandler($this->request);
-
-    $this->request->setLaravelSession($session);
-
-    $this->nativeSession = new NativeSessionStorage([], $this->request->session()->getHandler());
-
-    $this->nativeSession->start();
-
-    $this->request->session()->start();
-
-    $attributes = $this->request->session()->all();
-
-    // Native session allows you to restore data from cookie sessions
-    // and use the application on browsers that do not support them.
-    if (!$this->request->session()->has('_rendered')) {
-      foreach ($_SESSION as $key => $value) {
-        $this->request->session()->put($key, $value);
-      }
-    }
-
-    foreach ($attributes as $key => $value) {
-      $_SESSION[$key] = $value;
-    }
+    $this->session->start();
 
     return $this;
   }
@@ -321,14 +333,6 @@ abstract class Bootstrap implements \App\Core\Schema\App
     return $this;
   }
 
-  protected function setCache(CacheManager $cache): self
-  {
-    // FIXME:: Cache needs garbage collector.
-    $this->cache = $cache;
-
-    return $this;
-  }
-
   protected function setOptions(Options $options): self
   {
     $this->options = $options;
@@ -336,7 +340,14 @@ abstract class Bootstrap implements \App\Core\Schema\App
     return $this;
   }
 
-  private function generateDirectories(): void
+  protected function setCache(\App\Core\Schema\Cache $cache): self
+  {
+    $this->cache = $cache;
+
+    return $this;
+  }
+
+  protected function generateDirectories(): void
   {
     if (!$this->filesystem->isDirectory($this->configuration->get('view.compiled', 'storage/blade'))) {
       $this->filesystem->makeDirectory($this->configuration->get('view.compiled', 'storage/blade'), 0755, true);

@@ -13,6 +13,7 @@ use App\Core\Bootstrap;
  */
 abstract class Facade
 {
+  // TODO: We should measure the memory load by this singleton.
   protected static object $app;
 
   abstract protected static function getFacadeAccessor(): string;
@@ -38,6 +39,7 @@ abstract class Facade
    */
   final public static function setApp(Bootstrap &$app): void
   {
+    // TODO: Passing by a pointer in PHP creates copies, we should test the performance of this solution.
     static::$app = $app;
   }
 
@@ -58,6 +60,15 @@ abstract class Facade
    */
   final public static function getProperty(string $property): ?object
   {
+    // TODO: TEST
+    // WARNING: Generates about a hundred returns
+
+    // ray([
+    //   'app_called' => time(),
+    //   'memory' => memory_get_usage(),
+    //   'app' => spl_object_hash((isset(static::$app) ? static::$app : new \stdClass()))
+    // ]);
+
     if (!isset(static::$app)) {
       return null;
     }

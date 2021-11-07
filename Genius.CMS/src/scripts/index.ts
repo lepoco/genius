@@ -2,56 +2,69 @@
  * Genius
  * https://github.com/lepoco/Genius
  *
- * GPL-3.0 https://github.com/lepoco/Genius/blob/main/LICENSE
+ * @author  Pomianowski <kontakt@rapiddev.pl>
+ * @module  Index
+ * @license GPL-3.0
+ * @since   1.1.0
  */
 
-import Forms from "./common/forms";
+import AppData from "./common/appdata";
+import FormHelpers from "./common/formhelpers";
 import Cookie from "./common/cookie";
 import SignOut from "./common/signout";
-
-let appData = (window as any).app;
+import LoadReveal from "./common/loadreveal";
 
 require("./../sass/style.scss");
 
-if ("serviceWorker" in navigator) {
+FormHelpers.init();
+Cookie.init();
+SignOut.init();
+LoadReveal.init();
+
+if (AppData.isWorkerEnabled() && "serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register("https://genius.lan/service-worker.js")
+      .register(AppData.url("service-worker.js"))
       .then((registration) => {
-        if (appData.props.debug) {
-          console.log("SW registered: ", registration);
+        if (AppData.isDebug()) {
+          console.debug("App\\Index SW REGISTERED", registration);
         }
 
         //registration.pushManager.subscribe({userVisibleOnly: true, applicationServerKey: "71562645621"});
       })
       .catch((registrationError) => {
-        if (appData.props.debug) {
-          console.log("SW registration failed: ", registrationError);
+        if (AppData.isDebug()) {
+          console.debug("App\\Index SW REGISTRATION FAILED", registrationError);
         }
       });
   });
 }
 
-new Forms();
-new Cookie();
-new SignOut();
-
 try {
-  require("./pages/" + appData.props.view);
-  appData.routing = { success: true, message: "imported" };
+  require("./pages/" + AppData.pageNow());
+  AppData.setRouting({ success: true, message: "imported" });
 } catch (error) {
-  appData.routing = {
+  AppData.setRouting({
     success: false,
-    message: "No module for page " + appData.props.view,
+    message: "No module for page " + AppData.pageNow(),
     error: error.message,
-  };
+  });
 }
 
-if (!window.navigator.onLine) {
-  document.body.classList.add("--offline");
-}
+function navigatorOnline() {
+  if (!window.navigator.onLine) {
+    document.body.classList.add("--offline");
+  } else if (document.body.classList.contains("--offline")) {
+    console.log("Connection established!");
+    window.location.href = window.location.href;
 
-if (appData.props.debug) {
-  console.debug("window.app", appData);
-  console.debug("Connection online", window.navigator.onLine);
+    return;
+  }
+
+  setTimeout(navigatorOnline, 2500);
+}
+navigatorOnline();
+
+if (AppData.isDebug()) {
+  AppData.dump();
 }

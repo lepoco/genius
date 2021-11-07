@@ -1,7 +1,16 @@
+import AppData from "./appdata";
 import { Toast as BootstrapToast } from "./../components/bootstrap-bundle";
 
 export const name = "Toast";
 
+/**
+ * Adds a new notification to the displayed pool.
+ *
+ * @author  Pomianowski <kontakt@rapiddev.pl>
+ * @module  Common/Toast
+ * @license GPL-3.0
+ * @since   1.1.0
+ */
 export default class Toast {
   static send(header:string, message:string = null, type = "default", timeout = 5000) {
     const CONTAINER = document.querySelector(".toast__container");
@@ -9,6 +18,8 @@ export default class Toast {
     const TIME_NOW = new Date(
       Date.now() - new Date().getTimezoneOffset() * 60000
     ).toISOString().substr(11, 8);
+
+    AppData.addToast(header, message, Date.now());
 
     let icon = null;
     switch (type) {

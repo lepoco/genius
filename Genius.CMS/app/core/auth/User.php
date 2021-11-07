@@ -4,23 +4,22 @@ namespace App\Core\Auth;
 
 use App\Core\Auth\Billing;
 use App\Core\Utils\Cast;
-use App\Core\Facades\{DB, Option, Request};
+use App\Core\Facades\DB;
 use App\Core\Data\Encryption;
+use App\Core\Http\Redirect;
 
 /**
- * Represents the user
+ * Represents the user.
  *
  * @author  Pomianowski <kontakt@rapiddev.pl>
  * @license GPL-3.0 https://www.gnu.org/licenses/gpl-3.0.txt
  * @since   1.1.0
  */
-final class User
+final class User extends \App\Core\Data\DatabaseObject
 {
   private bool $active = false;
 
   private bool $confirmed = false;
-
-  private int $id = 0;
 
   private int $role = 0;
 
@@ -40,6 +39,8 @@ final class User
 
   private string $sessionToken = '';
 
+  private string $language = '';
+
   private string $timezone = '';
 
   private string $createdAt = '';
@@ -52,6 +53,7 @@ final class User
 
   public function __construct(int $id = 0)
   {
+    $this->id = $id;
     $this->billing = new Billing($id);
 
     $this->fetch($id);
@@ -67,6 +69,7 @@ final class User
       'email' => $this->getEmail(),
       'role_id' => $this->getRole(),
       'image' => $this->getImage(),
+      'language' => $this->getLanguage(),
       'timezone' => $this->getTimezone(),
       'is_active' => $this->isActive(),
       'is_confirmed' => $this->isConfirmed(),
@@ -153,6 +156,9 @@ final class User
     ]);
   }
 
+  /**
+   * Updates all tokens and login information.
+   */
   public function updateTokens(string $sessionToken, string $cookieToken, bool $keepSessionPlain = false, bool $keepCookiePlain = true): bool
   {
     if (!$keepSessionPlain) {
@@ -176,7 +182,6 @@ final class User
     ]);
 
     return (new self())
-      ->setId($properties['id'] ?? 0)
       ->setRole($properties['role'] ?? 1)
       ->setType($properties['type'] ?? 1)
       ->setUuid($properties['uuid'] ?? '')
@@ -184,8 +189,10 @@ final class User
       ->setDisplayName($properties['display_name'] ?? '')
       ->setImage($properties['image'] ?? '')
       ->setPassword($properties['password'] ?? '')
+      ->setLanguage($properties['language'] ?? 'en_US')
       ->setTimezone($properties['timezone'] ?? 'UTC')
-      ->setBilling($billing);
+      ->setBilling($billing)
+      ->setId($properties['id'] ?? 0);
   }
 
   private function fetch(int $id): bool
@@ -210,18 +217,23 @@ final class User
     $this->sessionToken = $data->session_token ?? '';
     $this->cookieToken = $data->cookie_token ?? '';
     $this->role = (int) $data->role_id ?? 1;
-    $this->timezone = $data->timezone ?? '';
+    $this->language = $data->language ?? 'en_US';
+    $this->timezone = $data->timezone ?? 'UTC';
     $this->lastLogin = $data->time_last_login ?? '';
     $this->createdAt = $data->created_at ?? '';
+    $this->active = $data->is_active ?? true;
+    $this->confirmed = $data->is_confirmed ?? false;
     $this->updatedAt = $data->updated_at ?? '';
 
     return true;
   }
 
-
+  /**
+   * Checks whether the object is a real user.
+   */
   public function isValid(): bool
   {
-    return $this->id > 0 && ! empty($this->uuid);
+    return $this->id > 0 && !empty($this->uuid);
   }
 
   public function markAsActive(): self
@@ -236,26 +248,6 @@ final class User
     $this->confirmed = true;
 
     return $this;
-  }
-
-  /**
-   * Just a shorter wrapper for \App\Core\Auth\User::getId()
-   */
-  public function id(): int
-  {
-    return $this->getId();
-  }
-
-  public function setId(int $id): self
-  {
-    $this->id = $id;
-
-    return $this;
-  }
-
-  public function getId(): int
-  {
-    return $this->id;
   }
 
   public function setRole(int $role): self
@@ -335,10 +327,22 @@ final class User
   public function getImage(bool $http = false): string
   {
     if ($http) {
-      return rtrim(Option::get('base_url', Request::root()), '/') . '/' . $this->image;
+      return Redirect::url($this->image);
     }
 
     return $this->image;
+  }
+
+  public function setLanguage(string $language): self
+  {
+    $this->language = $language;
+
+    return $this;
+  }
+
+  public function getLanguage(): string
+  {
+    return $this->language;
   }
 
   public function setTimezone(string $timezone): self

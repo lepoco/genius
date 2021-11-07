@@ -1,7 +1,15 @@
-import Request from "./../common/request";
+import FormRequest from "./../common/formrequest";
 import Toast from "./../common/toast";
 
-Request.register("#account", function (status: String, response: any) {
+/**
+ * Page controller for dashboard.account.
+ *
+ * @author  Pomianowski <kontakt@rapiddev.pl>
+ * @module  Pages/Dashboard/Account
+ * @license GPL-3.0
+ * @since   1.1.0
+ */
+FormRequest.register("#account", function (status: String, response: any) {
   if ("S01" === response.status) {
     const PICTURE_ELEMENT = document.querySelector('input[name="picture"]');
 
@@ -30,3 +38,11 @@ Request.register("#account", function (status: String, response: any) {
     }
   }
 });
+
+const PROFILE_PICTURE = document.querySelector('.editable__picture') as HTMLImageElement;
+
+if (PROFILE_PICTURE) {
+  PROFILE_PICTURE.onerror = function () {
+    PROFILE_PICTURE.src = PROFILE_PICTURE.dataset.errorscr;
+  };
+}

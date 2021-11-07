@@ -2,8 +2,7 @@
 
 namespace App\Core\Data;
 
-use App\Core\Facades\Cache;
-use App\Core\Facades\DB;
+use App\Core\Facades\{App, DB, Cache};
 
 /**
  * Allows to retrieve and save options from the database, stored in memory using the Cache.
@@ -14,34 +13,112 @@ use App\Core\Facades\DB;
  */
 final class Options
 {
-  private string $prefix = 'option_';
-
-  public function setPrefix($prefix): void
+  public function remember(string $name, \Closure $callback): mixed
   {
-    $this->prefix = $prefix;
+    if (Cache::has('options.' . $name)) {
+      return Cache::get('options.' . $name, 'CACHE_ERROR');
+    }
+
+    $db = $this->getFromDatabase($name, $callback());
+
+    Cache::put('options.' . $name, $db);
+
+    return $db;
   }
 
-  public function get(string $name, $default = '')
+  public function get(string $name, mixed $default = null): mixed
   {
-    return Cache::remember($this->prefix . $name, 60, fn () => $this->getOption($name, $default));
+    if (Cache::has('options.' . $name)) {
+      return Cache::get('options.' . $name, 'CACHE_ERROR');
+    }
+
+    $db = $this->getFromDatabase($name, $default);
+
+    // TODO: This is where we may have problems, we can do FORCE REFRESH or something
+    Cache::put('options.' . $name, $db);
+
+    return $db;
   }
 
   public function set(string $name, $value): bool
   {
-    return $this->setOption($name, $value);
+    Cache::put('options.' . $name, $value);
+
+    return $this->setInDatabase($name, $value);
   }
 
-  private function getOption(string $name, $default = '')
+  private function getFromDatabase(string $key, mixed $default): mixed
   {
-    //DB::table('pkx_options')->get(['*'])->where('option_name', 'LIKE', $name);
+    if (!App::isConnected()) {
+      return $default;
+    }
+
+    $query = DB::table('options')->where('name', $key)->first();
+
+    if (isset($query->value)) {
+      return self::decodeType($query->value);
+    }
 
     return $default;
   }
 
-  private function setOption(string $name, $value): bool
+  private function setInDatabase(string $key, mixed $value): bool
   {
-    Cache::forget($name);
+    if (!App::isConnected()) {
+      return false;
+    }
 
-    return true;
+    $query = DB::table('options')->where('name', $key)->first();
+
+    if (isset($query->value)) {
+      return DB::table('options')->where('name', $key)->update([
+        'value' => self::encodeType($value),
+        'updated_at' => date('Y-m-d H:i:s')
+      ]);
+    }
+
+    return DB::table('options')->insert([
+      'name' => $key,
+      'value' => self::encodeType($value),
+      'updated_at' => date('Y-m-d H:i:s')
+    ]);
+  }
+
+  private static function decodeType(mixed $value): mixed
+  {
+    if ('true' === $value || true === $value) {
+      return true;
+    }
+
+    if ('false' === $value || false === $value) {
+      return false;
+    }
+
+    if (is_int($value)) {
+      return (int) $value;
+    }
+
+    if (is_float($value)) {
+      return (float) $value;
+    }
+
+    if (ctype_digit($value)) {
+      return (int) $value;
+    }
+
+    return $value;
+  }
+
+  private static function encodeType(mixed $value): mixed
+  {
+    if ('true' === $value || true === $value) {
+      return 'true';
+    }
+
+    if ('false' === $value || false === $value) {
+      return 'false';
+    }
+
+    return $value;
   }
 }

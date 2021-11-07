@@ -17,13 +17,21 @@ interface Session
 
   public function clear();
 
+  public function isStarted(): bool;
+
   public function regenerate(bool $destroy = false, int $lifetime = null);
 
   public function getId(): string;
 
   public function setId(string $id);
 
-  public function getName(): string;
+  public function all(): array;
 
-  public function setName(string $name);
+  public function put(string $key, mixed $value);
+
+  public function get(string $key, mixed $default): mixed;
+
+  public function has(string $key): bool;
+
+  public function hasAny(array $keys): bool;
 }

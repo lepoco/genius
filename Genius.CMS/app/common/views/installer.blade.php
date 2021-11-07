@@ -1,6 +1,6 @@
 @extends('layouts.box', [
-'title' => 'Installer',
-'background' => $base_url . 'img/pexels-photo-8386363.jpeg'
+'title' => \App\Core\Facades\Translate::string('Installer'),
+'background' => $base_url . 'img/pexels-photo-8386434.jpeg'
 ])
 
 @section('content')

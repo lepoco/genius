@@ -1,19 +1,34 @@
+import AppData from "./appdata";
 import * as Cookies from "./../components/js.cookie";
 
 export const name = "Cookie";
 
+/**
+ * Displays information about cookies.
+ *
+ * @author  Pomianowski <kontakt@rapiddev.pl>
+ * @module  Common/Cookie
+ * @license GPL-3.0
+ * @since   1.1.0
+ */
 export default class Cookie {
-  cookieName: string = "pkx_cookie";
+  cookieName: string = "access_cookie";
 
   container: any;
   buttons: HTMLCollectionOf<HTMLButtonElement>;
 
+  static init(): Cookie {
+    return new Cookie();
+  }
+
   constructor() {
+    this.cookieName = AppData.cookieName();
+
     this.registerElements();
     this.checkCookie();
   }
 
-  actionAccept() {
+  actionAccept(): void {
     // TODO: Fix cookies
     this.setCookie();
 
@@ -22,12 +37,12 @@ export default class Cookie {
     }
   }
 
-  actionManage() {
+  actionManage(): void {
     //TODO: Manage cookies
     console.log("Manage Cookies");
   }
 
-  checkCookie() {
+  checkCookie(): void {
     let cookie = Cookies.get(this.cookieName);
 
     if (cookie == undefined) {
@@ -37,7 +52,7 @@ export default class Cookie {
     }
   }
 
-  registerElements() {
+  registerElements(): void {
     this.container = document.getElementsByClassName("cookie");
     this.buttons = document.getElementsByClassName(
       "cookie__button"
@@ -48,7 +63,7 @@ export default class Cookie {
     }
   }
 
-  loopButtons() {
+  loopButtons(): void {
     for (let index = 0; index < this.buttons.length; index++) {
       if (this.buttons[index].classList.contains("--manage")) {
         this.buttons[index].addEventListener("click", (e) => {
@@ -64,12 +79,12 @@ export default class Cookie {
     }
   }
 
-  setCookie() {
+  setCookie(): void {
     //TODO: Set acceptance cookie
     Cookies.set(this.cookieName, "{0,0,0,0}", {
       expires: 365,
       path: "/",
-      secure: (window as any).app.props.secured,
+      secure: AppData.isSecured(),
       sameSite: "Lax",
     });
   }

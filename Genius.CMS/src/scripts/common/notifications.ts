@@ -28,7 +28,7 @@
 //   navigator.serviceWorker.getRegistration().then(function (reg) {
 //     var options = {
 //       body: "Here is a notification body!",
-//       icon: "https://polkryptex.lan/img/icons/192.png?v=1.1.0",
+//       icon: "https://genius.lan/img/icons/192.png?v=1.1.0",
 //       vibrate: [100, 50, 100],
 //       data: {
 //         dateOfArrival: Date.now(),

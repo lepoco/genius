@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @package Genius
- * @license https://www.gnu.org/licenses/gpl-3.0.txt
- */
-
 namespace App\Common\Composers;
 
 use App\Core\Facades\Response;

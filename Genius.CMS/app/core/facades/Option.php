@@ -11,6 +11,7 @@ use App\Core\Facades\Abstract\Facade;
  * @license GPL-3.0 https://www.gnu.org/licenses/gpl-3.0.txt
  * @since   1.1.0
  *
+ * @method static mixed remember(string $key, \Closure $callback) Get an option from the database, or store the default value.
  * @method static mixed get(string $key, mixed $default = '') Get option from the database.
  * @method static mixed set(string $key, mixed $value) Set and save option in the database.
  */

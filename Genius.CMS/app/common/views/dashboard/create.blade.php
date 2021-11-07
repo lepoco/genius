@@ -25,7 +25,8 @@
           <label for="system_description">@translate('Description')</label>
         </div>
 
-        <button type="submit" class="btn btn-dark btn-mobile -lg-mr-1">@translate('Next')</button>
+        {{-- <button type="submit" class="btn btn-dark btn-mobile -lg-mr-1">@translate('Next')</button> --}}
+        <a href="@url('dashboard/edit')" class="btn btn-dark btn-mobile -lg-mr-1">@translate('Next')</a>
         <a href="@url('dashboard')" class="btn btn-outline-dark btn-mobile">@translate('Cancel')</a>
       </form>
     </div>

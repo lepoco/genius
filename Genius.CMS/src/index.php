@@ -15,11 +15,6 @@ define('APPSTART', microtime(true));
 define('ABSPATH', __DIR__ . '/../');
 define('APPDIR', 'app/');
 
-header_remove('X-Powered-By');
-header_remove('Expires');
-header_remove('Pragma');
-header_remove('Cache-Control');
-
 date_default_timezone_set('UTC');
 
 require __DIR__ . '/../vendor/autoload.php';

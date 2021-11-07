@@ -2,6 +2,7 @@
 
 namespace App\Common\Requests;
 
+use App\Core\Facades\Translate;
 use App\Core\View\Request;
 use App\Core\Http\Status;
 use App\Core\Auth\Account;
@@ -70,13 +71,13 @@ final class ChangePasswordRequest extends Request implements \App\Core\Schema\Re
 
     if (!$this->user->comparePassword($this->getData('current_password'))) {
       $this->addContent('fields', ['current_password']);
-      $this->addContent('message', 'Incorrect password.');
+      $this->addContent('message', Translate::string('Incorrect password.'));
       $this->finish(self::ERROR_PASSWORD_INVALID, Status::UNAUTHORIZED);
     }
 
     if ($this->getData('new_password') != $this->getData('new_password_confirm')) {
       $this->addContent('fields', ['new_password', 'new_password_confirm']);
-      $this->addContent('message', 'Passwords must be the same.');
+      $this->addContent('message', Translate::string('Passwords must be the same.'));
       $this->finish(self::ERROR_PASSWORDS_DONT_MATCH, Status::UNAUTHORIZED);
     }
 
@@ -101,14 +102,14 @@ final class ChangePasswordRequest extends Request implements \App\Core\Schema\Re
     $this->user->updatePassword($this->getData('new_password'));
 
     // TODO: Save new password
-    $this->addContent('message', 'Your new password has been saved.');
+    $this->addContent('message', Translate::string('Your new password has been saved.'));
     $this->finish(self::CODE_SUCCESS, Status::OK);
   }
 
   private function passwordMessage(): string
   {
     return sprintf(
-      'The password provided is too simple. It should be %s to %s characters long and contain a lowercase letter, an uppercase letter, a number and a special character.',
+      Translate::string('The password provided is too simple. It should be %s to %s characters long and contain a lowercase letter, an uppercase letter, a number and a special character.'),
       self::PASSWORD_MIN_LENGTH,
       self::PASSWORD_MAX_LENGTH
     );

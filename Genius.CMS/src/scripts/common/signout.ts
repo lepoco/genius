@@ -1,12 +1,28 @@
-import * as Bootstrap from "./../components/bootstrap-bundle";
+import AppData from "./appdata";
 
 export const name = "SignOut";
 
+/**
+ * Displays information about the ending time of the session.
+ *
+ * @author  Pomianowski <kontakt@rapiddev.pl>
+ * @module  Common/SignOut
+ * @license GPL-3.0
+ * @since   1.1.0
+ */
 export default class SignOut {
-  timeout:number;
+  timeout: number = 0;
+
+  static init() {
+    return new SignOut();
+  }
 
   constructor() {
-    if (!(window as any).app.auth.loggedIn) {
+    if (AppData.isDebug()) {
+      console.debug("App\\Common\\SignOut REGISTERED", AppData.isLogged());
+    }
+
+    if (!AppData.isLogged()) {
       return;
     }
 
@@ -15,7 +31,11 @@ export default class SignOut {
   }
 
   setTimeout() {
-    let timeout = parseInt((window as any).app.props.loginTimeout);
+    let timeout = AppData.signoutTime();
+
+    if (AppData.isDebug()) {
+      console.debug("App\\Common\\SignOut TIMEOUT STARTED", timeout);
+    }
 
     if (timeout < 1) {
       this.timeout = 10;
@@ -31,36 +51,29 @@ export default class SignOut {
   }
 
   static showWidget() {
-    const modalElement = document.getElementById("signout__modal-modal");
-    console.log("The session expires. You will be logged out in a minute.");
+    const modalElement = document.querySelector(".signout");
+
+    if (AppData.isDebug()) {
+      console.debug("App\\Common\\SignOut TIME PASSED; MINUTE LEFT");
+    }
 
     if (modalElement) {
-      let modal = new Bootstrap.Modal(modalElement, {
-        backdrop: "static",
-        keyboard: false,
-        focus: true,
-      });
+      modalElement.classList.add("--show");
 
-      modal.show();
       SignOut.startCountdown();
-
-      document
-        .querySelector(".signout__modal-button")
-        .addEventListener("click", function () {
-          location.reload();
-        });
     }
   }
 
   static startCountdown() {
-    const TIMER_ELEMENT = document.querySelector(".signout__modal-timer");
+    const TIMER_ELEMENT = document.querySelector(".signout__modal--timer");
 
     let count = 59,
       timer = setInterval(function () {
         TIMER_ELEMENT.innerHTML = "00:" + count--;
+
         if (count == 0) {
           clearInterval(timer);
-          window.location.href = (window as any).app.props.baseUrl + "signout";
+          window.location.href = AppData.url("signout");
         }
       }, 1000);
   }

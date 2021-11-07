@@ -2,8 +2,9 @@
 
 namespace App\Common\Requests;
 
+use App\Core\Facades\{Email, Translate};
 use App\Core\View\Request;
-use App\Core\Http\Status;
+use App\Core\Http\{Status, Redirect};
 use App\Core\Auth\{Account, User};
 use App\Core\Data\Encryption;
 use App\Core\Utils\Cast;
@@ -84,6 +85,14 @@ final class RegisterRequest extends Request implements \App\Core\Schema\Request
       $this->finish(self::ERROR_INTERNAL_ERROR, Status::IM_A_TEAPOT);
     }
 
+    $this->addContent(
+      'redirect',
+      Redirect::url('register/confirmation', [
+        'n' => $this->nonce('RegisterConfirmation'),
+        'e' => $this->getData('email')
+      ])
+    );
+
     // This should never happen
     $this->finish(self::CODE_SUCCESS, Status::OK);
   }
@@ -101,15 +110,30 @@ final class RegisterRequest extends Request implements \App\Core\Schema\Request
 
     $registered = Account::register($newUser, $encryptedPassword);
 
-    if ($registered) {
-      $registeredUser = Account::getBy('email', $this->getData('email'));
-
-      if (!empty($registeredUser)) {
-        Account::signIn($registeredUser);
-      }
+    if (! $registered) {
+      return false;
     }
 
-    return $registered;
+    $registeredUser = Account::getBy('email', $this->getData('email'));
+
+    if (empty($registeredUser)) {
+      return false;
+    }
+
+    //$registeredUser
+
+    Email::send($this->getData('email'), [
+      'subject' => Translate::string('Thank you for your registration!'),
+      'header' => Translate::string('Account confirmation'),
+      'message' => Translate::string('Thank you for creating an account on our website. Click on the link below to activate your account.'),
+      'action_title' => Translate::string('Confirm email'),
+      'action_url' => \App\Core\Http\Redirect::url('registration', [
+        'confirmation' => '123',
+        'email' => $this->getData('email')
+      ])
+    ]);
+
+    return true;
   }
 
   private function passwordMessage(): string

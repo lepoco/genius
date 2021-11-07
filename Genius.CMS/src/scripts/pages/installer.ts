@@ -1,7 +1,16 @@
-import Request from "./../common/request";
+import AppData from "./../common/appdata";
+import FormRequest from "../common/formrequest";
 import Toast from "./../common/toast";
 
-Request.register("#install", function (status: string, response: any) {
+/**
+ * Page controller for installer.
+ *
+ * @author  Pomianowski <kontakt@rapiddev.pl>
+ * @module  Pages/Installer
+ * @license GPL-3.0
+ * @since   1.1.0
+ */
+FormRequest.register("#install", function (status: string, response: any) {
   console.log(response);
 
   switch (response.status) {
@@ -12,7 +21,7 @@ Request.register("#install", function (status: string, response: any) {
         "success"
       );
       window.setTimeout(function () {
-        window.location.href = (window as any).app.props.baseUrl;
+        window.location.href = AppData.url();
       }, 500);
       break;
   }

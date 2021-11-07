@@ -6,10 +6,15 @@ use App\Core\Utils\Cast;
 use App\Core\Facades\DB;
 use App\Core\Data\Encryption;
 
-final class Billing
+/**
+ * Represents an object with user billing information.
+ *
+ * @author  Pomianowski <kontakt@rapiddev.pl>
+ * @license GPL-3.0 https://www.gnu.org/licenses/gpl-3.0.txt
+ * @since   1.1.0
+ */
+final class Billing extends \App\Core\Data\DatabaseObject
 {
-  private int $id = 0;
-
   private int $userId = 0;
 
   private string $firstName = '';
@@ -39,6 +44,10 @@ final class Billing
   public function __construct(int $id = 0)
   {
     $this->userId = $id;
+
+    if (0 === $id) {
+      return;
+    }
 
     $this->fetch($id);
   }
@@ -74,7 +83,6 @@ final class Billing
   public static function build(array $properties): self
   {
     return (new self())
-      ->setId($properties['id'] ?? 0)
       ->setUserId($properties['user_id'] ?? 1)
       ->setFirstName($properties['first_name'] ?? '')
       ->setLastName($properties['last_name'] ?? '')
@@ -85,7 +93,8 @@ final class Billing
       ->setProvince($properties['province'] ?? '')
       ->setPhone($properties['phone'] ?? '')
       ->setEmail($properties['email'] ?? '')
-      ->setTimezone($properties['timezone'] ?? 'UTC');
+      ->setTimezone($properties['timezone'] ?? 'UTC')
+      ->setId($properties['id'] ?? 0);
   }
 
   private function insertNew(): bool
@@ -132,31 +141,6 @@ final class Billing
     $this->updatedAt = $data->updated_at ?? '';
 
     return true;
-  }
-
-  public function isValid(): bool
-  {
-    return true;
-  }
-
-  /**
-   * Just a shorter wrapper for \App\Core\Auth\Billing::getId()
-   */
-  public function id(): int
-  {
-    return $this->getId();
-  }
-
-  public function setId(int $id): self
-  {
-    $this->id = $id;
-
-    return $this;
-  }
-
-  public function getId(): int
-  {
-    return $this->id;
   }
 
   public function setUserId(int $id): self

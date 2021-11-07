@@ -45,11 +45,19 @@ final class SignInRequest extends Request implements \App\Core\Schema\Request
       return;
     }
 
+    if (!$user->isActive()) {
+      $this->addContent('fields', ['email', 'password']);
+      $this->addContent('message', 'Your account has been blocked. Please contact the supprot for more information.');
+      $this->finish(self::ERROR_USER_INVALID, Status::UNAUTHORIZED);
+    }
+
     if (!$user->comparePassword($this->getData('password'))) {
       $this->unauthorizedRequest();
 
       return;
     }
+
+    // TODO: If account verified via email
 
     if (!Account::signIn($user)) {
       $this->finish(self::ERROR_INTERNAL_ERROR, Status::IM_A_TEAPOT);

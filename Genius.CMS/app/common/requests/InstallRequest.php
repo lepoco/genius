@@ -8,8 +8,9 @@ use App\Core\View\Request;
 use App\Core\Http\Status;
 use App\Core\Auth\{Account, User};
 use App\Core\Facades\{App, Logs, Config};
-use App\Core\Data\{Encryption, Schema};
+use App\Core\Data\Encryption;
 use App\Core\Utils\{Path, ClassInjector};
+use App\Common\Database\{Schema, Prefill};
 
 /**
  * Action triggered during app installation.
@@ -173,9 +174,11 @@ final class InstallRequest extends Request implements \App\Core\Schema\Request
   private function createDatabases(): void
   {
     /** If the data has been entered correctly, a connection to the database will be established. */
-    App::connect();
+    App::connect(true);
     /** After a successful connection, the tables in the database will be created. */
     Schema::build(true);
+    /** Fill database with default values. */
+    Prefill::fill();
   }
 
   private function registerAdmin(): void
@@ -187,15 +190,14 @@ final class InstallRequest extends Request implements \App\Core\Schema\Request
       $this->passwordAlgo
     );
 
-    $adminUser = User::build([
+    $adminUser = (User::build([
       'display_name' => 'Admin',
       'email' => $this->getData('admin_email'),
       'password' => $encryptedPassword,
       'role' => Account::getRoleId('admin')
-    ]);
-
-    $adminUser->markAsActive();
-    $adminUser->markAsConfirmed();
+    ]))
+    ->markAsActive()
+    ->markAsConfirmed();
 
     Account::register($adminUser, $encryptedPassword);
   }

@@ -1,4 +1,6 @@
-@import "core/fonts";
+@import "fonts/google";
+@import "fonts/fluent-system-icons";
+
 @import "core/variables";
 
 @import "bootstrap/bootstrap";
@@ -15,10 +17,10 @@
 @import "components/hero";
 @import "components/navigation";
 @import "components/phone";
-@import "components/signout-modals";
-@import "components/timeline";
+@import "components/signout";
 @import "components/toast";
 @import "components/offline";
 
 @import "dashboard/dashboard";
 @import "dashboard/account";
+@import "dashboard/transactions";

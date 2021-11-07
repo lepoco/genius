@@ -2,7 +2,7 @@
 
 namespace App\Common\Requests;
 
-use App\Core\Facades\File;
+use App\Core\Facades\{File, Translate};
 use App\Core\View\Request;
 use App\Core\Http\Status;
 use App\Core\Utils\Path;
@@ -30,17 +30,20 @@ final class AccountRequest extends Request implements \App\Core\Schema\Request
   {
     $this->isSet([
       'id',
-      'displayname'
+      'displayname',
+      'language'
     ]);
 
     $this->isEmpty([
       'id',
-      'displayname'
+      'displayname',
+      'language'
     ]);
 
     $this->validate([
       ['id', FILTER_VALIDATE_INT],
-      ['displayname', FILTER_SANITIZE_STRING]
+      ['displayname', FILTER_SANITIZE_STRING],
+      ['language', FILTER_SANITIZE_STRING]
     ]);
 
     if (empty(Account::current())) {
@@ -64,8 +67,12 @@ final class AccountRequest extends Request implements \App\Core\Schema\Request
     $this->user = new User((int) $this->getData('id'));
 
     // Skip empty
-    if (trim($this->getData('displayname')) == trim($this->user->getDisplayName()) && !\App\Core\Facades\Request::hasFile('picture')) {
-      $this->addContent('message', 'But, You haven\'t made any changes...');
+    if (
+        trim($this->getData('displayname')) == trim($this->user->getDisplayName())
+        && trim($this->getData('language')) == trim($this->user->getLanguage())
+        && !\App\Core\Facades\Request::hasFile('picture')
+    ) {
+      $this->addContent('message', Translate::string('But, You haven\'t made any changes...'));
       $this->finish(self::CODE_SUCCESS, Status::OK);
 
       return;
@@ -74,6 +81,16 @@ final class AccountRequest extends Request implements \App\Core\Schema\Request
     $this->processImage();
 
     $this->user->setDisplayName($this->getData('displayname'));
+
+    switch ($this->getData('language')) {
+      case 'pl_PL':
+        $this->user->setLanguage('pl_PL');
+        break;
+
+      default:
+        $this->user->setLanguage('en_US');
+        break;
+    }
 
     $this->user->update();
 
@@ -90,7 +107,7 @@ final class AccountRequest extends Request implements \App\Core\Schema\Request
       ]
     ]);
 
-    $this->addContent('message', 'Your account has been updated.');
+    $this->addContent('message', Translate::string('Your account has been updated.'));
     $this->finish(self::CODE_SUCCESS, Status::OK);
   }
 
@@ -107,7 +124,7 @@ final class AccountRequest extends Request implements \App\Core\Schema\Request
 
     if (!$picture->isValid()) {
       $this->addContent('fields', ['picture']);
-      $this->addContent('message', 'Uploaded image is invalid.');
+      $this->addContent('message', Translate::string('Uploaded image is invalid.'));
       $this->finish(self::ERROR_FILE_INVALID, Status::UNAUTHORIZED);
 
       return;
@@ -115,7 +132,7 @@ final class AccountRequest extends Request implements \App\Core\Schema\Request
 
     if (!in_array($picture->getMimeType(), ['image/png', 'image/jpeg', 'image/jpg', 'image/webp', 'image/bmp'])) {
       $this->addContent('fields', ['picture']);
-      $this->addContent('message', 'The uploaded image has the wrong format. Supported extensions for JPG, PNG, WEBp and BMP.');
+      $this->addContent('message', Translate::string('The uploaded image has the wrong format. Supported extensions for JPG, PNG, WEBp and BMP.'));
       $this->finish(self::ERROR_FILE_INVALID_MIME_TYPE, Status::UNAUTHORIZED);
 
       return;

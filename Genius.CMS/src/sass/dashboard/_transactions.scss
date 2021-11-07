@@ -1,0 +1,58 @@
+.transactions {
+  width: 100%;
+
+  & > :not(:last-child) {
+    margin-bottom: 2rem;
+  }
+
+  &__single {
+    display: flex;
+    -webkit-box-pack: justify;
+    justify-content: space-between;
+    margin: 0;
+    color: $c-dark;
+
+    & > :nth-child(1) {
+      order: 1;
+      flex-flow: column;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 2rem;
+    }
+
+    & > :nth-child(2) {
+      order: 1;
+      flex-flow: column;
+      align-self: stretch;
+      display: flex;
+      flex: 1 1 auto;
+      justify-content: center;
+      
+    }
+
+    & > :nth-child(3) {
+      order: 3;
+      flex-flow: column;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    &:hover {
+      background-color: red;
+    }
+
+    img,
+    picture > img {
+      width: 5rem;
+      height: 5rem;
+      border-radius: 2.5rem;
+    }
+
+    p {
+      margin: 0;
+      padding: 0;
+    }
+  }
+}

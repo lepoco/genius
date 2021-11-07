@@ -32,7 +32,7 @@ abstract class Factory extends Renderable
   {
     parent::__construct();
 
-    $this->data = new Data;
+    $this->data = new Data();
   }
 
   protected function setupBlade(): self

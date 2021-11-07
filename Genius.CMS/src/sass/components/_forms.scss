@@ -41,7 +41,7 @@
     height: auto;
     padding: 1rem 1.5rem;
     z-index: 1;
-    border: .2rem solid #dadce0;
+    border: 0.2rem solid #dadce0;
     outline: none;
     border-radius: 0.5rem;
     color: #121212;
@@ -49,8 +49,8 @@
     transition: all 0.2s ease;
 
     &.-alert {
-      border: .2rem solid #ff6666;
-      box-shadow: .4rem .4rem 1rem .2rem #ff66663d;
+      border: 0.2rem solid #ff6666;
+      box-shadow: 0.4rem 0.4rem 1rem 0.2rem #ff66663d;
     }
 
     &:disabled {
@@ -65,7 +65,7 @@
 
     // Label Floating when Focus
     &:focus {
-      border: .2rem solid $c-dark;
+      border: 0.2rem solid $c-dark;
 
       & + label,
       & + .floating-input__label {
@@ -109,5 +109,79 @@
       border-inline-end-width: $input-border-width;
       border-radius: 0; // stylelint-disable-line property-disallowed-list
     }
+  }
+}
+
+.floating-radio {
+  position: relative;
+  width: 100%;
+  margin-bottom: 1rem;
+
+  label {
+    display: block;
+    width: 100%;
+  }
+
+  input[type="radio"] {
+    display: none;
+  }
+
+  input[type="radio"]:checked + &__label {
+    border-color: #121212;
+  }
+
+  input[type="radio"]:disabled + &__label {
+    border-color: #dadce0;
+    color: #dadce0;
+    & > img,
+    & > svg {
+      opacity: .5;
+    }
+  }
+
+  &__label {
+    width: 100%;
+    margin-bottom: 1rem;
+    padding: 1rem 1.5rem;
+    border: 0.2rem solid #dadce0;
+    outline: none;
+    border-radius: 0.5rem;
+    color: #121212;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    & > img,
+    & > svg {
+      width: 100%;
+      height: 2.5rem;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+      object-fit: contain;
+    }
+  }
+
+  &.-split {
+    --bs-gutter-x: 1rem;
+    --bs-gutter-y: 0;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: calc(var(--bs-gutter-y) * -1);
+    margin-right: calc(var(--bs-gutter-x) * -0.5);
+    margin-left: calc(var(--bs-gutter-x) * -0.5);
+
+    label {
+      flex: 0 0 auto;
+      width: 50%;
+      padding-right: calc(var(--bs-gutter-x) * 0.5);
+      padding-left: calc(var(--bs-gutter-x) * 0.5);
+    }
+  }
+}
+
+input[type="checkbox"] {
+  &.-alert {
+    border: 0.2rem solid #ff6666;
+    box-shadow: 0.4rem 0.4rem 1rem 0.2rem #ff66663d;
   }
 }

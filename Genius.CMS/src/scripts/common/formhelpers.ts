@@ -1,6 +1,18 @@
-export const name = "Forms";
+export const name = "FormHelpers";
 
-export default class Forms {
+/**
+ * Triggers a set of automatic functions to facilitate the use of forms.
+ *
+ * @author  Pomianowski <kontakt@rapiddev.pl>
+ * @module  Common/FormHelpers
+ * @license GPL-3.0
+ * @since   1.1.0
+ */
+export default class FormHelpers {
+  static init() {
+    return new FormHelpers();
+  }
+
   constructor() {
     this.fillSelected();
   }

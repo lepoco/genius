@@ -11,4 +11,5 @@ namespace App\Jobs;
  */
 abstract class Cron
 {
+  // TODO: Implement CRON
 }

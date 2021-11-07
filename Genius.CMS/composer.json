@@ -1,24 +1,20 @@
 {
-  "name": "genius/genius",
+  "name": "lepoco/genius",
   "type": "project",
-  "description": "Cryptocurrency exchange platform",
+  "description": "Expert System",
   "homepage": "https://github.com/lepoco/Genius",
   "license": "GNU-3.0",
   "keywords": [
-    "cryptocurrency",
-    "bitcoin"
+    "ai",
+    "knowledge"
   ],
   "require": {
     "php": "^7.4|^8.0",
     "illuminate/config": "^8",
     "illuminate/support": "^8",
     "illuminate/view": "^8",
-    "illuminate/cache": "^8",
     "illuminate/http": "^8",
     "illuminate/database": "^8",
-    "illuminate/session": "^8",
-    "illuminate/translation": "^8",
-    "illuminate/cookie": "8",
     "illuminate/log": "^8",
     "bramus/router": "^1.5",
     "phpmailer/phpmailer": "^6.5",

@@ -3,7 +3,7 @@
 ##################################################
 # Ignore Config.php because configuration data is entered into it.
 # Any changes here require direct editing
-Genius.CMS/app/common/Config.php
+# Genius.CMS/app/common/Config.php
 
 Genius.CMS/composer.phar
 Genius.CMS/vendor/

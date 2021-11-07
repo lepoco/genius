@@ -32,7 +32,7 @@ final class App extends Bootstrap implements \App\Core\Schema\App
             'debug' => true
           ],
           'i18n' => [
-            'default' => 'en_US',
+            'default' => 'pl_PL',
             'path' => Path::getAppPath('common/languages')
           ],
           'database' => [

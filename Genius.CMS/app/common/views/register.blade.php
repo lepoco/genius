@@ -1,6 +1,6 @@
 @extends('layouts.box', [
 'title' => \App\Core\Facades\Translate::string('Register'),
-'background' => $base_url . 'img/pexels-photo-373543.jpeg'
+'background' => $base_url . 'img/pexels-photo-8386434.jpeg'
 ])
 
 @section('content')

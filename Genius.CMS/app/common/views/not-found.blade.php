@@ -1,6 +1,6 @@
 @extends('layouts.box', [
 'title' => \App\Core\Facades\Translate::string('Not found'),
-'background' => $base_url . 'img/pexels-person-holding-bitcoin.jpeg'
+'background' => $base_url . 'img/pexels-photo-3715428.jpeg'
 ])
 
 @section('content')

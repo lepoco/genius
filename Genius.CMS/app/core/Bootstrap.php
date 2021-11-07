@@ -105,7 +105,7 @@ abstract class Bootstrap implements \App\Core\Schema\App
     }
 
     if (!$this->session->has('language')) {
-      $this->session->put('language', $this->configuration->get('i18n.default', 'en_US'));
+      $this->session->put('language', $this->configuration->get('i18n.default', 'pl_PL'));
     }
 
     $this->session->put('last_opened', $timeNow);
@@ -120,7 +120,7 @@ abstract class Bootstrap implements \App\Core\Schema\App
   {
     $this->translate = new Translate();
 
-    $langauge = $this->session->get('language', $this->configuration->get('i18n.default', 'en_US'));
+    $langauge = $this->session->get('language', $this->configuration->get('i18n.default', 'pl_PL'));
 
     // TODO: Detect browser specific language
     // TODO: Or, set language on front via dropdown

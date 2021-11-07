@@ -1,0 +1,14 @@
+# app\common\views\dashboard\add.blade.php
+Add: Dodaj
+New expert system: Nowy system ekspertowy
+Name: Nazwa
+Description: Opis
+Primary question: Pytanie główne
+Does your gnome have {condition}?: Czy twój krasnal ma {condition}?
+Main question is displayed during system running. Presents the name of the condition inside the bracket {condition}.: Główne pytanie jest wyświetlane podczas działania systemu. Przedstawia nazwę warunku w nawiasie {condition}.
+If the question has no bracket pattern, condition will be displayed below.: Jeśli pytanie nie ma wzoru w nawiasach, warunek zostanie wyświetlony poniżej niego.
+Create: Utwórz
+Cancel: Anuluj
+Type: Typ
+Relation based: Relacyjny
+Fuzzy set method (weight): Metoda zbiorów rozmytych (waga)

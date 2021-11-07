@@ -105,6 +105,7 @@ final class RegisterRequest extends Request implements \App\Core\Schema\Request
       'display_name' => Cast::emailToUsername($this->getData('email')),
       'email' => $this->getData('email'),
       'password' => $encryptedPassword,
+      'language' => 'pl_PL',
       'role' => Account::getRoleId('default')
     ]);
 

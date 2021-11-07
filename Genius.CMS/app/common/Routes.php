@@ -79,23 +79,23 @@ final class Routes extends Router
       'require_login' => true
     ],
     [
-      'path' => '/dashboard/billing',
-      'namespace' => 'Dashboard\\Billing',
+      'path' => '/dashboard/statistics',
+      'namespace' => 'Dashboard\\Statistics',
       'require_login' => true
     ],
     [
-      'path' => '/dashboard/payments',
-      'namespace' => 'Dashboard\\Payments',
+      'path' => '/dashboard/users',
+      'namespace' => 'Dashboard\\Users',
       'require_login' => true
     ],
     [
-      'path' => '/dashboard/transactions',
-      'namespace' => 'Dashboard\\Transactions',
+      'path' => '/dashboard/settings',
+      'namespace' => 'Dashboard\\Settings',
       'require_login' => true
     ],
     [
-      'path' => '/dashboard/transaction/{uuid}',
-      'namespace' => 'Dashboard\\Transaction',
+      'path' => '/dashboard/create',
+      'namespace' => 'Dashboard\\Create',
       'require_login' => true
     ],
     [
@@ -104,51 +104,14 @@ final class Routes extends Router
       'require_login' => true
     ],
     [
-      'path' => '/dashboard/topup',
-      'namespace' => 'Dashboard\\Topup',
+      'path' => '/dashboard/edit/{uuid}',
+      'namespace' => 'Dashboard\\Edit',
       'require_login' => true
     ],
     [
-      'path' => '/dashboard/exchange',
-      'namespace' => 'Dashboard\\Exchange',
+      'path' => '/dashboard/sys/{uuid}',
+      'namespace' => 'Dashboard\\Sys',
       'require_login' => true
-    ],
-
-    // Admin panel
-    [
-      'path' => '/panel',
-      'namespace' => 'Panel\\Main',
-      'require_login' => true,
-      'permissions' => ['all'],
-      'redirect_no_permission' => 'dashboard'
-    ],
-    [
-      'path' => '/panel/statistics',
-      'namespace' => 'Panel\\Statistics',
-      'require_login' => true,
-      'permissions' => ['all'],
-      'redirect_no_permission' => 'dashboard'
-    ],
-    [
-      'path' => '/panel/users',
-      'namespace' => 'Panel\\Users',
-      'require_login' => true,
-      'permissions' => ['all'],
-      'redirect_no_permission' => 'dashboard'
-    ],
-    [
-      'path' => '/panel/tools',
-      'namespace' => 'Panel\\Tools',
-      'require_login' => true,
-      'permissions' => ['all'],
-      'redirect_no_permission' => 'dashboard'
-    ],
-    [
-      'path' => '/panel/settings',
-      'namespace' => 'Panel\\Settings',
-      'require_login' => true,
-      'permissions' => ['all'],
-      'redirect_no_permission' => 'dashboard'
     ]
   ];
 }

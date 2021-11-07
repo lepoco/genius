@@ -10,15 +10,6 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-
-        @iflogged
-          @ifpermission('all')
-          <li class="nav-item">
-            <a class="nav-link{{ $pagenow === 'panel.main' ? ' active' : '' }}" href="@url('panel')">@translate('Admin panel')</a>
-          </li>
-          @endif
-        @endif
-
       </ul>
       <div class="d-flex -lg-mr-2">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -28,14 +19,34 @@
             <a class="nav-link{{ $pagenow === 'dashboard.main' ? ' active' : '' }}"
               href="@url('dashboard')">@translate('Dashboard')</a>
           </li>
+
+          @ifpermission('create')
           <li class="nav-item">
-            <a class="nav-link{{ $pagenow === 'dashboard.payments' ? ' active' : '' }}"
-              href="@url('dashboard/payments')">@translate('Payments')</a>
+            <a class="nav-link{{ $pagenow === 'dashboard.add' ? ' active' : '' }}"
+              href="@url('dashboard/add')">@translate('Add new')</a>
           </li>
+          @endif
+
           <li class="nav-item">
             <a class="nav-link{{ $pagenow === 'dashboard.account' ? ' active' : '' }}"
               href="@url('dashboard/account')">@translate('Account')</a>
           </li>
+
+          @ifpermission('all')
+          <li class="nav-item">
+            <a class="nav-link{{ $pagenow === 'dashboard.statistics' ? ' active' : '' }}"
+              href="@url('dashboard/statistics')">@translate('Statistics')</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link{{ $pagenow === 'dashboard.users' ? ' active' : '' }}"
+              href="@url('dashboard/users')">@translate('Users')</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link{{ $pagenow === 'dashboard.settings' ? ' active' : '' }}"
+              href="@url('dashboard/settings')">@translate('Settings')</a>
+          </li>
+          @endif
+          
           @endif
 
         </ul>

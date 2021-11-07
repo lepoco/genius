@@ -6,9 +6,9 @@
 <div class="dashboard container pt-5 pb-5">
   <div class="row">
     <div class="col-12">
-      <h4 class="-font-secondary -fw-700 -pb-3">@translate('Dashboard')</h4>
+      <h4 class="-font-secondary -fw-700 -pb-3 -reveal">@translate('Dashboard')</h4>
     </div>
-    <div class="col-12 dashboard__section -mb-3">
+    <div class="col-12 dashboard__section -mb-3 -reveal">
       <div class="dashboard__banner h-100 p-5 bg-light -rounded-2">
         <div>
           <h4>Sample Expert System</h4>
@@ -20,7 +20,7 @@
         </div>
       </div>
     </div>
-    <div class="col-12 dashboard__section -mb-3">
+    <div class="col-12 dashboard__section -mb-3 -reveal">
       <div class="dashboard__banner h-100 p-5 bg-light -rounded-2">
         <div>
           <h4>Another Expert System</h4>
@@ -32,7 +32,7 @@
         </div>
       </div>
     </div>
-    <div class="col-12 dashboard__section -mb-3">
+    <div class="col-12 dashboard__section -mb-3 -reveal">
       <div class="dashboard__banner h-100 p-5 bg-light -rounded-2">
         <div>
           <h4>Yet another Expert System</h4>

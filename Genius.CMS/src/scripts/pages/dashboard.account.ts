@@ -1,3 +1,4 @@
+import AppData from "../common/appdata";
 import FormRequest from "./../common/formrequest";
 import Toast from "./../common/toast";
 
@@ -39,10 +40,29 @@ FormRequest.register("#account", function (status: String, response: any) {
   }
 });
 
-const PROFILE_PICTURE = document.querySelector('.editable__picture') as HTMLImageElement;
+const PROFILE_PICTURE = document.querySelector(
+  ".editable__picture"
+) as HTMLImageElement;
 
 if (PROFILE_PICTURE) {
-  PROFILE_PICTURE.onerror = function () {
-    PROFILE_PICTURE.src = PROFILE_PICTURE.dataset.errorscr;
+
+  if(AppData.isDebug()) {
+    console.debug('App\\Pages\\DashboardAccount PROFILE ALT IMG', PROFILE_PICTURE.dataset.errorsrc);
+  }
+
+  if("(unknown)" === PROFILE_PICTURE.src || '' == PROFILE_PICTURE.src) {
+    PROFILE_PICTURE.src = PROFILE_PICTURE.dataset.errorsrc;
+  }
+
+  PROFILE_PICTURE.onerror = function (event, url, line, col, errorObj) {
+    if(AppData.isDebug()) {
+      console.debug('App\\Pages\\DashboardAccount ERROR LOADING', event);
+    }
+
+    PROFILE_PICTURE.src = PROFILE_PICTURE.dataset.errorsrc;
   };
 }
+
+window.onload = function (e) {
+  // TODO:
+};

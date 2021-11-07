@@ -20,7 +20,7 @@ final class Config implements \App\Core\Schema\Config
   public const SALT_TOKEN = '';
   public const SALT_WEBAUTH = '';
 
-  public const DATABASE_NAME = 'genius';
+  public const DATABASE_NAME = '';
   public const DATABASE_USER = '';
   public const DATABASE_PASS = '';
   public const DATABASE_HOST = '127.0.0.1';

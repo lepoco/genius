@@ -2,6 +2,7 @@
 
 namespace App\Common\Composers\Dashboard;
 
+use Engine\Genius;
 use App\Core\Auth\Account;
 use App\Core\View\Blade\Composer;
 use Illuminate\View\View;
@@ -17,6 +18,11 @@ final class MainComposer extends Composer implements \App\Core\Schema\Composer
 {
   public function compose(View $view): void
   {
+
+    $genius = new Genius();
+    $systems = $genius->getAllSystems();
+
     $view->with('user', Account::current());
+    $view->with('systems', $systems);
   }
 }

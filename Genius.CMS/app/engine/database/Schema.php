@@ -25,6 +25,7 @@ final class Schema
 
     DB::schema()->create($prefix . 'conditions', function (Blueprint $table) {
       $table->id();
+      $table->float('weight', 12, 8, false)->default(1);
       $table->string('name');
       $table->string('simplified_name')->nullable();
       $table->longText('description')->nullable();
@@ -33,6 +34,7 @@ final class Schema
 
     DB::schema()->create($prefix . 'products', function (Blueprint $table) {
       $table->id();
+      $table->float('weight', 12, 8, false)->default(1);
       $table->string('name');
       $table->string('simplified_name')->nullable();
       $table->longText('description')->nullable();
@@ -41,6 +43,7 @@ final class Schema
 
     DB::schema()->create($prefix . 'relations', function (Blueprint $table) use ($prefix) {
       $table->id();
+      $table->float('weight', 12, 8, false)->default(1);
       $table->foreignId('condition_id')->references('id')->on($prefix . 'conditions');
       $table->foreignId('product_id')->references('id')->on($prefix . 'products');
       $table->foreignId('type_id')->references('id')->on('es_system_relation_types');

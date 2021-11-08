@@ -12,6 +12,8 @@ use Engine\Genius\Sage\Querier;
  */
 final class Product extends \Engine\Database\DBO
 {
+  private float $weight = 1;
+
   private string $prefix = '';
 
   private string $name = '';
@@ -33,6 +35,7 @@ final class Product extends \Engine\Database\DBO
   public static function build(array $parameters): self
   {
     return (new self())
+      ->setWeight($parameters['weight'] ?? 1)
       ->setPrefix($parameters['prefix'] ?? '')
       ->setName($parameters['name'] ?? '')
       ->setSimplifiedName($parameters['simplified_name'] ?? '')
@@ -50,10 +53,23 @@ final class Product extends \Engine\Database\DBO
     $sysObject = Querier::getProductObject($id, $prefix);
 
     $this->id = $sysObject->id ?? $id;
+    $this->weight = $sysObject->weight ?? 1;
     $this->name = $sysObject->name ?? '';
     $this->simplifiedName = $sysObject->simplified_name ?? '';
     $this->description = $sysObject->description ?? '';
     $this->createdAt = $sysObject->created_at ?? '';
+  }
+
+  public function setWeight(float $weight): self
+  {
+    $this->weight = $weight;
+
+    return $this;
+  }
+
+  public function getWeight(): float
+  {
+    return $this->weight;
   }
 
   public function getPrefix(): string

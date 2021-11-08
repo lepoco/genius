@@ -13,6 +13,8 @@ use Engine\Genius\{Condition, Product};
  */
 final class Relation extends \Engine\Database\DBO
 {
+  private float $weight = 1;
+
   private string $prefix = '';
 
   private int $typeId = 1;
@@ -38,6 +40,7 @@ final class Relation extends \Engine\Database\DBO
   public static function build(array $parameters): self
   {
     return (new self())
+      ->setWeight($parameters['weight'] ?? 1)
       ->setPrefix($parameters['prefix'] ?? '')
       ->setTypeId($parameters['type_id'] ?? 1)
       ->setConditionId($parameters['condition_id'] ?? 0)
@@ -54,10 +57,23 @@ final class Relation extends \Engine\Database\DBO
     $sysObject = Querier::getRelationObject($id, $prefix);
 
     $this->id = $sysObject->id ?? $id;
+    $this->weight = $sysObject->weight ?? 1;
     $this->typeId = $sysObject->type_id ?? '';
 
     $this->setConditionId($sysObject->condition_id ?? 0);
     $this->setProductId($sysObject->product_id ?? 0);
+  }
+
+  public function setWeight(float $weight): self
+  {
+    $this->weight = $weight;
+
+    return $this;
+  }
+
+  public function getWeight(): float
+  {
+    return $this->weight;
   }
 
   public function getPrefix(): string

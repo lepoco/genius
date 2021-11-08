@@ -26,6 +26,7 @@ final class Schema
     DB::schema()->create($prefix . 'conditions', function (Blueprint $table) {
       $table->id();
       $table->string('name');
+      $table->string('simplified_name')->nullable();
       $table->longText('description')->nullable();
       $table->timestamp('created_at')->useCurrent();
     });
@@ -33,6 +34,7 @@ final class Schema
     DB::schema()->create($prefix . 'products', function (Blueprint $table) {
       $table->id();
       $table->string('name');
+      $table->string('simplified_name')->nullable();
       $table->longText('description')->nullable();
       $table->timestamp('created_at')->useCurrent();
     });
@@ -119,6 +121,18 @@ final class Schema
         $table->id();
         $table->string('name');
       });
+
+      DB::table('es_system_relation_types')->insert([
+        'name' => 'compliance'
+      ]);
+
+      DB::table('es_system_relation_types')->insert([
+        'name' => 'contradiction'
+      ]);
+
+      DB::table('es_system_relation_types')->insert([
+        'name' => 'disregard'
+      ]);
     }
   }
 }

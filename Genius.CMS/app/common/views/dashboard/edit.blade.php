@@ -23,6 +23,8 @@
       <form id="addProduct" method="POST">
         <input type="hidden" name="action" value="AddProduct" />
         <input type="hidden" name="nonce" value="@nonce('addproduct')" />
+        <input type="hidden" name="system_id" value="{{ $system->getId() ?? '0' }}" />
+        <input type="hidden" name="system_uuid" value="{{ $system->getUUID() ?? '' }}" />
 
         <h5 class="-font-secondary -fw-700 -pb-1 -reveal">@translate('New product')</h5>
 
@@ -31,14 +33,14 @@
         </div>
         
         <div class="floating-input -reveal">
-          <input class="floating-input__field" type="text" placeholder="@translate('Name')" name="system_name">
-          <label for="system_name">@translate('Name')</label>
+          <input class="floating-input__field" type="text" placeholder="@translate('Name')" name="product_name">
+          <label for="product_name">@translate('Name')</label>
         </div>
 
         <div class="floating-input -reveal">
           <input class="floating-input__field" type="text" placeholder="@translate('Description')"
-            name="system_description">
-          <label for="system_description">@translate('Description')</label>
+            name="product_description">
+          <label for="product_description">@translate('Description')</label>
         </div>
 
         <div class="-reveal -pb-2">

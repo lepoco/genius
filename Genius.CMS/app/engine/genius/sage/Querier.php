@@ -2,7 +2,7 @@
 
 namespace Engine\Genius\Sage;
 
-use Engine\Genius\{System};
+use Engine\Genius\{System, Condition, Product, Relation};
 use Engine\Database\Schema;
 use App\Core\Facades\{DB, Cache};
 use Illuminate\Support\Str;
@@ -52,6 +52,21 @@ final class Querier
     return DB::table(self::SYSTEMS_TABLE)->where(['id' => $id])->get()->first();
   }
 
+  public static function getConditionObject(int $id, string $prefix): mixed
+  {
+    return DB::table('es_' . $prefix . '_conditions')->where(['id' => $id])->get()->first();
+  }
+
+  public static function getProductObject(int $id, string $prefix): mixed
+  {
+    return DB::table('es_' . $prefix . '_products')->where(['id' => $id])->get()->first();
+  }
+
+  public static function getRelationObject(int $id, string $prefix): mixed
+  {
+    return DB::table('es_' . $prefix . '_relations')->where(['id' => $id])->get()->first();
+  }
+
   public static function insertSystem(System $system): int
   {
     $uuid = Str::uuid();
@@ -73,6 +88,35 @@ final class Querier
     }
 
     return $insertedId;
+  }
+
+  public static function insertCondition(Condition $condition, string $prefix): int
+  {
+    return DB::table('es_' . $prefix . '_conditions')->insertGetId([
+      'name' => $condition->getName(),
+      'simplified_name' => $condition->getSimplifiedName(),
+      'description' => $condition->getDescription(),
+      'created_at' => $condition->getCreatedAt()
+    ]);
+  }
+
+  public static function insertProduct(Product $product, string $prefix): int
+  {
+    return DB::table('es_' . $prefix . '_products')->insertGetId([
+      'name' => $product->getName(),
+      'simplified_name' => $product->getSimplifiedName(),
+      'description' => $product->getDescription(),
+      'created_at' => $product->getCreatedAt()
+    ]);
+  }
+
+  public static function insertRelation(Relation $relation, string $prefix): int
+  {
+    return DB::table('es_' . $prefix . '_relations')->insertGetId([
+      'condition_id' => $relation->getConditionId(),
+      'product_id' => $relation->getProductId(),
+      'type_id' => $relation->getTypeId()
+    ]);
   }
 
   /**

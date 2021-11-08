@@ -2,7 +2,7 @@
 
 namespace Engine;
 
-use Engine\Genius\System;
+use Engine\Genius\{System, Condition, Product, Relation};
 use Engine\Genius\Sage\Querier;
 
 /**
@@ -65,5 +65,20 @@ final class Genius
     Querier::dropSystem($system);
 
     return false;
+  }
+
+  public static function addCondition(System $system, Condition $condition): bool
+  {
+    return Querier::insertCondition($condition, $system->getPrefix());
+  }
+
+  public static function addRelation(System $system, Relation $relation): bool
+  {
+    return Querier::insertRelation($relation, $system->getPrefix());
+  }
+
+  public static function addProduct(System $system, Product $product): bool
+  {
+    return Querier::insertProduct($product, $system->getPrefix());
   }
 }

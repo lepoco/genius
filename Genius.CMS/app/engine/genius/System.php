@@ -10,10 +10,8 @@ use Engine\Genius\Sage\Querier;
  * @author  Pomianowski <kontakt@rapiddev.pl>
  * @license GPL-3.0 https://www.gnu.org/licenses/gpl-3.0.txt
  */
-final class System
+final class System extends \Engine\Database\DBO
 {
-  private int $id = 0;
-
   private int $typeId = 0;
 
   private string $uuid = '';
@@ -37,18 +35,9 @@ final class System
     $this->fetch($id);
   }
 
-  /**
-   * Verifies whether the object retrieved from the database is real.
-   */
-  public function isValid(): bool
-  {
-    return 0 !== $this->id;
-  }
-
   public static function build(array $parameters): self
   {
     return (new self())
-      ->setId($parameters['id'] ?? 0)
       ->setTypeId($parameters['type_id'] ?? 0)
       ->setUUID($parameters['uuid'] ?? '')
       ->setName($parameters['name'] ?? '')
@@ -56,7 +45,8 @@ final class System
       ->setDescription($parameters['description'] ?? '')
       ->setQuestion($parameters['question'] ?? '')
       ->setCreatedAt($parameters['created_at'] ?? date('Y-m-d H:i:s'))
-      ->setUpdatedAt($parameters['updated_at'] ?? date('Y-m-d H:i:s'));
+      ->setUpdatedAt($parameters['updated_at'] ?? date('Y-m-d H:i:s'))
+      ->setId($parameters['id'] ?? 0);
   }
 
   private function fetch(int $id): void
@@ -76,32 +66,6 @@ final class System
     $this->question = $sysObject->question ?? '';
     $this->createdAt = $sysObject->created_at ?? '';
     $this->updatedAt = $sysObject->updated_at ?? '';
-  }
-
-  /**
-   * Just a shorter wrapper for getId()
-   */
-  final public function id(): int
-  {
-    return $this->getId();
-  }
-
-  /**
-   * Gets an identifier that corresponds to the object in the database.
-   */
-  public function getId(): int
-  {
-    return $this->id;
-  }
-
-  /**
-   * Defines an identifier from the database, should not be changed by the user.
-   */
-  private function setId(int $id): self
-  {
-    $this->id = $id;
-
-    return $this;
   }
 
   public function getUUID(): string

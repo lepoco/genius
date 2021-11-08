@@ -8,6 +8,13 @@
     <div class="col-12">
       <h4 class="-font-secondary -fw-700 -pb-3 -reveal">@translate('Expert System')</h4>
     </div>
+
+    <div class="col-12">
+      @dump($is_question_has_pattern)
+      @dump($conditions ?? null)
+      @dump($products ?? null)
+      @dump($relations ?? null)
+    </div>
   </div>
 </div>
 

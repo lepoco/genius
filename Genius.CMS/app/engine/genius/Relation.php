@@ -29,7 +29,7 @@ final class Relation extends \Engine\Database\DBO
   {
     $this->id = $id;
     $this->condition = new Condition(0, $prefix);
-    $this->product = new Condition(0, $prefix);
+    $this->product = new Product(0, $prefix);
 
     $this->fetch($id, $prefix);
   }
@@ -53,9 +53,10 @@ final class Relation extends \Engine\Database\DBO
     $sysObject = Querier::getRelationObject($id, $prefix);
 
     $this->id = $sysObject->id ?? $id;
-    $this->simplifiedName = $sysObject->type_id ?? '';
-    $this->description = $sysObject->uuid ?? '';
-    $this->createdAt = $sysObject->name ?? '';
+    $this->typeId = $sysObject->type_id ?? '';
+
+    $this->setConditionId($sysObject->condition_id ?? 0);
+    $this->setProductId($sysObject->product_id ?? 0);
   }
 
   public function getPrefix(): string

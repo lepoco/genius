@@ -11,13 +11,13 @@ use Illuminate\View\View;
 use Illuminate\Support\Str;
 
 /**
- * Additional logic for the views/dashboard/edit.blade view.
+ * Additional logic for the views/dashboard/sys.blade view.
  *
  * @author  Pomianowski <kontakt@rapiddev.pl>
  * @license GPL-3.0 https://www.gnu.org/licenses/gpl-3.0.txt
  * @since   1.0.0
  */
-final class EditComposer extends Composer implements \App\Core\Schema\Composer
+final class SysComposer extends Composer implements \App\Core\Schema\Composer
 {
   public function compose(View $view): void
   {
@@ -42,11 +42,15 @@ final class EditComposer extends Composer implements \App\Core\Schema\Composer
 
     $conditions = Genius::getSystemConditions($system);
     $products = Genius::getSystemProducts($system);
+    $relations = Genius::getSystemRelations($system);
 
     $view->with('user', Account::current());
     $view->with('system', $system);
+    $view->with('question', $system->getQuestion());
+    $view->with('is_question_has_pattern', !(false === strpos($system->getQuestion(), '{condition}')));
     $view->with('conditions', $conditions);
     $view->with('products', $products);
+    $view->with('relations', $relations);
     $view->with('delete_url', Redirect::url('dashboard/delete/' . $system->getUUID()));
   }
 }

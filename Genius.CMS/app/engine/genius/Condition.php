@@ -50,9 +50,10 @@ final class Condition extends \Engine\Database\DBO
     $sysObject = Querier::getConditionObject($id, $prefix);
 
     $this->id = $sysObject->id ?? $id;
-    $this->simplifiedName = $sysObject->type_id ?? '';
-    $this->description = $sysObject->uuid ?? '';
-    $this->createdAt = $sysObject->name ?? '';
+    $this->name = $sysObject->name ?? '';
+    $this->simplifiedName = $sysObject->simplified_name ?? '';
+    $this->description = $sysObject->description ?? '';
+    $this->createdAt = $sysObject->created_at ?? '';
   }
 
   public function getPrefix(): string

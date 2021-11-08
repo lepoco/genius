@@ -67,6 +67,58 @@ final class Genius
     return false;
   }
 
+  /**
+   * @return Condition[]
+   */
+  public static function getSystemConditions(System $system): array
+  {
+    $conditions = [];
+    $dbObjects = Querier::getAllConditions($system->getPrefix());
+
+    foreach ($dbObjects as $singleObject) {
+      if (isset($singleObject->id)) {
+        $conditions[] = new Condition($singleObject->id, $system->getPrefix());
+      }
+    }
+
+    return $conditions;
+  }
+
+  /**
+   * @return Product[]
+   */
+  public static function getSystemProducts(System $system): array
+  {
+    $products = [];
+    $dbObjects = Querier::getAllProducts($system->getPrefix());
+
+    foreach ($dbObjects as $singleObject) {
+      if (isset($singleObject->id)) {
+        $products[] = new Product($singleObject->id, $system->getPrefix());
+      }
+    }
+
+    return $products;
+  }
+
+  /**
+   * @return Relation[]
+   */
+  public static function getSystemRelations(System $system): array
+  {
+    $relations = [];
+    $dbObjects = Querier::getAllRelations($system->getPrefix());
+
+    foreach ($dbObjects as $singleObject) {
+      if (isset($singleObject->id)) {
+        $relations[] = new Relation($singleObject->id, $system->getPrefix());
+      }
+    }
+
+    return $relations;
+  }
+
+
   public static function addCondition(System $system, Condition $condition): bool
   {
     return Querier::insertCondition($condition, $system->getPrefix());

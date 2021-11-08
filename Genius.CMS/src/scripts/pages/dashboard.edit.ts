@@ -10,7 +10,7 @@ import FormRequest from "./../common/formrequest";
  */
 FormRequest.register("#addProduct", function (status: String, response: any) {
 });
-// FormRequest.register("#addCondition", function (status: String, response: any) {
-// });
-// FormRequest.register("#addRelation", function (status: String, response: any) {
-// });
+FormRequest.register("#addCondition", function (status: String, response: any) {
+});
+FormRequest.register("#addRelation", function (status: String, response: any) {
+});

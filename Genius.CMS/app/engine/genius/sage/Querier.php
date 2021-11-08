@@ -127,6 +127,30 @@ final class Querier
     return DB::table(self::SYSTEMS_TABLE)->get()->all();
   }
 
+  /**
+   * @return object[]
+   */
+  public static function getAllConditions(string $prefix): array
+  {
+    return DB::table('es_' . $prefix . '_conditions')->get(['id'])->all();
+  }
+
+  /**
+   * @return object[]
+   */
+  public static function getAllProducts(string $prefix): array
+  {
+    return DB::table('es_' . $prefix . '_products')->get(['id'])->all();
+  }
+
+  /**
+   * @return object[]
+   */
+  public static function getAllRelations(string $prefix): array
+  {
+    return DB::table('es_' . $prefix . '_relations')->get(['id'])->all();
+  }
+
   public static function dropSystem(System $system): bool
   {
     if (!$system->isValid()) {

@@ -25,6 +25,7 @@ final class Product extends \Engine\Database\DBO
   public function __construct(int $id = 0, string $prefix = '')
   {
     $this->id = $id;
+    $this->prefix = $prefix;
 
     $this->fetch($id, $prefix);
   }

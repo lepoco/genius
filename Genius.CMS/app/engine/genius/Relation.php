@@ -28,6 +28,7 @@ final class Relation extends \Engine\Database\DBO
   public function __construct(int $id = 0, string $prefix = '')
   {
     $this->id = $id;
+    $this->prefix = $prefix;
     $this->condition = new Condition(0, $prefix);
     $this->product = new Product(0, $prefix);
 

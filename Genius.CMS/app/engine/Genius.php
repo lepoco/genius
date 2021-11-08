@@ -2,6 +2,9 @@
 
 namespace Engine;
 
+use Engine\Genius\System;
+use Engine\Genius\Sage\Querier;
+
 /**
  * Genius base.
  *
@@ -10,13 +13,35 @@ namespace Engine;
  */
 final class Genius
 {
-  public function addSystem(): void
+  public function getSystem(int $id): System
   {
-
+    return new System($id);
   }
 
-  public function getSystem(): void
+  public function addSystem(System $system): int
   {
-    
+    return Querier::insertSystem($system);
+  }
+
+  public function getTypeId(string $key): int
+  {
+    return Querier::getTypeId($key);
+  }
+
+  /**
+   * @return System[]
+   */
+  public function getAllSystems(): array
+  {
+    $systems = [];
+    $ids = Querier::getSystemsId();
+
+    foreach ($ids as $singleId) {
+      if (isset($singleId->id)) {
+        $systems[] = new System($singleId->id);
+      }
+    }
+
+    return $systems;
   }
 }

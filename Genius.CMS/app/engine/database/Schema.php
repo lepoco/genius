@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Common\Database;
+namespace Engine\Database;
 
 use App\Core\Facades\DB;
 use Illuminate\Database\Schema\Blueprint;
@@ -20,6 +20,27 @@ final class Schema
   {
     // TODO: Build tables for new system
     // conditions relations result
+
+    $prefix = 'es_' . $prefix . '_';
+
+    DB::schema()->create($prefix . 'conditions', function (Blueprint $table) {
+      $table->id();
+      $table->string('name');
+      $table->longText('description')->nullable();
+    });
+
+    DB::schema()->create($prefix . 'products', function (Blueprint $table) {
+      $table->id();
+      $table->string('name');
+      $table->longText('description')->nullable();
+    });
+
+    DB::schema()->create($prefix . 'relations', function (Blueprint $table) use ($prefix) {
+      $table->id();
+      $table->foreignId('condition_id')->references('id')->on($prefix . 'conditions');
+      $table->foreignId('product_id')->references('id')->on($prefix . 'products');
+      $table->foreignId('type_id')->references('id')->on('es_system_relation_types');
+    });
   }
 
   public static function build(bool $dropIfExists = false): void
@@ -43,6 +64,7 @@ final class Schema
      */
     DB::schema()->dropIfExists('es_systems');
     DB::schema()->dropIfExists('es_system_types');
+    DB::schema()->dropIfExists('es_system_relation_types');
   }
 
   private static function tableSystems(): void
@@ -73,6 +95,13 @@ final class Schema
         $table->foreignId('type_id')->nullable()->references('id')->on('es_system_types')->default(1);
         $table->timestamp('created_at')->useCurrent();
         $table->timestamp('updated_at')->nullable()->useCurrent();
+      });
+    }
+
+    if (!DB::schema()->hasTable('es_system_relation_types')) {
+      DB::schema()->create('es_system_relation_types', function (Blueprint $table) {
+        $table->id();
+        $table->string('name');
       });
     }
   }

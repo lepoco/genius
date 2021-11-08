@@ -12,3 +12,6 @@ Cancel: Anuluj
 Type: Typ
 Relation based: Relacyjny
 Fuzzy set method (weight): Metoda zbiorów rozmytych (waga)
+
+# app\common\views\dashboard\main.blade.php
+Run: Uruchom

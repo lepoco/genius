@@ -59,8 +59,6 @@ abstract class Bootstrap implements \App\Core\Schema\App
 
   protected Mailer $mailer;
 
-  protected \Engine\Genius $genius;
-
   abstract public function init(): void;
 
   /**
@@ -142,8 +140,6 @@ abstract class Bootstrap implements \App\Core\Schema\App
 
     $this->statistics = new Statistics($this->isInstalled());
     $this->mailer = new Mailer();
-
-    $this->genius = new \Engine\Genius();
 
     $this->response->prepareCSP(
       [],

@@ -2,8 +2,11 @@
 
 namespace App\Common\Requests;
 
+use Engine\Database\Schema;
+use Engine\Genius;
+use Engine\Genius\System;
 use App\Core\View\Request;
-use App\Core\Http\Status;
+use App\Core\Http\{Status, Redirect};
 use App\Core\Facades\Translate;
 
 /**
@@ -65,7 +68,28 @@ final class AddSystemRequest extends Request implements \App\Core\Schema\Request
         break;
     }
 
+    if (!Schema::isBuilt()) {
+      Schema::build();
+    }
 
+    $genius = new Genius();
+    $typeId = $genius->getTypeId($systemType);
+
+    $insertedSystemId = $genius->addSystem(System::build([
+      'type_id' => $typeId,
+      'name' => $this->getData('system_name'),
+      'description' => $this->getData('system_description'),
+      'question' => $this->getData('system_question'),
+    ]));
+
+    if ($insertedSystemId < 1) {
+      $this->addContent('message', Translate::string('Something went wrong... We don\'t know what.'));
+      $this->finish(self::ERROR_INTERNAL_ERROR, Status::OK);
+    }
+
+    $newSystem = $genius->getSystem($insertedSystemId);
+
+    $this->addContent('redirect', Redirect::url('dashboard/edit/' . $newSystem->getUUID()));
     $this->finish(self::CODE_SUCCESS, Status::OK);
   }
 }

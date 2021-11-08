@@ -44,6 +44,9 @@ try {
   require("./pages/" + AppData.pageNow());
   AppData.setRouting({ success: true, message: "imported" });
 } catch (error) {
+  if(AppData.isDebug()) {
+    console.debug("App\\Index ROUTING FAILED", error.message);
+  }
   AppData.setRouting({
     success: false,
     message: "No module for page " + AppData.pageNow(),

@@ -27,12 +27,14 @@ final class Schema
       $table->id();
       $table->string('name');
       $table->longText('description')->nullable();
+      $table->timestamp('created_at')->useCurrent();
     });
 
     DB::schema()->create($prefix . 'products', function (Blueprint $table) {
       $table->id();
       $table->string('name');
       $table->longText('description')->nullable();
+      $table->timestamp('created_at')->useCurrent();
     });
 
     DB::schema()->create($prefix . 'relations', function (Blueprint $table) use ($prefix) {
@@ -40,6 +42,9 @@ final class Schema
       $table->foreignId('condition_id')->references('id')->on($prefix . 'conditions');
       $table->foreignId('product_id')->references('id')->on($prefix . 'products');
       $table->foreignId('type_id')->references('id')->on('es_system_relation_types');
+
+      // Does the lack of this column matter? With a million records, probably yes
+      //$table->timestamp('created_at')->useCurrent();
     });
   }
 

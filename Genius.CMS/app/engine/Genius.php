@@ -13,25 +13,36 @@ use Engine\Genius\Sage\Querier;
  */
 final class Genius
 {
-  public function getSystem(int $id): System
+  public static function getSystem(int $id): System
   {
     return new System($id);
   }
 
-  public function addSystem(System $system): int
+  public static function addSystem(System $system): int
   {
     return Querier::insertSystem($system);
   }
 
-  public function getTypeId(string $key): int
+  public static function getTypeId(string $key): int
   {
     return Querier::getTypeId($key);
+  }
+
+  public static function getSystemBy(string $key, mixed $value): ?System
+  {
+    $id = Querier::getSystemIdBy($key, $value);
+
+    if ($id < 1) {
+      return null;
+    }
+
+    return new System($id);
   }
 
   /**
    * @return System[]
    */
-  public function getAllSystems(): array
+  public static function getAllSystems(): array
   {
     $systems = [];
     $ids = Querier::getSystemsId();
@@ -43,5 +54,16 @@ final class Genius
     }
 
     return $systems;
+  }
+
+  public static function dropSystem(System $system, bool $confirm = false): bool
+  {
+    if (!$confirm) {
+      return false;
+    }
+
+    Querier::dropSystem($system);
+
+    return false;
   }
 }

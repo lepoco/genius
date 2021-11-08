@@ -18,9 +18,7 @@ final class MainComposer extends Composer implements \App\Core\Schema\Composer
 {
   public function compose(View $view): void
   {
-
-    $genius = new Genius();
-    $systems = $genius->getAllSystems();
+    $systems = Genius::getAllSystems();
 
     $view->with('user', Account::current());
     $view->with('systems', $systems);

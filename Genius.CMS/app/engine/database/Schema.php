@@ -43,6 +43,17 @@ final class Schema
     });
   }
 
+  public static function removeForSystem(string $prefix): bool
+  {
+    $prefix = 'es_' . $prefix . '_';
+
+    DB::schema()->dropIfExists($prefix . 'relations');
+    DB::schema()->dropIfExists($prefix . 'products');
+    DB::schema()->dropIfExists($prefix . 'conditions');
+
+    return true;
+  }
+
   public static function build(bool $dropIfExists = false): void
   {
     if ($dropIfExists) {

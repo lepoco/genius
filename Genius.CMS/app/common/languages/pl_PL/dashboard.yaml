@@ -15,3 +15,19 @@ Fuzzy set method (weight): Metoda zbiorów rozmytych (waga)
 
 # app\common\views\dashboard\main.blade.php
 Run: Uruchom
+
+# app\common\views\dashboard\edit.blade.php
+Save: Zapisz
+Add condition: Dodaj warunek
+Add product: Dodaj produkt
+Add relation: Dodaj relację
+Remove the expert system: Usuń system ekspertowy
+New product: Nowy produkt
+Product is the final result of the application's operation. If the purpose of the system is to select the best garden gnomes, the product can be - Red Gnome by iGnome INC.: Produkt jest ostatecznym wynikiem działania aplikacji. Jeśli system ma wybierać najlepsze krasnale ogrodowe, to produktem może być - Czerwony Krasnal marki Krasnalex.
+
+# app\common\views\dashboard\delete.blade.php
+Delete: Usuń
+System name: Nazwa systemu
+Creation date: Data utworzenia
+Aware of the irreversibility of the changes, I want to delete the saved data.: Świadomy nieodwracalności zmian, chcę usunąć zapisane dane.
+Deleting the database records is irreversible, make sure you delete the correct system.: Usunięcie wpisów z bazy danych jest nieodwracalne, upewnij się, że usuwasz prawidłowy system.

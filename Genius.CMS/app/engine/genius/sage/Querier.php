@@ -38,7 +38,13 @@ final class Querier
 
   public static function getSystemIdBy(string $key, mixed $value): int
   {
-    return 0;
+    $dbKey = DB::table(self::SYSTEMS_TABLE)->where($key, 'LIKE', $value)->get(['id'])->first();
+
+    if (!isset($dbKey->id)) {
+      return 0;
+    }
+
+    return $dbKey->id;
   }
 
   public static function getSystemObject(int $id): mixed
@@ -75,5 +81,16 @@ final class Querier
   public static function getSystemsId(): array
   {
     return DB::table(self::SYSTEMS_TABLE)->get()->all();
+  }
+
+  public static function dropSystem(System $system): bool
+  {
+    if (!$system->isValid()) {
+      return false;
+    }
+
+    Schema::removeForSystem($system->getPrefix());
+
+    return DB::table(self::SYSTEMS_TABLE)->where(['id' => $system->getId()])->delete();
   }
 }

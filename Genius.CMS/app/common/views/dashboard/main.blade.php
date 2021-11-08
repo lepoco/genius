@@ -1,5 +1,5 @@
 @extends('layouts.app', [
-'title' => 'Dashboard'
+'title' => \App\Core\Facades\Translate::string('Dashboard')
 ])
 @section('content')
 

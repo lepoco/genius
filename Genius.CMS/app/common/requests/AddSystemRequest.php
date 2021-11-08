@@ -72,10 +72,9 @@ final class AddSystemRequest extends Request implements \App\Core\Schema\Request
       Schema::build();
     }
 
-    $genius = new Genius();
-    $typeId = $genius->getTypeId($systemType);
+    $typeId = Genius::getTypeId($systemType);
 
-    $insertedSystemId = $genius->addSystem(System::build([
+    $insertedSystemId = Genius::addSystem(System::build([
       'type_id' => $typeId,
       'name' => $this->getData('system_name'),
       'description' => $this->getData('system_description'),
@@ -87,7 +86,7 @@ final class AddSystemRequest extends Request implements \App\Core\Schema\Request
       $this->finish(self::ERROR_INTERNAL_ERROR, Status::OK);
     }
 
-    $newSystem = $genius->getSystem($insertedSystemId);
+    $newSystem = Genius::getSystem($insertedSystemId);
 
     $this->addContent('redirect', Redirect::url('dashboard/edit/' . $newSystem->getUUID()));
     $this->finish(self::CODE_SUCCESS, Status::OK);

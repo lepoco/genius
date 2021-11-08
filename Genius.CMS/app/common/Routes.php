@@ -104,6 +104,11 @@ final class Routes extends Router
       'require_login' => true
     ],
     [
+      'path' => '/dashboard/delete/{uuid}',
+      'namespace' => 'Dashboard\\Delete',
+      'require_login' => true
+    ],
+    [
       'path' => '/dashboard/edit/{uuid}',
       'namespace' => 'Dashboard\\Edit',
       'require_login' => true

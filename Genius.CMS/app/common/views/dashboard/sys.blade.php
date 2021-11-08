@@ -1,5 +1,5 @@
 @extends('layouts.app', [
-'title' => 'Expert System'
+'title' => \App\Core\Facades\Translate::string('Expert System')
 ])
 @section('content')
 

@@ -51,12 +51,3 @@ jobs:
       run: |
         cd ./Genius.CMS/
         ./vendor/bin/pest
-
-    - name: 'Create artifact archive'
-      run: zip ./Genius.CMS/genius-build.zip ./* -r
-
-    - name: 'Archive results'
-      uses: actions/upload-artifact@v2
-      with:
-        name: genius-build
-        path: ./Genius.CMS/genius-build.zip

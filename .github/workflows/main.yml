@@ -38,7 +38,7 @@ jobs:
         restore-keys: ${{ runner.os }}-composer-
 
     - name: Use Node.js
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v2.4.1
 
     - name: Build
       run: |

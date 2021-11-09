@@ -118,7 +118,6 @@ final class Genius
     return $relations;
   }
 
-
   public static function addCondition(System $system, Condition $condition): bool
   {
     return Querier::insertCondition($condition, $system->getPrefix());
@@ -132,5 +131,13 @@ final class Genius
   public static function addProduct(System $system, Product $product): bool
   {
     return Querier::insertProduct($product, $system->getPrefix());
+  }
+
+  /**
+   * @return Condition[]
+   */
+  public static function getCommoCondition(System $system, int $limit = 1, int $shift = 0): array
+  {
+    return Querier::getCommon('condition', $system, $limit, $shift = 0);
   }
 }

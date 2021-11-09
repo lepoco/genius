@@ -151,6 +151,42 @@ final class Querier
     return DB::table('es_' . $prefix . '_relations')->get(['id'])->all();
   }
 
+  public static function getCommon(string $type, System $system, int $limit = 15, int $shift = 0): array
+  {
+    $prefix = 'es_' . $system->getPrefix() . '_';
+    $groupBy = '';
+
+    switch ($type) {
+      case 'condition':
+      case 'conditions':
+        $prefix .= 'conditions';
+        $groupBy = 'weight';
+        break;
+
+      case 'product':
+      case 'products':
+        $prefix .= 'products';
+        $groupBy = 'weight';
+        break;
+
+      case 'relation':
+      case 'relations':
+        $prefix .= 'relations';
+        $groupBy = 'condition_id';
+        break;
+
+      default:
+        throw new \RuntimeException('Unknown element type in ' . __METHOD__);
+    }
+
+    $query = DB::table($prefix)
+      ->groupBy($groupBy)
+      ->orderByRaw('COUNT(*) DESC')
+      ->get(['id'])
+      ->skip($shift)
+      ->take($limit);
+  }
+
   public static function dropSystem(System $system): bool
   {
     if (!$system->isValid()) {

@@ -11,7 +11,7 @@
     "webpack": "^5.55.1",
     "webpack-cli": "^4.8.0",
     "workbox-webpack-plugin": "^6.3.0",
-    "copy-webpack-plugin": "^9.0.1"
+    "copy-webpack-plugin": "^10.0.0"
   },
   "scripts": {
     "build": "webpack --config webpack.config.js",

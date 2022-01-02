@@ -8,20 +8,20 @@
  * @since   1.1.0
  */
 
-use App\Common\App;
-use App\Core\Utils\ErrorHandler;
-
+define('APPDEBUG', true);
 define('APPSTART', microtime(true));
 define('ABSPATH', __DIR__ . '/../');
 define('APPDIR', 'app/');
+
+define('SUPPORTEMAIL', 'webmaster@genius.lepo.co');
 
 date_default_timezone_set('UTC');
 
 require __DIR__ . '/../vendor/autoload.php';
 
-ErrorHandler::register();
+\App\Core\Utils\ErrorHandler::register();
 
-$app = new App();
+$app = new \App\Common\App();
 
 $app
   ->setup()

@@ -6,6 +6,7 @@ use App\Core\Facades\{App, Session, DB, Response, Cache};
 use App\Core\Auth\User;
 use App\Core\Data\Encryption;
 use Illuminate\Support\Str;
+use App\Core\Utils\Cast;
 
 /**
  * Used to manage user accounts
@@ -21,6 +22,9 @@ final class Account
    */
   public static function current(): ?User
   {
+    // We could keep the user in a static instance, but for security reasons
+    // it seems to me that at the cost of performance it is better to check its consistency each time.
+
     if (!App::isConnected()) {
       return null;
     }
@@ -36,6 +40,9 @@ final class Account
     }
 
     $user = new User($userId);
+
+    // How to Attack Unauthenticated Encryption
+    // https://paragonie.com/blog/2015/05/using-encryption-and-authentication-correctly#title.2.1
 
     if (!$user->isValid()) {
       return null;
@@ -86,9 +93,13 @@ final class Account
    */
   public static function signOut(): bool
   {
-    // Optionally we can also clear 'cookies' - , "cookies"
-    Response::setHeader('Clear-Site-Data', '"cache", "storage", "executionContexts"', true);
-    // TODO: Keys in the database should be changed.
+    $user = self::current();
+
+    if (!empty($user)) {
+      // Overwrite the tokens
+      $user->updateTokens(Encryption::salter(32), Encryption::salter(32));
+    }
+
     App::destroy();
 
     return true;
@@ -99,14 +110,23 @@ final class Account
    */
   public static function hasPermission(string $permission = 'read', ?User $user = null): bool
   {
-    $user = $user ?? self::current();
+    if (empty($user)) {
+      $user = self::current();
+    }
 
     if (empty($user)) {
       return false;
     }
 
-    // TODO: Verify permissions.
-    return true;
+    return Permission::isRoleHasPermission($user->getRole(), $permission);
+  }
+
+  /**
+   * Checks whether the current user is logged in.
+   */
+  public static function isLoggedIn(): bool
+  {
+    return !empty(self::current());
   }
 
   /**
@@ -139,6 +159,10 @@ final class Account
           $query = DB::table('users')->where('name', $data)->first();
           break;
 
+        case 'uuid':
+          $query = DB::table('users')->where('uuid', $data)->first();
+          break;
+
         case 'display_name':
           $query = DB::table('users')->where('display_name', $data)->first();
           break;
@@ -163,38 +187,6 @@ final class Account
   }
 
   /**
-   * Gets the ID of a role based on its name.
-   */
-  public static function getRoleId(string $roleName): int
-  {
-    return Cache::remember('user.role_id' . $roleName, 120, function () use ($roleName) {
-      $role = DB::table('user_roles')->where('name', $roleName)->first();
-
-      if (empty($role)) {
-        return 1;
-      }
-
-      return (int) $role->id;
-    });
-  }
-
-  /**
-   * Gets the ID of a plan based on its name.
-   */
-  public static function getPlanId(string $planName): int
-  {
-    return Cache::remember('user.plan_id' . $planName, 120, function () use ($planName) {
-      $plan = DB::table('plans')->where('name', $planName)->first();
-
-      if (empty($plan)) {
-        return 1;
-      }
-
-      return (int) $plan->id;
-    });
-  }
-
-  /**
    * Registers the specified user object.
    */
   public static function register(User $user, string $encryptedPassword): bool
@@ -204,6 +196,15 @@ final class Account
     if ($users->count() > 0) {
       return false;
     }
+
+    $userName = Cast::emailToUsername($user->getEmail());
+
+    // TODO: Verify if salted name does not exist
+    if (!empty(self::getBy('name', $userName))) {
+      $userName .= '#' . Encryption::salter(4, 'N');
+    }
+
+    $user->setName($userName);
 
     return (bool) DB::table('users')->insert([
       'email' => $user->getEmail(),

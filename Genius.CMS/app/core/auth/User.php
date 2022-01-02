@@ -2,7 +2,6 @@
 
 namespace App\Core\Auth;
 
-use App\Core\Auth\Billing;
 use App\Core\Utils\Cast;
 use App\Core\Facades\DB;
 use App\Core\Data\Encryption;
@@ -47,20 +46,17 @@ final class User extends \App\Core\Data\DatabaseObject
 
   private string $lastLogin = '';
 
-  private string $lastUpdate = '';
-
-  private Billing $billing;
+  private string $updatedAt = '';
 
   public function __construct(int $id = 0)
   {
     $this->id = $id;
-    $this->billing = new Billing($id);
 
     $this->fetch($id);
   }
 
   /**
-   * Updates an entry in the database, does not change the password, tokens, or billing.
+   * Updates an entry in the database, does not change the password or tokens.
    */
   public function update(): bool
   {
@@ -75,8 +71,6 @@ final class User extends \App\Core\Data\DatabaseObject
       'is_confirmed' => $this->isConfirmed(),
       'updated_at' => date('Y-m-d H:i:s')
     ]);
-
-    $this->billing->update();
 
     return $success;
   }
@@ -95,7 +89,7 @@ final class User extends \App\Core\Data\DatabaseObject
   public function updatePassword(string $password, bool $plain = true): bool
   {
     if ($plain) {
-      $password = Encryption::encrypt(
+      $password = Encryption::hash(
         $password,
         'password'
       );
@@ -120,7 +114,7 @@ final class User extends \App\Core\Data\DatabaseObject
   public function updateSessionToken(string $token, bool $keepPlain = false): bool
   {
     if (!$keepPlain) {
-      $token = Encryption::encrypt($token, 'session');
+      $token = Encryption::hash($token, 'session');
     }
 
     return DB::table('users')->where('id', $this->getId())->update([
@@ -152,7 +146,8 @@ final class User extends \App\Core\Data\DatabaseObject
   public function updateLastLogin(): bool
   {
     return DB::table('users')->where('id', $this->getId())->update([
-      'time_last_login' => date('Y-m-d H:i:s')
+      'time_last_login' => date('Y-m-d H:i:s'),
+      'updated_at' => date('Y-m-d H:i:s')
     ]);
   }
 
@@ -162,13 +157,14 @@ final class User extends \App\Core\Data\DatabaseObject
   public function updateTokens(string $sessionToken, string $cookieToken, bool $keepSessionPlain = false, bool $keepCookiePlain = true): bool
   {
     if (!$keepSessionPlain) {
-      $sessionToken = Encryption::encrypt($sessionToken, 'session');
+      $sessionToken = Encryption::hash($sessionToken, 'session');
     }
 
     return DB::table('users')->where('id', $this->getId())->update([
       'session_token' => $sessionToken,
       'cookie_token' => $cookieToken,
-      'time_last_login' => date('Y-m-d H:i:s')
+      'time_last_login' => date('Y-m-d H:i:s'),
+      'updated_at' => date('Y-m-d H:i:s')
     ]);
   }
 
@@ -177,10 +173,6 @@ final class User extends \App\Core\Data\DatabaseObject
    */
   public static function build(array $properties): self
   {
-    $billing = Billing::build([
-      'email' => $properties['email'] ?? ''
-    ]);
-
     return (new self())
       ->setRole($properties['role'] ?? 1)
       ->setType($properties['type'] ?? 1)
@@ -191,7 +183,6 @@ final class User extends \App\Core\Data\DatabaseObject
       ->setPassword($properties['password'] ?? '')
       ->setLanguage($properties['language'] ?? 'en_US')
       ->setTimezone($properties['timezone'] ?? 'UTC')
-      ->setBilling($billing)
       ->setId($properties['id'] ?? 0);
   }
 
@@ -300,6 +291,20 @@ final class User extends \App\Core\Data\DatabaseObject
     return $this->email;
   }
 
+  /**
+   * Allows you to change the name if the user has not been registered yet.
+   */
+  public function setName(string $name): bool
+  {
+    if ($this->id > 1) {
+      return false;
+    }
+
+    $this->name = trim($name);
+
+    return false;
+  }
+
   public function getName(): string
   {
     return $this->name;
@@ -369,19 +374,7 @@ final class User extends \App\Core\Data\DatabaseObject
 
   public function getLastUpdate(): string
   {
-    return $this->lastUpdate;
-  }
-
-  public function setBilling(Billing $billing): self
-  {
-    $this->billing = $billing;
-
-    return $this;
-  }
-
-  public function getBilling(): Billing
-  {
-    return $this->billing;
+    return $this->updatedAt;
   }
 
   private function setPassword(string $password): self

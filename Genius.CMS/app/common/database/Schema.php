@@ -42,11 +42,13 @@ final class Schema
     DB::schema()->dropIfExists('user_billings');
     DB::schema()->dropIfExists('user_newsletters');
     DB::schema()->dropIfExists('user_plans');
+    DB::schema()->dropIfExists('user_confirmations');
 
     DB::schema()->dropIfExists('users');
 
     DB::schema()->dropIfExists('user_roles');
     DB::schema()->dropIfExists('plans');
+    DB::schema()->dropIfExists('confirmation_types');
   }
 
   private static function tableOptions(): void
@@ -86,6 +88,14 @@ final class Schema
       });
     }
 
+    if (!DB::schema()->hasTable('confirmation_types')) {
+      DB::schema()->create('confirmation_types', function (Blueprint $table) {
+        $table->id();
+        $table->string('name');
+        $table->timestamp('created_at')->useCurrent();
+      });
+    }
+
     if (!DB::schema()->hasTable('users')) {
       DB::schema()->create('users', function (Blueprint $table) {
         $table->id();
@@ -115,6 +125,18 @@ final class Schema
         $table->foreignId('plan_id')->references('id')->on('plans');
         $table->timestamp('expires_at')->nullable();
         $table->timestamp('created_at')->useCurrent();
+        $table->timestamp('updated_at')->nullable()->useCurrent();
+      });
+    }
+
+    if (!DB::schema()->hasTable('user_confirmations')) {
+      DB::schema()->create('user_confirmations', function (Blueprint $table) {
+        $table->id();
+        $table->foreignId('user_id')->references('id')->on('users');
+        $table->foreignId('confirmation_id')->references('id')->on('confirmation_types');
+        $table->text('token')->nullable();
+        $table->timestamp('created_at')->useCurrent();
+        $table->boolean('is_confirmed')->default(false);
         $table->timestamp('updated_at')->nullable()->useCurrent();
       });
     }

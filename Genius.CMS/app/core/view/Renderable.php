@@ -46,7 +46,7 @@ abstract class Renderable
 
   final protected function nonce(string $key): string
   {
-    return Encryption::encrypt($key, 'nonce');
+    return Encryption::hash($key, 'nonce');
   }
 
   final protected function validateNonce(string $baseKey, string $rawInput): bool

@@ -30,6 +30,11 @@ final class Rest extends Request
     return 'Rest';
   }
 
+  public function process(): void
+  {
+    // void
+  }
+
   public function print(): void
   {
     $this->finish(self::CODE_SUCCESS);

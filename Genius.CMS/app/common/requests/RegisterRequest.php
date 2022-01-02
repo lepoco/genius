@@ -2,10 +2,10 @@
 
 namespace App\Common\Requests;
 
-use App\Core\Facades\{Email, Translate};
+use App\Core\Facades\{Email, Translate, Session};
 use App\Core\View\Request;
 use App\Core\Http\{Status, Redirect};
-use App\Core\Auth\{Account, User};
+use App\Core\Auth\{Account, User, Permission, Confirmation};
 use App\Core\Data\Encryption;
 use App\Core\Utils\Cast;
 use Illuminate\Support\Str;
@@ -51,96 +51,100 @@ final class RegisterRequest extends Request implements \App\Core\Schema\Request
       ['password_confirm', FILTER_UNSAFE_RAW]
     ]);
 
-    if (Account::isRegistered($this->getData('email'))) {
+    if (Account::isRegistered($this->get('email'))) {
       $this->addContent('fields', ['email']);
       $this->addContent('message', 'You cannot use this email address.');
       $this->finish(self::ERROR_ENTRY_EXISTS, Status::OK);
     }
 
-    if (Str::length($this->getData('password')) < self::PASSWORD_MIN_LENGTH) {
+    if (Str::length($this->get('password')) < self::PASSWORD_MIN_LENGTH) {
       $this->addContent('fields', ['password']);
       $this->addContent('message', $this->passwordMessage());
       $this->finish(self::ERROR_PASSWORD_TOO_SHORT, Status::OK);
     }
 
-    if (!preg_match(self::PASSWORD_PATTERN, $this->getData('password'))) {
+    if (!preg_match(self::PASSWORD_PATTERN, $this->get('password'))) {
       $this->addContent('fields', ['password']);
       $this->addContent('message', $this->passwordMessage());
       $this->finish(self::ERROR_PASSWORD_TOO_SIMPLE, Status::OK);
     }
 
-    if (Str::length($this->getData('password')) > self::PASSWORD_MAX_LENGTH) {
+    if (Str::length($this->get('password')) > self::PASSWORD_MAX_LENGTH) {
       $this->addContent('fields', ['password']);
       $this->addContent('message', $this->passwordMessage());
       $this->finish(self::ERROR_PASSWORD_TOO_SHORT, Status::OK);
     }
 
-    if ($this->getData('password') != $this->getData('password_confirm')) {
+    if ($this->get('password') != $this->get('password_confirm')) {
       $this->addContent('fields', ['password_confirm']);
       $this->addContent('message', 'Passwords must be the same.');
       $this->finish(self::ERROR_PASSWORDS_DONT_MATCH, Status::OK);
     }
 
-    if (!$this->registerUser()) {
+    $user = $this->registerUser();
+
+    if (empty($user)) {
       $this->finish(self::ERROR_INTERNAL_ERROR, Status::IM_A_TEAPOT);
     }
+
+    $resendConfirmation = Confirmation::add('resend_registration_confirmation', $user);
 
     $this->addContent(
       'redirect',
       Redirect::url('register/confirmation', [
         'n' => $this->nonce('RegisterConfirmation'),
-        'e' => $this->getData('email')
+        'e' => urlencode($this->get('email')),
+        'r' => $resendConfirmation
       ])
     );
+
+    Session::put('user.resend_confirmation', $user);
+
+    Email::send($this->get('email'), [
+      'subject' => Translate::string('Thank you for your registration!'),
+      'header' => Translate::string('Account confirmation'),
+      'message' => Translate::string('Thank you for creating an account on our website. Click on the link below to activate your account.'),
+      'action_title' => Translate::string('Confirm email'),
+      'action_url' => Redirect::url('register/confirm', [
+        'confirmation' => Confirmation::add('registration_confirmation', $user),
+        'email' => urlencode($this->get('email'))
+      ])
+    ]);
 
     // This should never happen
     $this->finish(self::CODE_SUCCESS, Status::OK);
   }
 
-  private function registerUser(): bool
+  private function registerUser(): ?User
   {
-    $encryptedPassword = Encryption::encrypt($this->getData('password'), 'password');
+    $encryptedPassword = Encryption::hash($this->get('password'), 'password');
 
     $newUser = User::build([
-      'display_name' => Cast::emailToUsername($this->getData('email')),
-      'email' => $this->getData('email'),
+      'display_name' => Cast::emailToUsername($this->get('email')),
+      'email' => $this->get('email'),
       'password' => $encryptedPassword,
-      'language' => 'pl_PL',
-      'role' => Account::getRoleId('default')
+      'role' => Permission::getRoleId('default')
     ]);
 
     $registered = Account::register($newUser, $encryptedPassword);
 
-    if (! $registered) {
-      return false;
+    if (!$registered) {
+      return null;
     }
 
-    $registeredUser = Account::getBy('email', $this->getData('email'));
+    $registeredUser = Account::getBy('email', $this->get('email'));
 
     if (empty($registeredUser)) {
-      return false;
+      return null;
     }
 
-    //$registeredUser
-
-    Email::send($this->getData('email'), [
-      'subject' => Translate::string('Thank you for your registration!'),
-      'header' => Translate::string('Account confirmation'),
-      'message' => Translate::string('Thank you for creating an account on our website. Click on the link below to activate your account.'),
-      'action_title' => Translate::string('Confirm email'),
-      'action_url' => \App\Core\Http\Redirect::url('registration', [
-        'confirmation' => '123',
-        'email' => $this->getData('email')
-      ])
-    ]);
-
-    return true;
+    return $registeredUser;
   }
 
   private function passwordMessage(): string
   {
     return sprintf(
-      'The password provided is too simple. It should be %s to %s characters long and contain a lowercase letter, an uppercase letter, a number and a special character.',
+      'The password provided is incorrect. It should be %s to %s characters long and contain a lowercase letter, an uppercase letter, a number and a special character.',
       self::PASSWORD_MIN_LENGTH,
       self::PASSWORD_MAX_LENGTH
     );

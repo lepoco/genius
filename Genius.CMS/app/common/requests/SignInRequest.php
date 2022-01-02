@@ -37,7 +37,7 @@ final class SignInRequest extends Request implements \App\Core\Schema\Request
       ['password', FILTER_UNSAFE_RAW]
     ]);
 
-    $user = Account::getBy('email', $this->getData('email'));
+    $user = Account::getBy('email', $this->get('email'));
 
     if (empty($user)) {
       $this->unauthorizedRequest();
@@ -51,7 +51,7 @@ final class SignInRequest extends Request implements \App\Core\Schema\Request
       $this->finish(self::ERROR_USER_INVALID, Status::UNAUTHORIZED);
     }
 
-    if (!$user->comparePassword($this->getData('password'))) {
+    if (!$user->comparePassword($this->get('password'))) {
       $this->unauthorizedRequest();
 
       return;

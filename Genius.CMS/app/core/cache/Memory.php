@@ -106,6 +106,17 @@ class Memory implements \App\Core\Schema\Cache
     return true;
   }
 
+  /**
+   * Returns the number of items in the cache.
+   */
+  public function count(): int
+  {
+    $allRecords = count($this->records, COUNT_RECURSIVE);
+    $parentRecords = count($this->records);
+
+    return $allRecords - $parentRecords;
+  }
+
    /**
    * Deletes the selected item from memory.
    *

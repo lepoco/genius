@@ -4,18 +4,17 @@
 
   <rule ref="PSR12"/>
 
-  <arg name="tab-width" value="2"/>
-​
   <arg value="-colors"/>
-​
+  <arg name="tab-width" value="2"/>
+
   <rule ref="Generic.Files.LineEndings">
     <exclude name="Generic.Files.LineEndings.InvalidEOLChar"/>
   </rule>
 
-   <rule ref="Generic.Files.LineLength">
+  <rule ref="Generic.Files.LineLength">
     <properties>
-    <property name="lineLimit" value="256"/>
-    <property name="absoluteLineLimit" value="256"/>
+      <property name="lineLimit" value="256"/>
+      <property name="absoluteLineLimit" value="256"/>
     </properties>
   </rule>
 
@@ -24,9 +23,32 @@
   <rule ref="Generic.WhiteSpace.ScopeIndent">
     <properties>
       <property name="indent" value="2" />
-      <property name="tabIndent" value="false"/>
     </properties>
   </rule>
+
+  <rule ref="PSR2.Methods.FunctionCallSignature">
+    <property name="indent" value="2" />
+  </rule>
+
+  <rule ref="PSR2.Methods.FunctionCallSignature">
+    <properties>
+      <property name="indent" value="2" />
+    </properties>
+  </rule>
+
+  <rule ref="PSR2.ControlStructures.SwitchDeclaration">
+    <properties>
+      <property name="indent" value="2" />
+    </properties>
+  </rule>
+
+  <rule ref="Squiz.Functions.MultiLineFunctionDeclaration">
+    <properties>
+      <property name="indent" value="2" />
+    </properties>
+  </rule>
+
+  <rule ref="Generic.Commenting.Todo"/>
 
   <exclude-pattern type="relative">^/vendor/*</exclude-pattern>
   <exclude-pattern type="relative">^/app/tests/*</exclude-pattern>

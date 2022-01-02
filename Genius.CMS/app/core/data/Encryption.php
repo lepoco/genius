@@ -19,18 +19,21 @@ final class Encryption
   private static function getSalts(): array
   {
     return [
-      'algo'     => Config::get('encryption.algorithm', PASSWORD_BCRYPT),
-      'session'  => Config::get('salts.session', ''),
-      'cookie'   => Config::get('salts.cookie', ''),
-      'password' => Config::get('salts.password', ''),
-      'nonce'    => Config::get('salts.nonce', '')
+      'algo'       => Config::get('encryption.algorithm', PASSWORD_BCRYPT),
+      'session'    => Config::get('salts.session', ''),
+      'cookie'     => Config::get('salts.cookie', ''),
+      'password'   => Config::get('salts.password', ''),
+      'token'      => Config::get('salts.token', ''),
+      'webauth'    => Config::get('salts.token', ''),
+      'nonce'      => Config::get('salts.nonce', ''),
+      'passphrase' => Config::get('salts.passphrase', '')
     ];
   }
 
   /**
-   * Encrypts data depending on the selected method, default password.
+   * Creates hashes of data depending on the selected method, default password.
    */
-  public static function encrypt(
+  public static function hash(
     string $text,
     string $type = 'password',
     string $customSalt = '',
@@ -55,6 +58,14 @@ final class Encryption
       $salts['cookie'] = $customSalt;
     }
 
+    if (empty($salts['token'])) {
+      $salts['token'] = $customSalt;
+    }
+
+    if (empty($salts['webauth'])) {
+      $salts['webauth'] = $customSalt;
+    }
+
     if (empty($salts['algo'])) {
       $salts['algo'] = $customAlgo;
     }
@@ -71,6 +82,14 @@ final class Encryption
         return (!empty($salts['session']) ? hash_hmac('sha256', $text, $salts['session']) : '');
         break;
 
+      case 'token':
+        return (!empty($salts['token']) ? password_hash(hash_hmac('sha256', $text, $salts['token']), $salts['algo']) : '');
+        break;
+
+      case 'webauth':
+        return (!empty($salts['webauth']) ? password_hash(hash_hmac('sha256', $text, $salts['webauth']), $salts['algo']) : '');
+        break;
+
       case 'cookie':
         return (!empty($salts['cookie']) ? hash_hmac('sha256', $text, $salts['cookie']) : '');
         break;
@@ -81,8 +100,8 @@ final class Encryption
   }
 
   /**
-   * Compares encrypted data with those in the database.
-   * 
+   * Compares hashed data with raw input.
+   *
    * @link https://php.net/manual/en/function.hash-hmac.php
    * @link https://secure.php.net/manual/en/function.password-verify.php
    */
@@ -108,6 +127,14 @@ final class Encryption
       $salts['session'] = $customSalt;
     }
 
+    if (empty($salts['token'])) {
+      $salts['token'] = $customSalt;
+    }
+
+    if (empty($salts['webauth'])) {
+      $salts['webauth'] = $customSalt;
+    }
+
     if (empty($salts['cookie'])) {
       $salts['cookie'] = $customSalt;
     }
@@ -117,7 +144,15 @@ final class Encryption
         return password_verify(($plain ? hash_hmac('sha256', $text, $salts['password']) : $text), $compare_text);
 
       case 'nonce':
-        return ($plain ? hash_hmac('sha1', $text . date('Y-m-d h'), $salts['nonce']) : $text) == $compare_text;
+        // We define the validity of the nonce for about two hours,
+        // a solution for minutes would be better, but it would require more acrobatics.
+        if (($plain ? hash_hmac('sha1', $text . date('Y-m-d h'), $salts['nonce']) : $text) == $compare_text) {
+          return true;
+        } elseif (($plain ? hash_hmac('sha1', $text . date('Y-m-d h', time() - 3600), $salts['nonce']) : $text) == $compare_text) {
+          return true;
+        } else {
+          return false;
+        }
 
       case 'session':
         return ($plain ? hash_hmac('sha256', $text, $salts['session']) : $text) == $compare_text;
@@ -125,9 +160,67 @@ final class Encryption
       case 'cookie':
         return ($plain ? hash_hmac('sha256', $text, $salts['cookie']) : $text) == $compare_text;
 
+      case 'token':
+        return password_verify(($plain ? hash_hmac('sha256', $text, $salts['token']) : $text), $compare_text);
+
+      case 'webauth':
+        return password_verify(($plain ? hash_hmac('sha256', $text, $salts['webauth']) : $text), $compare_text);
+
       default:
         return false;
     }
+  }
+
+  /**
+   * Generate a pseudo-random string of bytes.
+   */
+  public static function generateVector(string $cipherAlgo = 'aes-256-cbc'): string
+  {
+    if (!(function_exists('openssl_cipher_iv_length') && function_exists('openssl_random_pseudo_bytes'))) {
+      return null;
+    }
+
+    return openssl_random_pseudo_bytes(openssl_cipher_iv_length($cipherAlgo));
+  }
+
+  /**
+   * Encrypt data using Open SSL.
+   */
+  public static function encrypt(string $data, string $iv, string $passphrase = null, string $cipherAlgo = 'aes-256-cbc'): string|bool
+  {
+    if (!function_exists('openssl_encrypt')) {
+      return null;
+    }
+
+    $salts = self::getSalts();
+
+    if (empty($passphrase)) {
+      $passphrase = $salts['passphrase'] ?? '';
+    }
+
+    $options = 0; //OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING
+
+    return openssl_encrypt($data, $cipherAlgo, $passphrase, $options, $iv);
+  }
+
+  /**
+   * Decrypts encrypted data using Open SSL.
+   */
+  public static function decrypt(string $data, string $iv, string $passphrase = null, string $cipherAlgo = 'aes-256-cbc'): string|bool
+  {
+    if (!function_exists('openssl_decrypt')) {
+      return null;
+    }
+
+    $salts = self::getSalts();
+
+    if (empty($passphrase)) {
+      $passphrase = $salts['passphrase'] ?? '';
+    }
+
+    $options = 0; //OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING
+
+    return openssl_decrypt($data, $cipherAlgo, $passphrase, $options, $iv);
   }
 
   /**

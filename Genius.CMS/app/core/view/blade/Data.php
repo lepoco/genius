@@ -83,7 +83,7 @@ final class Data
         'debug' => Config::get('app.debug', true),
         'cookieName' => Option::get('cookie_name', 'access_cookie'),
         'serviceWorkerEnabled' => Option::get('service_worker_enabled', true),
-        'signoutTime' => ((int) Option::get('signout_time', 15) * 60),
+        'signoutTime' => (int) Option::get('signout_time', 15),
         'version' => Config::get('app.version', '0.0.0')
       ],
       'auth' => [

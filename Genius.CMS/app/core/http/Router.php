@@ -123,20 +123,30 @@ abstract class Router implements \App\Core\Schema\Router
 
     $routeData = array_filter($this->routes, fn ($route) => isset($route['namespace']) && $namespace == $route['namespace']) ?? [];
     $routeData = array_shift($routeData);
-    $isSignedIn = !empty(Account::current());
+    $user = Account::current();
 
-    if (isset($routeData['require_login']) && true === $routeData['require_login'] && !$isSignedIn) {
-      Redirect::to('signin');
+    if (isset($routeData['require_login']) && true === $routeData['require_login'] && empty($user)) {
+      Redirect::to(isset($this->signInRedirect) && !empty($this->signInRedirect) ? $this->signInRedirect : 'signin');
+    }
+
+    if (isset($routeData['require_login']) && isset($this->unconfirmedNamespace) && isset($this->unocnfirmedRedirect) && true === $routeData['require_login'] && !$user->isConfirmed()) {
+      if (!empty($this->unconfirmedNamespace) && $namespace !== $this->unconfirmedNamespace) {
+        Redirect::to($this->unocnfirmedRedirect ?? 'unconfirmed');
+      }
+    }
+
+    if (isset($routeData['permission']) && !empty($user) && !Account::hasPermission($routeData['permission'], $user)) {
+      Redirect::to($routeData['redirect_no_permission'] ?? isset($this->signedInRedirect) && !empty($this->signedInRedirect) ? $this->signedInRedirect : 'dashboard');
     }
 
     if (isset($routeData['require_nonce']) && true === $routeData['require_nonce']) {
       if (!Request::has('n') || !Encryption::compare($namespace, urldecode(Request::get('n', '')), 'nonce')) {
-        Redirect::to('dashboard');
+        Redirect::to(isset($this->signedInRedirect) && !empty($this->signedInRedirect) ? $this->signedInRedirect : 'dashboard');
       }
     }
 
-    if (isset($routeData['redirect_logged']) && true === $routeData['redirect_logged'] && $isSignedIn) {
-      Redirect::to('dashboard');
+    if (isset($routeData['redirect_logged']) && true === $routeData['redirect_logged'] && !empty($user)) {
+      Redirect::to(isset($this->signedInRedirect) && !empty($this->signedInRedirect) ? $this->signedInRedirect : 'dashboard');
     }
   }
 
@@ -144,6 +154,12 @@ abstract class Router implements \App\Core\Schema\Router
   {
     Account::signOut();
 
-    Redirect::to('signin');
+    // Optionally we can also clear 'cookies' - , "cookies" //"cache", "storage",
+    \App\Core\Facades\Response::setHeader('Clear-Site-Data', '"executionContexts"', true);
+    //\App\Core\Facades\Response::setCookie('')
+
+    usleep(100);
+
+    Redirect::to(isset($this->signInRedirect) && !empty($this->signInRedirect) ? $this->signInRedirect : 'signin');
   }
 }

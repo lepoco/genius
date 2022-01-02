@@ -42,6 +42,10 @@ final class Options
 
   public function set(string $name, $value): bool
   {
+    if ($this->get($name) === $value) {
+      return false;
+    }
+
     Cache::put('options.' . $name, $value);
 
     return $this->setInDatabase($name, $value);
@@ -70,7 +74,7 @@ final class Options
 
     $query = DB::table('options')->where('name', $key)->first();
 
-    if (isset($query->value)) {
+    if (isset($query->name)) {
       return DB::table('options')->where('name', $key)->update([
         'value' => self::encodeType($value),
         'updated_at' => date('Y-m-d H:i:s')

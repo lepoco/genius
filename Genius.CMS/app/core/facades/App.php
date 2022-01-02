@@ -21,6 +21,7 @@ use App\Core\Bootstrap;
  * @method static bool beforePrint() Performs actions before printing the page.
  * @method static object getProperty(string $property) Gets an application object that is an instance of one of the logic elements.
  * @method static void destroy() Flush the session data and regenerate the ID.
+ * @method static int queries() Get the number of queries to the database for a given run.
  * @method static void regenerate() Generate a new session identifier and token.
  */
 final class App extends Facade

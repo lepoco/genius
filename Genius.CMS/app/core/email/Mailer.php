@@ -98,34 +98,50 @@ final class Mailer
 
   private function setupSMTP(): self
   {
-    if (!Option::get('mail_smtp', false)) {
+    if (!(bool) Option::get('mail_smtp_enabled', false)) {
+      return $this;
+    }
+
+    $smtpUser = Option::get('mail_smtp_user', '');
+
+    if (!filter_var($smtpUser, FILTER_VALIDATE_EMAIL)) {
       return $this;
     }
 
     // TODO: Work with SMTP, optionally Google 0Auth
-    $this->mailer->isSMTP();                                            //Send using SMTP
-    $this->mailer->Host       = 'smtp.example.com';                     //Set the SMTP server to send through
-    $this->mailer->SMTPAuth   = true;                                   //Enable SMTP authentication
-    $this->mailer->Username   = 'user@example.com';                     //SMTP username
-    $this->mailer->Password   = 'secret';                               //SMTP password
-    $this->mailer->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
-    $this->mailer->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
+    $this->mailer->isSMTP();                                                 //Send using SMTP
+
+    $this->mailer->Username   = $smtpUser;                                   //SMTP username
+    $this->mailer->Host       = Option::get('mail_smtp_host', '');           //Set the SMTP server to send through
+    $this->mailer->SMTPAuth   = (bool) Option::get('mail_smtp_auth', false); //Enable SMTP authentication
+    $this->mailer->Password   = Option::get('mail_smtp_password', '');       //SMTP password
+    $this->mailer->Port       = (int) Option::get('mail_smtp_port', 465);    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
+
+    if (Option::get('mail_smtp_encryption', 'smtps') === 'starttls') {
+      $this->mailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+    } else {
+      $this->mailer->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+    }
 
     return $this;
   }
 
   private function setupMailer(): self
   {
-    $this->mailer->setFrom(
-      Option::get('mail_sendfrom', 'mail@example.com'), // sender address
-      Option::get('mail_sendname', 'Website') // sender name
-    );
+    $sendFrom = Option::get('mail_sendfrom', '');
 
-    $this->mailer->addReplyTo(
-      Option::get('mail_replyto', 'mail@example.com'), // sender name
-      Option::get('mail_sendname', 'Website') // sender addres
-    );
+    if (!filter_var($sendFrom, FILTER_VALIDATE_EMAIL)) {
+      $sendFrom = 'mail@example.com';
+    }
 
+    $replyTo = Option::get('mail_replyto', '');
+
+    if (!filter_var($replyTo, FILTER_VALIDATE_EMAIL)) {
+      $replyTo = 'mail@example.com';
+    }
+
+    $this->mailer->setFrom($sendFrom, Option::get('mail_sendname', 'Website'));
+    $this->mailer->addReplyTo($replyTo, Option::get('mail_sendname', 'Website'));
     $this->mailer->isHTML(true);
 
     $this->mailer->CharSet = 'UTF-8';

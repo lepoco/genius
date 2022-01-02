@@ -108,10 +108,10 @@ final class Directives
   public static function nonce(string $action = ''): string
   {
     if (empty($action)) {
-      return Encryption::encrypt('ajax_nonce', 'nonce');
+      return Encryption::hash('ajax_nonce', 'nonce');
     }
 
-    return Encryption::encrypt('ajax_' . $action . '_nonce', 'nonce');
+    return Encryption::hash('ajax_' . $action . '_nonce', 'nonce');
   }
 
   /**

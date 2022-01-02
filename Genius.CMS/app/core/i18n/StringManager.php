@@ -4,6 +4,7 @@ namespace App\Core\i18n;
 
 use RuntimeException;
 use App\Core\Facades\File;
+use App\Core\Data\Hash;
 use Illuminate\Support\Str;
 
 /**
@@ -29,10 +30,12 @@ final class StringManager
   {
     // TODO: Refactor
 
+    $hashedKey = $this->hashKey($text);
+
     $this->recentSearch = $text;
 
     foreach ($this->translatable as $pair) {
-      if ($text == $pair['key']) {
+      if ($hashedKey == $pair['hash']) {
         $this->recentResult = $pair;
 
         return true;
@@ -48,10 +51,12 @@ final class StringManager
       return $this->recentResult['value'] ?? '';
     }
 
+    $hashedText = $this->hashKey($text);
+
     $this->recentSearch = $text;
 
     foreach ($this->translatable as $pair) {
-      if ($text == $pair['key']) {
+      if ($hashedText == $pair['hash']) {
         $this->recentResult = $pair;
 
         return $pair['value'] ?? '';
@@ -59,6 +64,15 @@ final class StringManager
     }
 
     return '';
+  }
+
+  public function push(string $key, string $value): void
+  {
+    $this->translatable[] = [
+      'hash' => $this->hashKey($key),
+      'key' => $key,
+      'value' => $value
+    ];
   }
 
   public function setPath(string $path): self
@@ -100,6 +114,15 @@ final class StringManager
     return $this;
   }
 
+  private function hashKey(string $key): mixed
+  {
+    // TODO: CRC32 may generate non unique value
+    // Hash must be numeric type
+
+    //hash('crc32', $key);
+    return Hash::crc64($key, '%u');
+  }
+
   private function getStrings(): bool
   {
     $domainPath = $this->path . '/' . $this->domain;
@@ -139,10 +162,7 @@ final class StringManager
       }
 
       if (!empty($singleLine) && Str::contains($singleLine, ': ')) {
-        $this->translatable[] = [
-          'key' => $key,
-          'value' => Str::after($singleLine, ': ')
-        ];
+        $this->push($key, Str::after($singleLine, ': '));
       }
     }
   }

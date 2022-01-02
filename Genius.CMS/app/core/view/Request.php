@@ -46,21 +46,39 @@ abstract class Request extends Renderable implements \App\Core\Schema\Request
   protected const ERROR_FILE_TOO_LARGE           = 'E25';
   protected const ERROR_VALUE_TOO_BIG            = 'E26';
   protected const ERROR_VALUE_TOO_LOW            = 'E27';
+  protected const ERROR_VALUE_INVALID            = 'E28';
+  protected const ERROR_CARD_INVALID             = 'E29';
 
   protected const CODE_SUCCESS                   = 'S01';
+
+  /**
+   * Workaround for depracted way of sanitizing.
+   */
+  protected const SANITIZE_STRING = 513;
 
   protected bool $finished = false;
 
   protected string $method = '';
 
-  protected array $responseData = [];
+  private array $responseData = [];
 
-  protected array $incomeData = [];
+  private array $incomeData = [];
 
-  protected array $requestData = [];
+  private array $requestData = [];
 
+  /**
+   * Validates the correctness of the class implementation.
+   */
   abstract public function getAction(): string;
 
+  /**
+   * Responsible for processing the entire request.
+   */
+  abstract public function process(): void;
+
+  /**
+   * Prints the JSON reply in body of the reply.
+   */
   public function print(): void
   {
     Logs::info('New request.', ['action' => $this->getAction(), 'ip' => IlluminateRequest::ip()]);
@@ -84,6 +102,9 @@ abstract class Request extends Renderable implements \App\Core\Schema\Request
     }
   }
 
+  /**
+   * Checks if the given field exists in request. If not, the script aborts.
+   */
   protected function isSet(array $fields): self
   {
     $notSetField = [];
@@ -106,6 +127,9 @@ abstract class Request extends Renderable implements \App\Core\Schema\Request
     return $this;
   }
 
+  /**
+   * Checks if the given field exists in request and is not empty. If not, the script aborts.
+   */
   protected function isEmpty(array $fields): self
   {
     $emptyField = [];
@@ -127,6 +151,9 @@ abstract class Request extends Renderable implements \App\Core\Schema\Request
     return $this;
   }
 
+  /**
+   * Adds a field to a validated set.
+   */
   protected function validate(array $fields): self
   {
     $incorrectFields = [];
@@ -138,7 +165,11 @@ abstract class Request extends Renderable implements \App\Core\Schema\Request
 
       $value = isset($this->incomeData[$field[0]]) ? $this->incomeData[$field[0]] : '';
 
-      $filteredValue = filter_var($value, $field[1]);
+      if ($field[1] == self::SANITIZE_STRING) {
+        $filteredValue = htmlspecialchars($value, ENT_QUOTES);
+      } else {
+        $filteredValue = filter_var($value, $field[1]);
+      }
 
       if (false === $filteredValue) {
         $incorrectFields[] = $field;
@@ -160,6 +191,9 @@ abstract class Request extends Renderable implements \App\Core\Schema\Request
     return $this;
   }
 
+  /**
+   * Quits request.
+   */
   protected function finish(?string $status = '', int $responseCode = 200, bool $exit = true): void
   {
     if (!empty($status)) {
@@ -212,29 +246,75 @@ abstract class Request extends Renderable implements \App\Core\Schema\Request
     }
   }
 
+  /**
+   * Adds new content to be returned in the JSON response.
+   */
   protected function addContent(string $id, $content): void
   {
     $this->responseData['content'][$id] = $content;
   }
 
+  /**
+   * Determines what status is to be returned in JSON.
+   */
   protected function setStatus(string $status): void
   {
     $this->responseData['status'] = $status;
   }
 
+  /**
+   * Adds raw data to be returned in the JSON response.
+   */
   protected function addResponseData(string $id, $content): void
   {
     $this->responseData[$id] = $content;
   }
 
-  protected function addData(string $name, $value): void
+  /**
+   * Adds a new entry to the validated pool.
+   */
+  private function addData(string $name, $value): void
   {
     $this->requestData[$name] = $value;
   }
 
+  /**
+   * Gets request field.
+   */
+  protected function get(string $name): mixed
+  {
+    return $this->getData($name);
+  }
+
+  /**
+   * Returns an optional option that does not need to be validated.
+   */
+  protected function optional(string $name): mixed
+  {
+    return htmlspecialchars($this->incomeData[$name] ?? '', ENT_QUOTES);
+  }
+
+  protected function isTrue(string $name): bool
+  {
+    return isset($this->incomeData[$name]) && !empty($this->incomeData[$name]);
+  }
+
+  /**
+   * Gets request field.
+   */
   protected function getData(string $name): mixed
   {
-    return $this->requestData[$name] ?? '';
+    return $this->requestData[$name] ?? null;
+  }
+
+  protected function getIncomeData(): array
+  {
+    return $this->incomeData;
+  }
+
+  protected function getValidatedData(): array
+  {
+    return $this->requestData;
   }
 
   protected function isFinished(): bool

@@ -5,7 +5,7 @@ namespace App\Core\Installer;
 use PDO;
 use PDOException;
 use App\Core\Data\ErrorBag;
-use App\Core\Facades\{App, Logs};
+use App\Core\Facades\{App, Config, Logs};
 
 /**
  * Automatic database installer.
@@ -63,7 +63,7 @@ final class DatabaseInstaller implements InstallerComponent
     } catch (PDOException $e) {
       $this->errorBag->addError(
         'database.connection',
-        'Encryption salts could not be created.',
+        'Error connecting with database.',
         [
           'throwable_message' => $e->getMessage() ?? 'UNKNOWN',
           'file' => $e->getFile() ?? 'UNKNOWN',
@@ -84,14 +84,91 @@ final class DatabaseInstaller implements InstallerComponent
    */
   public function run(): bool
   {
+    try {
+      Config::set('database.connections.default.options', [
+        \PDO::ATTR_EMULATE_PREPARES => true,
+        \PDO::MYSQL_ATTR_COMPRESS => true
+      ]);
+
+      App::rebind('config');
+    } catch (\Throwable $th) {
+      $this->errorBag->addError(
+        'database.reconnection',
+        'Error occurred while changing additional database options.',
+        [
+          'throwable_message' => $th->getMessage() ?? 'UNKNOWN',
+          'file' => $th->getFile() ?? 'UNKNOWN',
+          'code' => $th->getCode() ?? 'UNKNOWN',
+          'line' => $th->getLine() ?? 'UNKNOWN',
+          'trace' => $th->getTrace() ?? 'UNKNOWN'
+        ]
+      );
+
+      Logs::error('Installation failed - error occurred while changing additional database options.', ['exception' => $th]);
+    }
+
     /** If the data has been entered correctly, a connection to the database will be established. */
-    App::connect(true);
+    try {
+      App::connect(true);
+    } catch (\Throwable $th) {
+      $this->errorBag->addError(
+        'database.reconnection',
+        'Error reconnecting to the database.',
+        [
+          'throwable_message' => $th->getMessage() ?? 'UNKNOWN',
+          'file' => $th->getFile() ?? 'UNKNOWN',
+          'code' => $th->getCode() ?? 'UNKNOWN',
+          'line' => $th->getLine() ?? 'UNKNOWN',
+          'trace' => $th->getTrace() ?? 'UNKNOWN'
+        ]
+      );
+
+      Logs::error('Installation failed - error reconnecting to the database.', ['exception' => $th]);
+
+      return false;
+    }
 
     /** After a successful connection, the tables in the database will be created. */
-    \App\Common\Database\Schema::build(true);
+    try {
+      \App\Common\Database\Schema::build(true);
+    } catch (\Throwable $th) {
+      $this->errorBag->addError(
+        'database.schema',
+        'Error creating database tables.',
+        [
+          'throwable_message' => $th->getMessage() ?? 'UNKNOWN',
+          'file' => $th->getFile() ?? 'UNKNOWN',
+          'code' => $th->getCode() ?? 'UNKNOWN',
+          'line' => $th->getLine() ?? 'UNKNOWN',
+          'trace' => $th->getTrace() ?? 'UNKNOWN'
+        ]
+      );
+
+      Logs::error('Installation failed - error creating database tables.', ['exception' => $th]);
+
+      return false;
+    }
 
     /** Fill database with default values. */
-    \App\Common\Database\Prefill::fill();
+    try {
+      \App\Common\Database\Prefill::fill();
+    } catch (\Throwable $th) {
+      $this->errorBag->addError(
+        'database.fill',
+        'Error filling tables with basic data.',
+        [
+          'throwable_message' => $th->getMessage() ?? 'UNKNOWN',
+          'file' => $th->getFile() ?? 'UNKNOWN',
+          'code' => $th->getCode() ?? 'UNKNOWN',
+          'line' => $th->getLine() ?? 'UNKNOWN',
+          'trace' => $th->getTrace() ?? 'UNKNOWN'
+        ]
+      );
+
+      Logs::error('Installation failed - error filling tables with basic data.', ['exception' => $th]);
+
+      return false;
+    }
 
     return true;
   }

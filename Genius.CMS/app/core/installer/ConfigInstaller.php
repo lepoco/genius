@@ -66,6 +66,8 @@ final class ConfigInstaller implements InstallerComponent
       Config::set('database.connections.default.username', $this->user);
       Config::set('database.connections.default.password', $this->password);
 
+      Config::set('encryption.algorithm', $this->passwordAlgorithm);
+
       Config::set('salts.session', $this->salts['session']);
       Config::set('salts.cookie', $this->salts['cookie']);
       Config::set('salts.password', $this->salts['password']);

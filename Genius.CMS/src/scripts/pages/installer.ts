@@ -22,7 +22,7 @@ FormRequest.register("#install", function (status: string, response: any) {
       );
       window.setTimeout(function () {
         window.location.href = AppData.url();
-      }, 500);
+      }, 3000); // Wait 3 seconds to finish SQL queries
       break;
   }
 });

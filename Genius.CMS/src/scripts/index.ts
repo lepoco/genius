@@ -16,10 +16,12 @@ import LoadReveal from "./common/loadreveal";
 
 require("./../sass/style.scss");
 
-FormHelpers.init();
-Cookie.init();
-SignOut.init();
-LoadReveal.init();
+window.onload = function (e) {
+  FormHelpers.init();
+  Cookie.init();
+  SignOut.init();
+  LoadReveal.init();
+};
 
 if (AppData.isWorkerEnabled() && "serviceWorker" in navigator) {
   window.addEventListener("load", () => {

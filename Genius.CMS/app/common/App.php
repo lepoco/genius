@@ -47,7 +47,13 @@ final class App extends Bootstrap implements \App\Core\Schema\App
                 'password' => \App\Common\Config::DATABASE_PASS,
                 'collation' => 'utf8_general_ci',
                 'charset' => 'utf8',
+                'prefix' => '',
                 'strict' => false,
+                'engine' => null,
+                'options' => [
+                  \PDO::ATTR_EMULATE_PREPARES => true,
+                  \PDO::MYSQL_ATTR_COMPRESS => true
+                ]
               ]
             ]
           ],

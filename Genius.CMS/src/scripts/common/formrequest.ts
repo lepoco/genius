@@ -26,7 +26,7 @@ export default class FormRequest {
   }
 
   static ajax(
-    event: Event,
+    event: Event|SubmitEvent,
     form: HTMLFormElement,
     callAction: CallableFunction
   ) {
@@ -46,12 +46,24 @@ export default class FormRequest {
     let endpoint = AppData.gateway();
     let formData = new FormData(form);
 
+    if (event instanceof SubmitEvent && event.submitter instanceof HTMLButtonElement) {
+      if (event.submitter.name != null && event.submitter.value != null) {
+        formData.append(event.submitter.name, event.submitter.value);
+      }
+    }
+
     FormRequest.lockForm(form);
     FormRequest.clearAlertFields(form.elements);
 
     if (METHOD == "GET") {
       endpoint += FormRequest.urlEncode(formData);
     }
+
+    // if (AppData.isDebug()) {
+    //   for (var key of formData.entries()) {
+    //     console.debug(key[0] + ", " + key[1]);
+    //   }
+    // }
 
     XHR.open(METHOD, endpoint, true);
     XHR.onload = function () {

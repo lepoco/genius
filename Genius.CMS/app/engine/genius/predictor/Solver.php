@@ -10,4 +10,13 @@ namespace Engine\Genius\Predictor;
  */
 final class Solver
 {
+  public static function fromSession(array $data): self
+  {
+    return new self();
+  }
+
+  public function findNext(int $currentCondition, int $response): void
+  {
+    //123
+  }
 }

@@ -16,7 +16,7 @@
           class="--current_condition -pattern">{{ $question ?? '' }}</span></h4>
       @else
       <p><strong>{{ $question ?? '' }}</strong></p>
-      <h4 class="-font-secondary -fw-700 -pb-3"><span class="--current_condition">CON#1</span></h4>
+      <h4 class="-font-secondary -fw-700 -pb-3"><span class="--current_condition">{{ $currentCondition ?? '#' }}</span></h4>
       @endif
     </div>
 
@@ -26,20 +26,21 @@
         <input type="hidden" name="nonce" value="@nonce('answer')" />
         <input type="hidden" name="system_id" value="{{ $system->getId() ?? '0' }}" />
         <input type="hidden" name="system_uuid" value="{{ $system->getUUID() ?? '' }}" />
+        <input type="hidden" name="system_session" value="@json( $systemSession, JSON_PRETTY_PRINT )" />
 
-        <button type="button" value="1" class="-yes btn btn-dark btn-mobile -lg-mr-1">@translate('Yes')</button>
-        <button type="button" value="2" class="-no btn btn-outline-dark btn-mobile -lg-mr-1">@translate('No')</button>
-        <button type="button" value="3" class="-dontknow btn btn-outline-dark btn-mobile">@translate('I do not know')</button>
+        <button type="submit" id="submit_yes" name="submit_yes" value="yes" class="-yes btn btn-dark btn-mobile -lg-mr-1">@translate('Yes')</button>
+        <button type="submit" id="submit_no" name="submit_no" value="no" class="-no btn btn-outline-dark btn-mobile -lg-mr-1">@translate('No')</button>
+        <button type="submit" id="submit_dontknow" name="submit_dontknow" value="dontknow" class="-dontknow btn btn-outline-dark btn-mobile">@translate('I do not know')</button>
       </form>
     </div>
 
-    <div class="col-12 -reveal">
+    {{-- <div class="col-12 -reveal">
       <hr>
       <h4 class="-font-secondary -fw-700 -pb-3 -reveal">@translate('DEBUG')</h4>
-      {{-- @dump($conditions ?? null)
-      @dump($products ?? null) --}}
+      @dump($conditions ?? null)
+      @dump($products ?? null)
       @dump($relations ?? null)
-    </div>
+    </div> --}}
   </div>
 </div>
 

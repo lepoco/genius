@@ -89,6 +89,11 @@ final class Routes extends Router
       'require_login' => true
     ],
     [
+      'path' => '/dashboard/users/add',
+      'namespace' => 'Dashboard\\UsersAdd',
+      'require_login' => true
+    ],
+    [
       'path' => '/dashboard/settings',
       'namespace' => 'Dashboard\\Settings',
       'require_login' => true

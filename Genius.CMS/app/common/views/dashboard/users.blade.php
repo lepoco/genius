@@ -10,7 +10,7 @@
       <h4 class="-font-secondary -fw-700 -pb-3 -reveal">@translate('Users')</h4>
     </div>
 
-    <div class="col-12">
+    <div class="col-12 -pb-4">
       <table class="table table-striped">
         <thead>
           <tr class="-reveal">
@@ -39,6 +39,10 @@
 
         </tbody>
       </table>
+    </div>
+
+    <div class="col-12 -reveal">
+      <a href="@url('dashboard/users/add')" class="btn btn-outline-dark btn-mobile">@translate('Add user')</a>
     </div>
   </div>
 </div>

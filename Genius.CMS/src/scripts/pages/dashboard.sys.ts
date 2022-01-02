@@ -9,4 +9,16 @@ import FormRequest from "./../common/formrequest";
  * @since   2.0.0
  */
 FormRequest.register("#answer", function (status: String, response: any) {
+  if (
+    response.hasOwnProperty("content") &&
+    response.content.hasOwnProperty("sessionData")
+  ) {
+    var element = document.querySelector('input[name="system_session"]');
+
+    if (element instanceof HTMLInputElement) {
+      element.value = response.content.sessionData;
+    }
+  }
+
+  console.debug(response);
 });

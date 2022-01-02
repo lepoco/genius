@@ -52,5 +52,9 @@ final class SysComposer extends Composer implements \App\Core\Schema\Composer
     $view->with('products', $products);
     $view->with('relations', $relations);
     $view->with('delete_url', Redirect::url('dashboard/delete/' . $system->getUUID()));
+
+    $view->with('currentCondition', "con##");
+
+    $view->with('systemSession', [123]);
   }
 }

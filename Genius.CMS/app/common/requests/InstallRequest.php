@@ -82,6 +82,13 @@ final class InstallRequest extends Request implements \App\Core\Schema\Request
       $this->finish(self::ERROR_INTERNAL_ERROR, Status::UNPROCESSABLE_ENTITY);
     }
 
+    try {
+      \Engine\Database\Schema::build();
+    } catch (\Throwable $th) {
+      $this->addContent('errors', [['title' => 'Unable to build expert system database', 'exception' => $th]]);
+      $this->finish(self::ERROR_INTERNAL_ERROR, Status::UNPROCESSABLE_ENTITY);
+    }
+
     $this->finish(self::CODE_SUCCESS, Status::OK);
   }
 }

@@ -7,7 +7,7 @@ use App\Core\Bootstrap;
 /**
  * Creates a static link to an existing application instance and its properties.
  *
- * @author  Pomianowski <kontakt@rapiddev.pl>
+ * @author  Pomianowski Leszek <pomian@student.ukw.edu.pl>
  * @license GPL-3.0 https://www.gnu.org/licenses/gpl-3.0.txt
  * @since   1.1.0
  */

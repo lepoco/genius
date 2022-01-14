@@ -22,51 +22,22 @@ final class Prefill
     // ROLES
     DB::table('user_roles')->insert([
       'name' => 'default',
-      'permissions' => '{p:[]}'
+      'permissions' => '{"p":["read","billing"]}'
     ]);
 
     DB::table('user_roles')->insert([
       'name' => 'manager',
-      'permissions' => '{p:[]}'
+      'permissions' => '{"p":["read","billing","admin_panel","admin_statistics"]}'
     ]);
 
     DB::table('user_roles')->insert([
       'name' => 'analyst',
-      'permissions' => '{p:[]}'
+      'permissions' => '{"p":["read","billing","admin_panel","admin_statistics"]}'
     ]);
 
     DB::table('user_roles')->insert([
       'name' => 'admin',
-      'permissions' => '{p:[\'all\']}'
-    ]);
-
-    // PLANS
-    DB::table('plans')->insert([
-      'name' => 'standard',
-      'tier' => 1,
-      'default' => true,
-      'capabilities' => '{c:[]}'
-    ]);
-
-    DB::table('plans')->insert([
-      'name' => 'plus',
-      'tier' => 2,
-      'default' => false,
-      'capabilities' => '{c:[]}'
-    ]);
-
-    DB::table('plans')->insert([
-      'name' => 'premium',
-      'tier' => 3,
-      'default' => false,
-      'capabilities' => '{c:[]}'
-    ]);
-
-    DB::table('plans')->insert([
-      'name' => 'trader',
-      'tier' => 4,
-      'default' => false,
-      'capabilities' => '{c:[]}'
+      'permissions' => '{"p":["all"]}'
     ]);
 
     // DUMMY USER

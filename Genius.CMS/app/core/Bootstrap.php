@@ -8,6 +8,7 @@ use App\Core\Facades\App;
 use App\Core\Email\Mailer;
 use App\Core\i18n\Translate;
 use App\Core\Cache\Redis;
+use App\Core\Cron\Cron;
 use Illuminate\Config\Repository;
 use Illuminate\Http\Request;
 use Illuminate\Database\Capsule\Manager;
@@ -19,7 +20,7 @@ use Illuminate\Log\LogManager;
  * Creates all connections and application objects.
  * Should be an abstraction to the App class.
  *
- * @author  Pomianowski <kontakt@rapiddev.pl>
+ * @author  Pomianowski Leszek <pomian@student.ukw.edu.pl>
  * @license GPL-3.0 https://www.gnu.org/licenses/gpl-3.0.txt
  * @since   1.1.0
  */
@@ -85,13 +86,13 @@ abstract class Bootstrap implements \App\Core\Schema\App
   {
     if (!$soft) {
       $this
-        ->setCache(new Redis())
         ->setSession(new Session());
     }
 
     $this
       ->setDatabase(new Manager($this->container))
-      ->setOptions(new Options());
+      ->setOptions(new Options())
+      ->setCache(new Redis($this->isInstalled()));
 
     $this->isConnected(true);
 
@@ -107,7 +108,15 @@ abstract class Bootstrap implements \App\Core\Schema\App
     }
 
     if (!$this->session->has('language')) {
-      $this->session->put('language', $this->configuration->get('i18n.default', 'pl_PL'));
+      $this->session->put('language', $this->configuration->get('i18n.default', 'en_US'));
+    }
+
+    if ($this->isInstalled()) {
+      $savedLanguage = $this->options->get('language', '');
+
+      if (!empty($savedLanguage)) {
+        $this->session->put('language', $savedLanguage);
+      }
     }
 
     $this->session->put('last_opened', $timeNow);
@@ -122,7 +131,7 @@ abstract class Bootstrap implements \App\Core\Schema\App
   {
     $this->translate = new Translate();
 
-    $langauge = $this->session->get('language', $this->configuration->get('i18n.default', 'pl_PL'));
+    $langauge = $this->session->get('language', $this->configuration->get('i18n.default', 'en_US'));
 
     // TODO: Detect browser specific language
     // TODO: Or, set language on front via dropdown
@@ -164,6 +173,8 @@ abstract class Bootstrap implements \App\Core\Schema\App
    */
   public function close(bool $exit = true): void
   {
+    $this->checkCron();
+
     $this->session->put('_rendered', time());
 
     $this->session->save();
@@ -304,6 +315,19 @@ abstract class Bootstrap implements \App\Core\Schema\App
     $this->rebind();
 
     \Illuminate\Support\Facades\Facade::setFacadeApplication($this->container);
+
+    return $this;
+  }
+
+  final protected function checkCron(): self
+  {
+    if (!$this->isInstalled()) {
+      return $this;
+    }
+
+    if ($this->options->get('cron_run_by_user', false)) {
+      Cron::runByUser($this->options->get('cron_last_run', ''));
+    }
 
     return $this;
   }

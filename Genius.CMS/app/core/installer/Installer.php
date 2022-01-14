@@ -8,7 +8,7 @@ use App\Core\Facades\Logs;
 /**
  * Automatic directory and database installer.
  *
- * @author  Pomianowski <kontakt@rapiddev.pl>
+ * @author  Pomianowski Leszek <pomian@student.ukw.edu.pl>
  * @license GPL-3.0 https://www.gnu.org/licenses/gpl-3.0.txt
  * @since   1.1.0
  */
@@ -22,6 +22,8 @@ final class Installer
 
   private UserInstaller $userInstaller;
 
+  private ManifestInstaller $manifestInstaller;
+
   private array $installerData = [];
 
   /**
@@ -34,6 +36,7 @@ final class Installer
     $this->configInstaller = new ConfigInstaller();
     $this->databaseInstaller = new DatabaseInstaller();
     $this->userInstaller = new UserInstaller();
+    $this->manifestInstaller = new ManifestInstaller();
   }
 
   /**
@@ -83,6 +86,12 @@ final class Installer
 
     // Finally, we save the settings to a file.
     if (!$this->configInstaller->run()) {
+      $this->mergeErrorBags();
+
+      return false;
+    }
+
+    if (!$this->manifestInstaller->run()) {
       $this->mergeErrorBags();
 
       return false;
@@ -145,6 +154,7 @@ final class Installer
     $this->errorBag->merge($this->configInstaller->getErrorBag());
     $this->errorBag->merge($this->databaseInstaller->getErrorBag());
     $this->errorBag->merge($this->userInstaller->getErrorBag());
+    $this->errorBag->merge($this->manifestInstaller->getErrorBag());
 
     return true;
   }
@@ -172,6 +182,8 @@ final class Installer
       $this->getData('user.email'),
       $this->getData('user.password')
     );
+
+    $this->manifestInstaller->setup();
 
     return true;
   }

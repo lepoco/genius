@@ -11,7 +11,7 @@ use App\Core\Utils\Cast;
 /**
  * Used to manage user accounts
  *
- * @author  Pomianowski <kontakt@rapiddev.pl>
+ * @author  Pomianowski Leszek <pomian@student.ukw.edu.pl>
  * @license GPL-3.0 https://www.gnu.org/licenses/gpl-3.0.txt
  * @since   1.1.0
  */
@@ -147,7 +147,8 @@ final class Account
   public static function getBy(string $type = 'email', int|string $data = ''): ?User
   {
     // TODO: User cache with flush if new
-    $userId = Cache::remember('user.getby.' . $type . '_' . $data, 120, function () use ($type, $data) {
+    $cacheKey = 'key_' . strtolower(preg_replace("/[^a-z0-9_-]/", '', $data));
+    $userId = Cache::remember('user.getby.' . $type . '_' . $cacheKey, 120, function () use ($type, $data) {
       if ('id' === $type) {
         return (int) $data;
       }
@@ -169,6 +170,49 @@ final class Account
 
         default:
           $query = DB::table('users')->where('email', $data)->first();
+          break;
+      }
+
+      if (!isset($query->id)) {
+        return 0;
+      }
+
+      return $query->id;
+    });
+
+    if (0 === $userId) {
+      return null;
+    }
+
+    return new User($userId);
+  }
+
+  public static function getLike(string $type = 'email', int|string $data = ''): ?User
+  {
+    // TODO: User cache with flush if new
+    $cacheKey = 'key_' . strtolower(preg_replace("/[^a-z0-9_-]/", '', $data));
+    $userId = Cache::remember('user.getlike.' . $type . '_' . $cacheKey, 120, function () use ($type, $data) {
+      if ('id' === $type) {
+        return (int) $data;
+      }
+
+      $query = null;
+
+      switch ($type) {
+        case 'name':
+          $query = DB::table('users')->where('name', 'like', $data)->first();
+          break;
+
+        case 'uuid':
+          $query = DB::table('users')->where('uuid', 'like', $data)->first();
+          break;
+
+        case 'display_name':
+          $query = DB::table('users')->whereRaw('UPPER(`display_name`) LIKE ? ', ['%' . trim(strtoupper($data)) . '%'])->first();
+          break;
+
+        default:
+          $query = DB::table('users')->where('email', 'like', $data)->first();
           break;
       }
 

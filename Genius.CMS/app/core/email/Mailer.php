@@ -3,7 +3,7 @@
 namespace App\Core\Email;
 
 use App\Core\Email\Template;
-use App\Core\Facades\{Config, Option};
+use App\Core\Facades\{Config, Logs, Option};
 use App\Core\Http\Redirect;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -11,7 +11,7 @@ use PHPMailer\PHPMailer\Exception;
 /**
  * Contains necessary logic to send e-mails.
  *
- * @author  Pomianowski <kontakt@rapiddev.pl>
+ * @author  Pomianowski Leszek <pomian@student.ukw.edu.pl>
  * @license GPL-3.0 https://www.gnu.org/licenses/gpl-3.0.txt
  * @since   1.1.0
  */
@@ -70,7 +70,8 @@ final class Mailer
 
       return true;
     } catch (Exception $e) {
-      //echo "Message could not be sent. Mailer Error: {$this->mail->ErrorInfo}";
+      Logs::error("Error while sending email", ['exception' => $e]);
+
       return false;
     }
   }
@@ -108,18 +109,19 @@ final class Mailer
       return $this;
     }
 
-    // TODO: Work with SMTP, optionally Google 0Auth
     $this->mailer->isSMTP();                                                 //Send using SMTP
 
+    $this->mailer->SMTPAuth   = (bool) Option::get('mail_smtp_auth', false); //Enable SMTP authentication
     $this->mailer->Username   = $smtpUser;                                   //SMTP username
     $this->mailer->Host       = Option::get('mail_smtp_host', '');           //Set the SMTP server to send through
-    $this->mailer->SMTPAuth   = (bool) Option::get('mail_smtp_auth', false); //Enable SMTP authentication
     $this->mailer->Password   = Option::get('mail_smtp_password', '');       //SMTP password
-    $this->mailer->Port       = (int) Option::get('mail_smtp_port', 465);    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
+    $this->mailer->Port       = (int)Option::get('mail_smtp_port', 25);      //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
 
-    if (Option::get('mail_smtp_encryption', 'smtps') === 'starttls') {
+    $encryption = trim(Option::get('mail_smtp_encryption', 'disabled'));
+
+    if ($encryption === 'starttls') {
       $this->mailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-    } else {
+    } elseif ($encryption === 'smtps') {
       $this->mailer->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
     }
 

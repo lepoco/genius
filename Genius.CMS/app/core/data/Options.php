@@ -7,7 +7,7 @@ use App\Core\Facades\{App, DB, Cache};
 /**
  * Allows to retrieve and save options from the database, stored in memory using the Cache.
  *
- * @author  Pomianowski <kontakt@rapiddev.pl>
+ * @author  Pomianowski Leszek <pomian@student.ukw.edu.pl>
  * @license GPL-3.0 https://www.gnu.org/licenses/gpl-3.0.txt
  * @since   1.1.0
  */
@@ -26,16 +26,20 @@ final class Options
     return $db;
   }
 
-  public function get(string $name, mixed $default = null): mixed
+  public function get(string $name, mixed $default = null, bool $cache = true): mixed
   {
-    if (Cache::has('options.' . $name)) {
-      return Cache::get('options.' . $name, 'CACHE_ERROR');
+    if ($cache) {
+      if (Cache::has('options.' . $name)) {
+        return Cache::get('options.' . $name, 'CACHE_ERROR');
+      }
     }
 
     $db = $this->getFromDatabase($name, $default);
 
     // TODO: This is where we may have problems, we can do FORCE REFRESH or something
-    Cache::put('options.' . $name, $db);
+    if ($cache) {
+      Cache::put('options.' . $name, $db);
+    }
 
     return $db;
   }

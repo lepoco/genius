@@ -289,9 +289,13 @@ abstract class Request extends Renderable implements \App\Core\Schema\Request
   /**
    * Returns an optional option that does not need to be validated.
    */
-  protected function optional(string $name): mixed
+  protected function optional(string $name, bool $escape = true): mixed
   {
-    return htmlspecialchars($this->incomeData[$name] ?? '', ENT_QUOTES);
+    if ($escape) {
+      return trim(htmlspecialchars($this->incomeData[$name] ?? '', ENT_QUOTES));
+    } else {
+      return trim($this->incomeData[$name] ?? '');
+    }
   }
 
   protected function isTrue(string $name): bool

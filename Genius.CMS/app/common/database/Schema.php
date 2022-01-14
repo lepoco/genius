@@ -39,15 +39,12 @@ final class Schema
     DB::schema()->dropIfExists('statistics_types');
     DB::schema()->dropIfExists('statistics_ips');
 
-    DB::schema()->dropIfExists('user_billings');
     DB::schema()->dropIfExists('user_newsletters');
-    DB::schema()->dropIfExists('user_plans');
     DB::schema()->dropIfExists('user_confirmations');
 
     DB::schema()->dropIfExists('users');
 
     DB::schema()->dropIfExists('user_roles');
-    DB::schema()->dropIfExists('plans');
     DB::schema()->dropIfExists('confirmation_types');
   }
 
@@ -71,18 +68,6 @@ final class Schema
         $table->id();
         $table->string('name');
         $table->text('permissions');
-        $table->timestamp('created_at')->useCurrent();
-        $table->timestamp('updated_at')->nullable()->useCurrent();
-      });
-    }
-
-    if (!DB::schema()->hasTable('plans')) {
-      DB::schema()->create('plans', function (Blueprint $table) {
-        $table->id();
-        $table->string('name');
-        $table->text('capabilities');
-        $table->integer('tier')->nullable();
-        $table->boolean('default')->default(false);
         $table->timestamp('created_at')->useCurrent();
         $table->timestamp('updated_at')->nullable()->useCurrent();
       });
@@ -118,17 +103,6 @@ final class Schema
       });
     }
 
-    if (!DB::schema()->hasTable('user_plans')) {
-      DB::schema()->create('user_plans', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('user_id')->references('id')->on('users');
-        $table->foreignId('plan_id')->references('id')->on('plans');
-        $table->timestamp('expires_at')->nullable();
-        $table->timestamp('created_at')->useCurrent();
-        $table->timestamp('updated_at')->nullable()->useCurrent();
-      });
-    }
-
     if (!DB::schema()->hasTable('user_confirmations')) {
       DB::schema()->create('user_confirmations', function (Blueprint $table) {
         $table->id();
@@ -137,25 +111,6 @@ final class Schema
         $table->text('token')->nullable();
         $table->timestamp('created_at')->useCurrent();
         $table->boolean('is_confirmed')->default(false);
-        $table->timestamp('updated_at')->nullable()->useCurrent();
-      });
-    }
-
-    if (!DB::schema()->hasTable('user_billings')) {
-      DB::schema()->create('user_billings', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('user_id')->references('id')->on('users');
-        $table->string('first_name')->nullable();
-        $table->string('last_name')->nullable();
-        $table->string('street')->nullable();
-        $table->string('postal')->nullable();
-        $table->string('city')->nullable();
-        $table->string('country')->nullable();
-        $table->string('province')->nullable();
-        $table->text('phone')->nullable();
-        $table->text('email')->nullable();
-        $table->text('timezone')->nullable();
-        $table->timestamp('created_at')->useCurrent();
         $table->timestamp('updated_at')->nullable()->useCurrent();
       });
     }

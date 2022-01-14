@@ -8,21 +8,23 @@ use App\Core\Data\Encryption;
 /**
  * Creates a set of rules to protect the site from XSS attacks.
  *
- * @author  Pomianowski <kontakt@rapiddev.pl>
+ * @author  Pomianowski Leszek <pomian@student.ukw.edu.pl>
  * @license GPL-3.0 https://www.gnu.org/licenses/gpl-3.0.txt
  * @since   1.1.0
  */
 final class ContentSecurityPolicy
 {
-  private bool $allowObjects;
+  private bool $allowObjects = false;
 
-  private bool $allowFrames;
+  private bool $allowFrames = false;
 
-  private bool $allowExternalImages;
+  private bool $allowExternalImages = false;
 
-  private bool $allowInlineScripts;
+  private bool $allowInlineScripts = false;
 
-  private bool $allowInlineStyles;
+  private bool $allowInlineStyles = false;
+
+  private bool $allowUnsafeEvalScripts = false;
 
   private string $root;
 
@@ -50,6 +52,10 @@ final class ContentSecurityPolicy
     $this->allowFrames = $frames;
     $this->allowObjects = $objects;
     $this->allowExternalImages = $externalImages;
+
+    if (defined('APPDEBUG') && APPDEBUG) {
+      $this->allowUnsafeEvalScripts = true;
+    }
 
     return $this;
   }
@@ -174,6 +180,10 @@ final class ContentSecurityPolicy
 
     if ($this->allowInlineScripts) {
       $source .= ' \'unsafe-inline\'';
+    }
+
+    if ($this->allowUnsafeEvalScripts) {
+      $source .= ' \'unsafe-eval\'';
     }
 
     return ' script-src ' . $source . ';';

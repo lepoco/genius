@@ -10,7 +10,7 @@ use App\Core\Facades\{App, Config, Logs};
 /**
  * Automatic database installer.
  *
- * @author  Pomianowski <kontakt@rapiddev.pl>
+ * @author  Pomianowski Leszek <pomian@student.ukw.edu.pl>
  * @license GPL-3.0 https://www.gnu.org/licenses/gpl-3.0.txt
  * @since   1.1.0
  */
@@ -86,8 +86,8 @@ final class DatabaseInstaller implements InstallerComponent
   {
     try {
       Config::set('database.connections.default.options', [
-        \PDO::ATTR_EMULATE_PREPARES => true,
-        \PDO::MYSQL_ATTR_COMPRESS => true
+        /*\PDO::ATTR_EMULATE_PREPARES*/20 => true,
+        /*\PDO::MYSQL_ATTR_COMPRESS*/1003 => true
       ]);
 
       App::rebind('config');

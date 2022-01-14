@@ -10,7 +10,7 @@ use App\Core\Utils\Path;
 /**
  * Main class of the application. Contains all logic.
  *
- * @author  Pomianowski <kontakt@rapiddev.pl>
+ * @author  Pomianowski Leszek <pomian@student.ukw.edu.pl>
  * @license GPL-3.0 https://www.gnu.org/licenses/gpl-3.0.txt
  * @since   1.1.0
  */
@@ -27,12 +27,15 @@ final class App extends Bootstrap implements \App\Core\Schema\App
         new Config([
           'app' => [
             'name' => 'Genius',
-            'version' => '2.0.0',
+            'short_name' => 'Genius',
+            'version' => '2.1.0',
+            'description' => 'Expert systems',
             'log_level' => 'debug',
-            'debug' => true
+            'color' => '#191c1f',
+            'debug' => defined('APPDEBUG') && APPDEBUG
           ],
           'i18n' => [
-            'default' => 'pl_PL',
+            'default' => 'en_US',
             'path' => Path::getAppPath('common/languages')
           ],
           'database' => [
@@ -51,8 +54,9 @@ final class App extends Bootstrap implements \App\Core\Schema\App
                 'strict' => false,
                 'engine' => null,
                 'options' => [
-                  \PDO::ATTR_EMULATE_PREPARES => true,
-                  \PDO::MYSQL_ATTR_COMPRESS => true
+                  // TODO: This option is terrible, but our current hosting requires it.
+                  /*\PDO::ATTR_EMULATE_PREPARES*/20 => true,
+                  /*\PDO::MYSQL_ATTR_COMPRESS*/1003 => true
                 ]
               ]
             ]
@@ -66,7 +70,8 @@ final class App extends Bootstrap implements \App\Core\Schema\App
             'password' => \App\Common\Config::SALT_PASSWORD,
             'nonce' => \App\Common\Config::SALT_NONCE,
             'token' => \App\Common\Config::SALT_TOKEN,
-            'webauth' => \App\Common\Config::SALT_WEBAUTH
+            'webauth' => \App\Common\Config::SALT_WEBAUTH,
+            'passphrase' => \App\Common\Config::SALT_PASSPHRASE
           ],
           'storage' => [
             'logs' => Path::getAppPath('storage/logs'),

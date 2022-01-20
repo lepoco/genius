@@ -1,0 +1,59 @@
+# Taken from LibreHardwareMonitor https://github.com/LibreHardwareMonitor/LibreHardwareMonitor/blob/master/.github/workflows/main.yml
+
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-2022
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: microsoft/setup-msbuild@v1.1
+        with:
+          msbuild-architecture: x64
+      - uses: nuget/setup-nuget@v1
+        with:
+          nuget-version: 'latest'
+      - uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            buildprops:
+              - 'Directory.Build.props'
+
+      - name: Update version
+        if: steps.changes.outputs.buildprops == 'false'
+        run: |
+            (Get-Content Directory.Build.props) | % {
+                $m = [regex]::match($_, '<Version>(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?</Version>');
+                if(!$m.Success -or $m.Groups[4].Success -or $m.Groups[5].Success) { $_; }
+                else { $_ -replace $m.Value, ("<Version>{0}.{1}.{2}-prerelease${{ github.run_number }}</Version>" -f $m.Groups[1].Value,$m.Groups[2].Value,([convert]::ToInt32($m.Groups[3].Value)+1)); }
+            } | Set-Content Directory.Build.props
+
+      - name: NuGet restore
+        run: nuget restore Genius.sln
+
+      - name: Build
+        run: msbuild Genius.sln -p:Configuration=Release -m
+
+      - name: Publish net60
+        uses: actions/upload-artifact@v2
+        id: publish_net6
+        with:
+          name: genius-net6
+          path: |
+            Genius/bin/Release/net6.0
+
+      - name: Publish client net60
+        uses: actions/upload-artifact@v2
+        id: publish_client_net6
+        with:
+          name: genius-net6
+          path: |
+            Genius.Client/bin/Release/net6.0

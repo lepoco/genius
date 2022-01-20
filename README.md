@@ -1,2 +1,3 @@
 # Genius
-Genius conditional expert system creator. In this program, you can both create and run ready-made expert systems.
+[Created with ❤ in Poland by lepo.co](https://dev.lepo.co/)  
+Genius is a microservice-based tool for building expert systems.

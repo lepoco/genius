@@ -14,12 +14,22 @@ updates:
 
   # Maintain dependencies for npm
   - package-ecosystem: "npm"
-    directory: "Genius.CMS/"
+    directory: "Genius.Client/ClientApp/"
     schedule:
       interval: "daily"
 
-  # Maintain dependencies for Composer
-  - package-ecosystem: "composer"
-    directory: "Genius.CMS/"
+  # Maintain dependencies for nuget
+  - package-ecosystem: "nuget"
+    directory: "Genius/"
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "nuget"
+    directory: "Genius.Protocol/"
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "nuget"
+    directory: "Genius.Client/"
     schedule:
       interval: "daily"

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import IProps from '../../interfaces/IProps';
 
 export class Sys extends Component<IProps> {

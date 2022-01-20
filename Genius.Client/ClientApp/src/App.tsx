@@ -1,35 +1,39 @@
-import React, { Component } from 'react'
-import { Route, Routes } from 'react-router-dom'
+import React, { Component } from 'react';
+import { Route, Routes } from 'react-router-dom';
 //import { Dropdown as BootstrapDropdown } from "bootstrap";
 
-import { Layout } from './components/Layout'
-import { Home } from './components/Home'
-import { Licenses } from './components/Licenses'
-import { Legal } from './components/Legal'
-import { Terms } from './components/Terms'
-import { Privacy } from './components/Privacy'
-import { SignIn } from './components/SignIn'
-import { Counter } from './components/Counter'
+import { Layout } from './pages/Layout';
+import { Home } from './pages/Home';
+import { Licenses } from './pages/Licenses';
+import { Legal } from './pages/Legal';
+import { Terms } from './pages/Terms';
+import { Privacy } from './pages/Privacy';
+import { SignIn } from './pages/SignIn';
+import { Counter } from './pages/Counter';
 
-import { Main as Dashboard } from './components/dashboard/Main'
-import { Account } from './components/dashboard/Account'
-import { Statistics } from './components/dashboard/Statistics'
-import { Users } from './components/dashboard/Users'
-import { Password } from './components/dashboard/Password'
-import { Settings } from './components/dashboard/Settings'
-import { Sys as System } from './components/dashboard/Sys'
-import { Add as SystemAdd } from './components/dashboard/Add'
-import { Delete as SystemDelete } from './components/dashboard/Delete'
-import { Edit as SystemEdit } from './components/dashboard/Edit'
+import { Main as Dashboard } from './pages/dashboard/Main';
+import { Account } from './pages/dashboard/Account';
+import { Statistics } from './pages/dashboard/Statistics';
+import { Users } from './pages/dashboard/Users';
+import { Password } from './pages/dashboard/Password';
+import { Settings } from './pages/dashboard/Settings';
+import { Sys as System } from './pages/dashboard/Sys';
+import { Add as SystemAdd } from './pages/dashboard/Add';
+import { Delete as SystemDelete } from './pages/dashboard/Delete';
+import { Edit as SystemEdit } from './pages/dashboard/Edit';
 
-import { NotFound } from './components/NotFound'
+import { NotFound } from './pages/NotFound';
 
 // window.onload = function (e) {
 //   new BootstrapDropdown();
 // };
 
 export default class App extends Component {
-  static displayName = App.name
+  static displayName = App.name;
+
+  // constructor(props) {
+  //   super(props);
+  // }
 
   render() {
     return (
@@ -58,6 +62,6 @@ export default class App extends Component {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Layout>
-    )
+    );
   }
 }

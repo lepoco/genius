@@ -39,6 +39,6 @@ jobs:
         uses: actions/upload-artifact@v2
         id: publish_client_net6
         with:
-          name: genius-net6
+          name: genius-client-net6
           path: |
             Genius.Client/bin/Release/net6.0

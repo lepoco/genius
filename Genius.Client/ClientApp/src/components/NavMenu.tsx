@@ -1,7 +1,24 @@
-import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
-export class NavMenu extends Component {
-  static displayName = NavMenu.name
+import { Component } from 'react';
+import withRouter from './../common/withRouter';
+import IRouterProps from './../interfaces/IRouterProps';
+import IRouter from './../interfaces/IRouter';
+import { Link } from 'react-router-dom';
+import { Dropdown as BootstrapDropdown } from 'bootstrap';
+
+class NavMenu extends Component<IRouterProps> {
+  static displayName = NavMenu.name;
+
+  router: IRouter;
+
+  constructor(props: IRouterProps) {
+    super(props);
+
+    this.router = props.router;
+
+    window.onload = function (e) {
+      new BootstrapDropdown();
+    };
+  }
 
   // constructor (props) {
   //   super(props);
@@ -22,9 +39,9 @@ export class NavMenu extends Component {
     return (
       <section className="navbar navbar-expand-lg navbar-light">
         <div className="container">
-          <a className="navbar-brand" href="/">
+          <Link className="navbar-brand" to={'/'}>
             <p>Genius</p>
-          </a>
+          </Link>
           <button
             className="navbar-toggler"
             type="button"
@@ -32,8 +49,7 @@ export class NavMenu extends Component {
             data-bs-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent"
             aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
+            aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
           </button>
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
@@ -41,37 +57,37 @@ export class NavMenu extends Component {
             <div className="d-flex -lg-mr-2">
               <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                 <li className="nav-item">
-                  <a className="nav-link" href="/dashboard">
+                  <Link className="nav-link" to={'/dashboard'}>
                     Dashboard
-                  </a>
+                  </Link>
                 </li>
 
                 <li className="nav-item">
-                  <a className="nav-link" href="/dashboard/add">
+                  <Link className="nav-link" to={'/dashboard/add'}>
                     Add new
-                  </a>
+                  </Link>
                 </li>
 
                 <li className="nav-item">
-                  <a className="nav-link" href="/dashboard/account">
+                  <Link className="nav-link" to={'/dashboard/account'}>
                     Account
-                  </a>
+                  </Link>
                 </li>
 
                 <li className="nav-item">
-                  <a className="nav-link" href="/dashboard/statistics">
+                  <Link className="nav-link" to={'/dashboard/statistics'}>
                     Statistics
-                  </a>
+                  </Link>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link" href="/dashboard/users">
+                  <Link className="nav-link" to={'/dashboard/users'}>
                     Users
-                  </a>
+                  </Link>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link" href="/dashboard/settings">
+                  <Link className="nav-link" to={'/dashboard/settings'}>
                     Settings
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -82,6 +98,8 @@ export class NavMenu extends Component {
           </div>
         </div>
       </section>
-    )
+    );
   }
 }
+
+export default withRouter(NavMenu);

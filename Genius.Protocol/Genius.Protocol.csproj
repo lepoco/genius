@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Protos\expert.proto" />
+    <None Remove="Protos\statistic.proto" />
+    <None Remove="Protos\user.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Protobuf" Version="3.19.3" />
+    <PackageReference Include="Grpc.Net.Common" Version="2.42.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.43.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="Protos\expert.proto" />
+    <Protobuf Include="Protos\statistic.proto" />
+    <Protobuf Include="Protos\user.proto" />
+  </ItemGroup>
+
+</Project>

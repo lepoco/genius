@@ -1,0 +1,86 @@
+﻿// This Source Code Form is subject to the terms of the GNU GPL-3.0 License.
+// If a copy of the GPL-3.0 was not distributed with this file, You can obtain one at https://www.gnu.org/licenses/gpl-3.0.en.html.
+// Copyright (C) 2022 Leszek Pomianowski.
+// All Rights Reserved.
+
+syntax = "proto3";
+
+option csharp_namespace = "GeniusProtocol";
+
+package GeniusProtocol;
+
+service Expert {
+	rpc Create(ExpertModel) returns (ExpertResponseModel);
+
+	rpc Update(ExpertModel) returns (ExpertResponseModel);
+
+	rpc Get(ExpertLookupModel) returns (ExpertModel);
+
+	rpc GetAll(ExpertEmptyModel) returns (stream ExpertModel);
+
+	rpc Delete(ExpertLookupModel) returns (ExpertResponseModel);
+
+	rpc AddCondition(ConditionModel) returns (ExpertResponseModel);
+
+	rpc UpdateCondition(ConditionModel) returns (ExpertResponseModel);
+
+	rpc AddProduct(ProductModel) returns (ExpertResponseModel);
+
+	rpc UpdateProduct(ProductModel) returns (ExpertResponseModel);
+
+	rpc AddRelation(RelationModel) returns (ExpertResponseModel);
+
+	rpc UpdateRelation(RelationModel) returns (ExpertResponseModel);
+}
+
+enum RelationType {
+	COMPILANCE = 0;
+	CONTRADICTION = 1;
+	DISREGARD = 2;
+}
+
+message ExpertModel {
+	int32 id = 1;
+	string version = 2;
+	string guid = 3;
+	string name = 4;
+	string description = 5;
+	string question = 6;
+	string created_at = 7;
+	string updated_at = 8;
+}
+
+message ProductModel {
+	int32 id = 1;
+	int32 system_id = 2;
+	string name = 3;
+	string description = 4;
+}
+
+message ConditionModel {
+	int32 id = 1;
+	int32 system_id = 2;
+	string name = 3;
+	string description = 4;
+}
+
+message RelationModel {
+	int32 id = 1;
+	int32 system_id = 2;
+	int32 product_id = 3;
+	int32 condition_id = 4;
+	int32 weight = 5;
+	RelationType type = 6;
+}
+
+message ExpertEmptyModel {
+}
+
+message ExpertLookupModel {
+	int32 id = 1;
+	string guid = 2;
+}
+
+message ExpertResponseModel {
+	int32 id = 1;
+}

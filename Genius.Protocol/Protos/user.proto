@@ -1,0 +1,39 @@
+﻿// This Source Code Form is subject to the terms of the GNU GPL-3.0 License.
+// If a copy of the GPL-3.0 was not distributed with this file, You can obtain one at https://www.gnu.org/licenses/gpl-3.0.en.html.
+// Copyright (C) 2022 Leszek Pomianowski.
+// All Rights Reserved.
+
+syntax = "proto3";
+
+option csharp_namespace = "GeniusProtocol";
+
+package GeniusProtocol;
+
+service User {
+	rpc Get(UserLookupModel) returns (UserResponseModel);
+
+	rpc Register(UserModel) returns (UserResponseModel);
+}
+
+enum UserRole {
+	DEFAULT = 0;
+	ANALYST = 1;
+	MODERATOR = 2;
+	ADMIN = 3;
+}
+
+message UserModel {
+	int32 id = 1;
+	UserRole role = 2;
+	string username = 3;
+	string email = 4;
+	string password = 5;
+}
+
+message UserLookupModel {
+	int32 id = 1;
+}
+
+message UserResponseModel {
+	int32 id = 1;
+}

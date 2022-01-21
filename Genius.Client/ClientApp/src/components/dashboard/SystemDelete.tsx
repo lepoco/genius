@@ -5,15 +5,14 @@
  * All Rights Reserved.
  */
 
-import React, { Component } from 'react';
 import withRouter from './../../common/withRouter';
 import IRouterProps from './../../interfaces/IRouterProps';
 import IExpertState from './../../interfaces/IExpertState';
 import RoutedComponent from '../../common/RoutedComponent';
 import { Link } from 'react-router-dom';
 
-class Delete extends RoutedComponent<IExpertState> {
-  static displayName = Delete.name;
+class SystemDelete extends RoutedComponent<IExpertState> {
+  static displayName = SystemDelete.name;
 
   constructor(props: IRouterProps) {
     super(props);
@@ -159,7 +158,7 @@ class Delete extends RoutedComponent<IExpertState> {
         <em>Loading...</em>
       </p>
     ) : (
-      Delete.renderSystemView(this.state)
+      SystemDelete.renderSystemView(this.state)
     );
 
     return (
@@ -182,4 +181,4 @@ class Delete extends RoutedComponent<IExpertState> {
   }
 }
 
-export default withRouter(Delete);
+export default withRouter(SystemDelete);

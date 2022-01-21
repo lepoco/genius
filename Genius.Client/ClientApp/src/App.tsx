@@ -24,10 +24,10 @@ import { Statistics } from './components/dashboard/Statistics';
 import { Users } from './components/dashboard/Users';
 import { Password } from './components/dashboard/Password';
 import { Settings } from './components/dashboard/Settings';
-import { Sys as System } from './components/dashboard/Sys';
+import System from './components/dashboard/System';
 import { Add as SystemAdd } from './components/dashboard/Add';
-import Delete from './components/dashboard/Delete';
-import Edit from './components/dashboard/Edit';
+import SystemDelete from './components/dashboard/SystemDelete';
+import SystemEdit from './components/dashboard/SystemEdit';
 
 import { NotFound } from './components/NotFound';
 
@@ -55,8 +55,8 @@ class App extends RoutedComponent {
 
           <Route path="/dashboard/sys/:guid" element={<System />} />
           <Route path="/dashboard/add" element={<SystemAdd />} />
-          <Route path="/dashboard/edit/:guid" element={<Edit />} />
-          <Route path="/dashboard/delete/:guid" element={<Delete />} />
+          <Route path="/dashboard/edit/:guid" element={<SystemEdit />} />
+          <Route path="/dashboard/delete/:guid" element={<SystemDelete />} />
 
           <Route path="*" element={<NotFound />} />
         </Routes>

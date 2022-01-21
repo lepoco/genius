@@ -5,15 +5,16 @@
  * All Rights Reserved.
  */
 
-import React, { Component } from 'react';
+import { Component } from 'react';
 import withRouter from './../../common/withRouter';
 import IRouterProps from './../../interfaces/IRouterProps';
 import IRouter from './../../interfaces/IRouter';
 import IExpertState from './../../interfaces/IExpertState';
 import { Link } from 'react-router-dom';
+import { FloatingTags } from '../FloatingTags';
 
-class Edit extends Component<IRouterProps, IExpertState> {
-  static displayName = Edit.name;
+class SystemEdit extends Component<IRouterProps, IExpertState> {
+  static displayName = SystemEdit.name;
 
   router: IRouter;
 
@@ -141,7 +142,7 @@ class Edit extends Component<IRouterProps, IExpertState> {
 
             <div className="-reveal">
               <p>
-                Product is the final result of the application\'s operation. If
+                Product is the final result of the application's operation. If
                 the purpose of the system is to select the best garden gnomes,
                 the product can be - Red Gnome by iGnome INC.
               </p>
@@ -167,44 +168,21 @@ class Edit extends Component<IRouterProps, IExpertState> {
               <label htmlFor="product_description">Description</label>
             </div>
 
-            <div className="floating-input -reveal">
-              <input
-                className="floating-input__field"
-                type="text"
-                placeholder="Conditions (confirming)"
-                name="product_conditions_confirming"
-              />
-              <label htmlFor="product_conditions_confirming">
-                Conditions (confirming)
-              </label>
-            </div>
+            <p><small><i>Tip: At the bottom you can see all conditions already available in the database, you can add a new condition by typing its name and pressing enter.</i></small></p>
 
-            <div className="floating-tags -reveal">
-              <label htmlFor="product_conditions_negating">
-                Conditions (negating)
-              </label>
-              <div className="floating-tags__container">
-                <div className="floating-tags__list">
-                  <span className="tag">
-                    First condition
-                    <div className="close">
-                      <span data-role="remove"></span>
-                    </div>
-                  </span>
-                  <span className="tag">
-                    Second condition
-                    <div className="close">
-                      <span data-role="remove"></span>
-                    </div>
-                  </span>
-                </div>
-                <input
-                  type="text"
-                  placeholder="Conditions (negating)"
-                  name="product_conditions_negating"
-                />
-              </div>
-            </div>
+            <FloatingTags
+              name="product_conditions_confirming"
+              header="Conditions (confirming)"
+              options={{ 1: 'First condition', 3: 'Second condition' }}
+              selected={[3]}
+            />
+
+            <FloatingTags
+              name="product_conditions_negating"
+              header="Conditions (negating)"
+              options={{ 1: 'First condition', 3: 'Second condition' }}
+              selected={[3]}
+            />
 
             <div className="-reveal -pb-2">
               <button
@@ -214,6 +192,14 @@ class Edit extends Component<IRouterProps, IExpertState> {
               </button>
             </div>
           </form>
+        </div>
+
+        <div className="col-12">
+          <hr />
+        </div>
+
+        <div className="col-12">
+          <h5 className="-font-secondary -fw-700 -pb-1 -reveal">Products</h5>
         </div>
       </div>
     );
@@ -225,7 +211,7 @@ class Edit extends Component<IRouterProps, IExpertState> {
         <em>Loading...</em>
       </p>
     ) : (
-      Edit.renderSystemView(this.state)
+      SystemEdit.renderSystemView(this.state)
     );
 
     return (
@@ -242,4 +228,4 @@ class Edit extends Component<IRouterProps, IExpertState> {
   }
 }
 
-export default withRouter(Edit);
+export default withRouter(SystemEdit);

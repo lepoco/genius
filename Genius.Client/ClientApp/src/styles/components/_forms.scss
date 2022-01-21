@@ -135,10 +135,22 @@
 
   input {
     background: transparent;
-    width: 100%;
+    // width: 100%;
     padding: 1rem 0.5rem;
     margin: 0;
     border: 0;
+    outline: none;
+    border: 0;
+    text-decoration: none;
+
+    &:hover,
+    &:active,
+    &:focus,
+    &.active {
+      outline: none;
+      border: 0;
+      text-decoration: none;
+    }
   }
 
   &__container {
@@ -152,7 +164,6 @@
     width: 100%;
     height: auto;
     padding: 0 1rem;
-
     border: 0.2rem solid #dadce0;
     outline: none;
     border-radius: 0.5rem;

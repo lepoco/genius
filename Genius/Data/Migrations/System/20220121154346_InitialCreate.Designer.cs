@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Genius.Data.Migrations.System
 {
     [DbContext(typeof(SystemContext))]
-    [Migration("20220120124742_InitialCreate")]
+    [Migration("20220121154346_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

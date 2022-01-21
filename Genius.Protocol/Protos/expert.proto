@@ -55,6 +55,7 @@ message ProductModel {
 	int32 system_id = 2;
 	string name = 3;
 	string description = 4;
+	string notes = 5;
 }
 
 message ConditionModel {

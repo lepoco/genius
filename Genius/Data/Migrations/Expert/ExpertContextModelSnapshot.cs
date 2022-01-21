@@ -51,6 +51,9 @@ namespace Genius.Data.Migrations.Expert
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Notes")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("SystemId")
                         .HasColumnType("INTEGER");
 

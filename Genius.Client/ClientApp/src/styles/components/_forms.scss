@@ -110,6 +110,68 @@
       border-radius: 0; // stylelint-disable-line property-disallowed-list
     }
   }
+
+  &__tags {
+    display: inline-block;
+    position: absolute;
+    top: 1rem;
+    left: 1.1rem;
+    z-index: 6;
+
+    .tag {
+      display: inline;
+      padding: .7rem 1rem;
+      font-size: 1.2rem;
+      font-weight: 500;
+      line-height: 1;
+      color: #fff;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: baseline;
+      border-radius: .7rem;
+      background-color: #5bc0de;
+      color: #fff;
+      margin-right: .6rem;
+
+      .close {
+        position: relative;
+        display: inline-block;
+        width: 1.5rem;
+
+        & > [data-role="remove"] {
+          position: absolute;
+          top: -.9rem;
+          right: .3rem;
+          width: 1rem;
+          height: 1rem;
+          cursor: pointer;
+          opacity: 1;
+        }
+  
+        & > [data-role="remove"]:hover {
+          opacity: .5;
+        }
+  
+        & > [data-role="remove"]:after,
+        & > [data-role="remove"]:before {
+          position: absolute;
+          left: 1rem;
+          content: ' ';
+          height: 1rem;
+          width: .1rem;
+          background-color: #fff;
+        }
+  
+        & > [data-role="remove"]:before {
+          transform: rotate(45deg);
+        }
+  
+        & > [data-role="remove"]:after {
+          transform: rotate(-45deg);
+        }
+      }
+    }
+  }
 }
 
 .floating-radio {

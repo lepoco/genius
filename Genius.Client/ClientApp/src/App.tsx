@@ -1,7 +1,12 @@
-import React, { Component } from 'react';
+/**
+ * This Source Code Form is subject to the terms of the GNU GPL-3.0 License.
+ * If a copy of the GPL-3.0 was not distributed with this file, You can obtain one at https://www.gnu.org/licenses/gpl-3.0.en.html.
+ * Copyright (C) 2022 Leszek Pomianowski.
+ * All Rights Reserved.
+ */
+
 import { Route, Routes } from 'react-router-dom';
-import IRouterProps from './interfaces/IRouterProps';
-import IRouter from './interfaces/IRouter';
+import RoutedComponent from './common/RoutedComponent';
 import withRouter from './common/withRouter';
 
 import { Layout } from './components/Layout';
@@ -21,21 +26,13 @@ import { Password } from './components/dashboard/Password';
 import { Settings } from './components/dashboard/Settings';
 import { Sys as System } from './components/dashboard/Sys';
 import { Add as SystemAdd } from './components/dashboard/Add';
-import { Delete as SystemDelete } from './components/dashboard/Delete';
+import Delete from './components/dashboard/Delete';
 import Edit from './components/dashboard/Edit';
 
 import { NotFound } from './components/NotFound';
 
-class App extends Component<IRouterProps> {
+class App extends RoutedComponent {
   static displayName = App.name;
-
-  router: IRouter;
-
-  constructor(props: IRouterProps) {
-    super(props);
-
-    this.router = props.router;
-  }
 
   render() {
     return (
@@ -59,7 +56,7 @@ class App extends Component<IRouterProps> {
           <Route path="/dashboard/sys/:guid" element={<System />} />
           <Route path="/dashboard/add" element={<SystemAdd />} />
           <Route path="/dashboard/edit/:guid" element={<Edit />} />
-          <Route path="/dashboard/delete/:guid" element={<SystemDelete />} />
+          <Route path="/dashboard/delete/:guid" element={<Delete />} />
 
           <Route path="*" element={<NotFound />} />
         </Routes>

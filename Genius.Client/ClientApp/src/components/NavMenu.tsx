@@ -1,3 +1,10 @@
+/**
+ * This Source Code Form is subject to the terms of the GNU GPL-3.0 License.
+ * If a copy of the GPL-3.0 was not distributed with this file, You can obtain one at https://www.gnu.org/licenses/gpl-3.0.en.html.
+ * Copyright (C) 2022 Leszek Pomianowski.
+ * All Rights Reserved.
+ */
+
 import { Component } from 'react';
 import withRouter from './../common/withRouter';
 import IRouterProps from './../interfaces/IRouterProps';
@@ -74,7 +81,7 @@ class NavMenu extends Component<IRouterProps> {
                   </Link>
                 </li>
 
-                <li className="nav-item">
+                {/* <li className="nav-item">
                   <Link className="nav-link" to={'/dashboard/statistics'}>
                     Statistics
                   </Link>
@@ -83,7 +90,7 @@ class NavMenu extends Component<IRouterProps> {
                   <Link className="nav-link" to={'/dashboard/users'}>
                     Users
                   </Link>
-                </li>
+                </li> */}
                 <li className="nav-item">
                   <Link className="nav-link" to={'/dashboard/settings'}>
                     Settings

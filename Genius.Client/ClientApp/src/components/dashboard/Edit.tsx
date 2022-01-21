@@ -1,21 +1,18 @@
+/**
+ * This Source Code Form is subject to the terms of the GNU GPL-3.0 License.
+ * If a copy of the GPL-3.0 was not distributed with this file, You can obtain one at https://www.gnu.org/licenses/gpl-3.0.en.html.
+ * Copyright (C) 2022 Leszek Pomianowski.
+ * All Rights Reserved.
+ */
+
 import React, { Component } from 'react';
 import withRouter from './../../common/withRouter';
 import IRouterProps from './../../interfaces/IRouterProps';
 import IRouter from './../../interfaces/IRouter';
+import IExpertState from './../../interfaces/IExpertState';
 import { Link } from 'react-router-dom';
 
-interface IEditExpertState {
-  systemLoaded?: boolean;
-  systemId?: number;
-  systemGuid?: string;
-  systemVersion?: string;
-  systemName?: string;
-  systemDescription?: string;
-  systemType?: string;
-  systemQuestion?: string;
-}
-
-class Edit extends Component<IRouterProps, IEditExpertState> {
+class Edit extends Component<IRouterProps, IExpertState> {
   static displayName = Edit.name;
 
   router: IRouter;
@@ -34,6 +31,10 @@ class Edit extends Component<IRouterProps, IEditExpertState> {
       systemDescription: '',
       systemType: '',
       systemQuestion: '',
+      systemCreatedAt: '',
+      systemUpdatedAt: '',
+      systemConditions: {},
+      systemProducts: {},
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -57,6 +58,8 @@ class Edit extends Component<IRouterProps, IEditExpertState> {
       systemGuid: data.guid ?? '',
       systemQuestion: data.question ?? '',
       systemType: data.type ?? '',
+      systemCreatedAt: data.createdAt ?? '',
+      systemUpdatedAt: data.updatedAt ?? '',
       systemLoaded: true,
     });
   }
@@ -92,7 +95,7 @@ class Edit extends Component<IRouterProps, IEditExpertState> {
     //   });
   }
 
-  static renderSystemView(state: IEditExpertState) {
+  static renderSystemView(state: IExpertState) {
     if ((state.systemId ?? 0) < 1) {
       return <p>No systems found</p>;
     }
@@ -100,15 +103,25 @@ class Edit extends Component<IRouterProps, IEditExpertState> {
     return (
       <div className="row">
         <div className="col-12">
+          <div className="-reveal">
+            <span>System name</span>
+            <h5 className="-font-secondary -fw-700 -pb-3">
+              {state.systemName ?? ''}
+            </h5>
+          </div>
+          <div className="-reveal">
+            <span>Creation date:</span>
+            <h5 className="-font-secondary -fw-700 -pb-3">
+              {state.systemCreatedAt ?? '__unknown'}
+            </h5>
+          </div>
+
           <div className="-mb-3 -reveal">
-            <button className="btn btn-dark btn-mobile -lg-mr-1 -btn-add-product">
-              Add product
+            <button className="btn btn-dark btn-mobile -lg-mr-1 -btn-export">
+              Export
             </button>
-            <button className="btn btn-outline-dark btn-mobile -lg-mr-1 -btn-add-condition">
-              Add condition
-            </button>
-            <button className="btn btn-outline-dark btn-mobile -btn-add-relation -lg-mr-1">
-              Add relation
+            <button className="btn btn-outline-dark btn-mobile -btn-import -lg-mr-1">
+              Import
             </button>
             <Link to={'/dashboard/delete/' + state.systemGuid ?? '#'}>
               Remove the expert system
@@ -154,133 +167,43 @@ class Edit extends Component<IRouterProps, IEditExpertState> {
               <label htmlFor="product_description">Description</label>
             </div>
 
-            <div className="-reveal -pb-2">
-              <button
-                type="submit"
-                className="btn btn-dark btn-mobile -lg-mr-1">
-                Add
-              </button>
-            </div>
-          </form>
-        </div>
-
-        <div className="col-12 -mb-2">
-          <hr />
-        </div>
-
-        <div className="col-12">
-          <form id="addCondition" method="POST">
-            <h5 className="-font-secondary -fw-700 -pb-1 -reveal">
-              New condition
-            </h5>
-
-            <div className="-reveal">
-              <p>
-                Condition is anything that meets or contradicts the presence of
-                the product. For example, if the condition is "Is the gnome
-                green?" It will exclude all gnomes that are red.
-              </p>
+            <div className="floating-input -reveal">
+              <input
+                className="floating-input__field"
+                type="text"
+                placeholder="Conditions (confirming)"
+                name="product_conditions_confirming"
+              />
+              <label htmlFor="product_conditions_confirming">
+                Conditions (confirming)
+              </label>
             </div>
 
             <div className="floating-input -reveal">
               <input
                 className="floating-input__field"
                 type="text"
-                placeholder="Name"
-                name="condition_name"
+                placeholder="Conditions (negating)"
+                name="product_conditions_negating"
               />
-              <label htmlFor="condition_name">Name</label>
+              <label htmlFor="product_conditions_negating">
+                Conditions (negating)
+              </label>
+              <div className="floating-input__tags">
+                <span className="tag">
+                  First condition
+                  <div className="close">
+                    <span data-role="remove"></span>
+                  </div>
+                </span>
+                <span className="tag">
+                  Second condition
+                  <div className="close">
+                    <span data-role="remove"></span>
+                  </div>
+                </span>
+              </div>
             </div>
-
-            <div className="floating-input -reveal">
-              <input
-                className="floating-input__field"
-                type="text"
-                placeholder="Description"
-                name="condition_description"
-              />
-              <label htmlFor="condition_description">Description</label>
-            </div>
-
-            <div className="-reveal -pb-2">
-              <button
-                type="submit"
-                className="btn btn-dark btn-mobile -lg-mr-1">
-                Add
-              </button>
-            </div>
-          </form>
-        </div>
-
-        <div className="col-12 -mb-2">
-          <hr />
-        </div>
-
-        <div className="col-12">
-          <form id="addRelation" method="POST">
-            <input type="hidden" name="action" value="AddRelation" />
-            <input type="hidden" name="nonce" value="@nonce('addrelation" />
-            <input
-              type="hidden"
-              name="system_id"
-              value="{{ $system->getId() ?? '0' }}"
-            />
-            <input
-              type="hidden"
-              name="system_uuid"
-              value="{{ $system->getUUID() ?? '' }}"
-            />
-
-            <h5 className="-font-secondary -fw-700 -pb-1 -reveal">
-              New relation
-            </h5>
-
-            <div className="-reveal">
-              <p>
-                Relation explains the connection between the condition and the
-                product.
-              </p>
-            </div>
-
-            {/* <div className="floating-input -reveal">
-                <select id="product_id" data-selected="{{ $selected ?? $value ?? '' }}" className="floating-input__field"
-                  name="product_id" placeholder="Product">
-                  <option value="" selected disabled hidden>Choose product here...</option>
-
-                  @foreach($products as $product)
-                  <option value="{{ $product->getId() ?? ' '}}">{{ $product->getName() ?? ' '}}</option>
-                  @endforeach
-
-                </select>
-                <label htmlFor="product_id">Product</label>
-              </div> */}
-
-            <div className="floating-input -reveal">
-              <select
-                id="relation_id"
-                data-selected="{{ $selected ?? $value ?? '' }}"
-                className="floating-input__field"
-                name="relation_id"
-                placeholder="Relation">
-                <option value="1">Condition belongs to the product</option>
-                <option value="1">Condition contradicts the product</option>
-                <option value="1">Condition is inert to the product</option>
-              </select>
-              <label htmlFor="relation_id">Relation</label>
-            </div>
-
-            {/* <div className="floating-input -reveal">
-                <select id="condition_id" data-selected="{{ $selected ?? $value ?? '' }}" className="floating-input__field"
-                  name="condition_id" placeholder="Condition">
-                  <option value="" selected disabled hidden>Choose condition here...</option>
-
-                  @foreach($conditions as $condition)
-                  <option value="{{ $condition->getId() ?? ' '}}">{{ $condition->getName() ?? ' '}}</option>
-                  @endforeach
-
-                </select>
-                <label htmlFor="condition_id">Condition</label>
-              </div> */}
 
             <div className="-reveal -pb-2">
               <button

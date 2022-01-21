@@ -75,11 +75,11 @@ class NavMenu extends Component<IRouterProps> {
                   </Link>
                 </li>
 
-                <li className="nav-item">
+                {/* <li className="nav-item">
                   <Link className="nav-link" to={'/dashboard/account'}>
                     Account
                   </Link>
-                </li>
+                </li> */}
 
                 {/* <li className="nav-item">
                   <Link className="nav-link" to={'/dashboard/statistics'}>
@@ -91,11 +91,11 @@ class NavMenu extends Component<IRouterProps> {
                     Users
                   </Link>
                 </li> */}
-                <li className="nav-item">
+                {/* <li className="nav-item">
                   <Link className="nav-link" to={'/dashboard/settings'}>
                     Settings
                   </Link>
-                </li>
+                </li> */}
               </ul>
             </div>
             <div className="d-flex">

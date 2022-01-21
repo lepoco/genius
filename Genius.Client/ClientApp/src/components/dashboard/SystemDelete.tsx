@@ -112,7 +112,7 @@ class SystemDelete extends RoutedComponent<IExpertState> {
 
         <div className="-reveal">
           <span>System name</span>
-          <h5 className="-font-secondary -fw-700 -pb-3">
+          <h5 className="-font-secondary -fw-700">
             {state.systemName ?? ''}
           </h5>
         </div>

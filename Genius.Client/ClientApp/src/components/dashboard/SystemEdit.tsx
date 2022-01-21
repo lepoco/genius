@@ -106,7 +106,7 @@ class SystemEdit extends Component<IRouterProps, IExpertState> {
         <div className="col-12">
           <div className="-reveal">
             <span>System name</span>
-            <h5 className="-font-secondary -fw-700 -pb-3">
+            <h5 className="-font-secondary -fw-700">
               {state.systemName ?? ''}
             </h5>
           </div>
@@ -144,7 +144,7 @@ class SystemEdit extends Component<IRouterProps, IExpertState> {
               <p>
                 Product is the final result of the application's operation. If
                 the purpose of the system is to select the best garden gnomes,
-                the product can be - Red Gnome by iGnome INC.
+                the product can be - <i>"Red Gnome by iGnome INC"</i>.
               </p>
             </div>
 

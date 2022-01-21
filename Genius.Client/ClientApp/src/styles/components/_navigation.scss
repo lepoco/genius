@@ -2,6 +2,11 @@
   padding-top: 2rem;
   padding-bottom: 2rem;
 
+  @include media-breakpoint-down(lg) {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
   .navbar-collapse {
     @include media-breakpoint-down(lg) {
       margin-top: 1rem;
@@ -32,11 +37,10 @@
   }
 
   .navbar-nav {
+    @include media-breakpoint-down(lg) {
+      width: 100%;
+    }
     .nav-item {
-      .nav-link {
-        padding: 1.5rem 1rem;
-      }
-
       @include media-breakpoint-down(lg) {
         width: 100%;
 
@@ -56,16 +60,10 @@
           color: $c-dark;
         }
       }
+      .nav-link {
+        padding: 1.5rem 1rem;
+      }
     }
-
-    @include media-breakpoint-down(lg) {
-      width: 100%;
-    }
-  }
-
-  @include media-breakpoint-down(lg) {
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
   }
 }
 

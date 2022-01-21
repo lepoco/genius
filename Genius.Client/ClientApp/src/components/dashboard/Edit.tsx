@@ -179,29 +179,30 @@ class Edit extends Component<IRouterProps, IExpertState> {
               </label>
             </div>
 
-            <div className="floating-input -reveal">
-              <input
-                className="floating-input__field"
-                type="text"
-                placeholder="Conditions (negating)"
-                name="product_conditions_negating"
-              />
+            <div className="floating-tags -reveal">
               <label htmlFor="product_conditions_negating">
                 Conditions (negating)
               </label>
-              <div className="floating-input__tags">
-                <span className="tag">
-                  First condition
-                  <div className="close">
-                    <span data-role="remove"></span>
-                  </div>
-                </span>
-                <span className="tag">
-                  Second condition
-                  <div className="close">
-                    <span data-role="remove"></span>
-                  </div>
-                </span>
+              <div className="floating-tags__container">
+                <div className="floating-tags__list">
+                  <span className="tag">
+                    First condition
+                    <div className="close">
+                      <span data-role="remove"></span>
+                    </div>
+                  </span>
+                  <span className="tag">
+                    Second condition
+                    <div className="close">
+                      <span data-role="remove"></span>
+                    </div>
+                  </span>
+                </div>
+                <input
+                  type="text"
+                  placeholder="Conditions (negating)"
+                  name="product_conditions_negating"
+                />
               </div>
             </div>
 

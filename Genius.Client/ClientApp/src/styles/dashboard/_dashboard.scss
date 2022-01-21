@@ -1,4 +1,7 @@
 .dashboard {
+  @include media-breakpoint-down(lg) {
+    padding: 2rem;
+  }
   &__banner {
     display: flex;
     align-items: center;
@@ -8,6 +11,13 @@
     }
 
     &__picture {
+      @include media-breakpoint-up(md) {
+        margin-right: 4rem;
+      }
+
+      @include media-breakpoint-down(md) {
+        margin-bottom: 2rem;
+      }
       img,
       object {
         max-width: 100%;
@@ -16,18 +26,6 @@
         border-radius: 5rem;
         object-fit: cover;
       }
-
-      @include media-breakpoint-up(md) {
-        margin-right: 4rem;
-      }
-
-      @include media-breakpoint-down(md) {
-        margin-bottom: 2rem;
-      }
     }
-  }
-
-  @include media-breakpoint-down(lg) {
-    padding: 2rem;
   }
 }

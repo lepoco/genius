@@ -2,12 +2,12 @@
   position: relative;
 
   &.--full {
+    display: flex;
+    position: relative;
     height: 100%;
     min-height: 100vh;
-    position: relative;
     overflow-x: hidden;
     width: 100%;
-    display: flex;
     align-items: center;
 
     &__background {
@@ -19,14 +19,19 @@
     display: grid;
     position: absolute;
     top: 0;
-    left: 0;
     right: 0;
     bottom: 0;
+    left: 0;
     padding: 0;
     margin: 0;
     height: 100%;
 
     &__column {
+      @include media-breakpoint-down(lg) {
+        &:last-child {
+          display: none;
+        }
+      }
       &:first-child {
         grid-column: 1;
       }
@@ -35,12 +40,6 @@
 
         background-size: cover;
         background-position: center;
-      }
-
-      @include media-breakpoint-down(lg) {
-        &:last-child {
-          display: none;
-        }
       }
     }
   }

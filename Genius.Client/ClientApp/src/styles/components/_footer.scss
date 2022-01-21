@@ -8,6 +8,10 @@
   background-color: rgb(243, 244, 245);
   color: rgb(139, 149, 158);
 
+  @include media-breakpoint-down(lg) {
+    padding: 2rem;
+  }
+
   a {
     color: rgb(139, 149, 158);
     text-decoration: none;
@@ -58,9 +62,5 @@
     a {
       font-size: 1.2rem;
     }
-  }
-
-  @include media-breakpoint-down(lg) {
-    padding: 2rem;
   }
 }

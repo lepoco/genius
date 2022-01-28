@@ -7,6 +7,7 @@
 
 import React, { Component } from 'react';
 import IExpertCondition from './../interfaces/IExpertCondition';
+import ExpertCondition from './../genius/ExpertCondition';
 
 interface IFloatingTagsProps {
   name?: string;
@@ -117,7 +118,45 @@ export class FloatingTags extends Component<
     );
   }
 
-  handleInputChange(event) {
+  onInputKeyPress(event) {
+    if (event.key !== 'Enter') {
+      return;
+    }
+
+    event.preventDefault();
+
+    if (this.state === undefined) {
+      return;
+    }
+
+    if (!(event.target instanceof HTMLInputElement)) {
+      return;
+    }
+
+    if(event.target.value.trim() === "") {
+      return;
+    }
+
+    // TODO: Add new condition via Genius API
+
+    let newCondition = new ExpertCondition(0, event.target.value.trim());
+
+    // TODO: if exists cancel
+
+    event.target.value = "";
+
+    let updatedOptionsList = this.state.options;
+    updatedOptionsList.push(newCondition);
+
+    let updatedSelectedList = this.state.selected;
+    updatedSelectedList.push(newCondition);
+
+    this.setState({ options: updatedOptionsList, selected: updatedSelectedList });
+  }
+
+  onInputChange(event) {
+    event.preventDefault();
+
     const target = event.target;
     const value = target.value;
     const name = target.name;
@@ -153,10 +192,11 @@ export class FloatingTags extends Component<
 
             <input
               type="text"
+              onKeyPress={this.onInputKeyPress.bind(this)}
               pattern="[a-zA-Z0-9-_ ]+"
               name={this.state.name ?? ''}
               defaultValue={this.state.inputValue}
-              onChange={this.handleInputChange}
+              onChange={this.onInputChange.bind(this)}
             />
           </div>
         </div>

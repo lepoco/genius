@@ -12,6 +12,7 @@ import IRouter from './../../interfaces/IRouter';
 import IExpertState from './../../interfaces/IExpertState';
 import { Link } from 'react-router-dom';
 import { FloatingTags } from '../FloatingTags';
+import ExpertCondition from './../../genius/ExpertCondition';
 
 class SystemEdit extends Component<IRouterProps, IExpertState> {
   static displayName = SystemEdit.name;
@@ -168,20 +169,41 @@ class SystemEdit extends Component<IRouterProps, IExpertState> {
               <label htmlFor="product_description">Description</label>
             </div>
 
-            <p><small><i>Tip: At the bottom you can see all conditions already available in the database, you can add a new condition by typing its name and pressing enter.</i></small></p>
+            <p>
+              <small>
+                <i>
+                  Tip: At the bottom you can see all conditions already
+                  available in the database, you can add a new condition by
+                  typing its name and pressing enter.
+                </i>
+              </small>
+            </p>
 
             <FloatingTags
               name="product_conditions_confirming"
               header="Conditions (confirming)"
-              options={{ 1: 'First condition', 3: 'Second condition' }}
-              selected={[3]}
+              options={[
+                new ExpertCondition(1, 'Condition One'),
+                new ExpertCondition(2, 'Condition Two'),
+                new ExpertCondition(3, 'Condition Three'),
+                new ExpertCondition(4, 'Condition Four'),
+              ]}
+              selected={[new ExpertCondition(1, 'Condition One')]}
             />
 
             <FloatingTags
               name="product_conditions_negating"
               header="Conditions (negating)"
-              options={{ 1: 'First condition', 3: 'Second condition' }}
-              selected={[3]}
+              options={[
+                new ExpertCondition(1, 'Condition One'),
+                new ExpertCondition(2, 'Condition Two'),
+                new ExpertCondition(3, 'Condition Three'),
+                new ExpertCondition(4, 'Condition Four'),
+              ]}
+              selected={[
+                new ExpertCondition(1, 'Condition One'),
+                new ExpertCondition(2, 'Condition Two'),
+              ]}
             />
 
             <div className="-reveal -pb-2">

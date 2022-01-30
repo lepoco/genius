@@ -7,6 +7,10 @@ using System.Threading;
 
 namespace Genius.Client.Services
 {
+    /// <summary>
+    /// Implements a universal connection with the Genius microservice available to other gRPC services.
+    /// <para>Thanks to this, allows to change the connection with the Genius service without changing the parameters of other internal services.</para>
+    /// </summary>
     public class GrpcChannelService : IChannel
     {
         private readonly ILogger<GrpcChannelService> _logger;
@@ -29,6 +33,9 @@ namespace Genius.Client.Services
             });
         }
 
+        /// <summary>
+        /// Takes the globally available gRPC channel.
+        /// </summary>
         public GrpcChannel GetChannel()
         {
             return _channel;

@@ -14,6 +14,8 @@ namespace Genius.Client.Services
         {
             _logger = logger;
             _grpcClient = new Statistic.StatisticClient(channel.GetChannel());
+
+            // TODO: To be implemented
         }
     }
 }

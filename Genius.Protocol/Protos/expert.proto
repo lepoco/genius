@@ -96,14 +96,17 @@ message ExpertLookupModel {
 
 message ConditionLookupModel {
 	int32 id = 1;
+	int32 system_id = 2;
 }
 
 message ProductLookupModel {
 	int32 id = 1;
+	int32 system_id = 2;
 }
 
 message RelationLookupModel {
 	int32 id = 1;
+	int32 system_id = 2;
 }
 
 message ExpertResponseModel {

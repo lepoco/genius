@@ -5,7 +5,7 @@
  * All Rights Reserved.
  */
 
-import React, { Component } from 'react';
+import { Component } from 'react';
 
 export class Password extends Component {
   static displayName = Password.name;

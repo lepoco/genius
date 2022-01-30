@@ -6,7 +6,7 @@
  */
 
 import React, { Component } from 'react';
-import IExpertCondition from './../interfaces/IExpertCondition';
+import IExpertCondition from '../genius/IExpertCondition';
 import ExpertCondition from './../genius/ExpertCondition';
 
 interface IFloatingTagsProps {
@@ -133,7 +133,7 @@ export class FloatingTags extends Component<
       return;
     }
 
-    if(event.target.value.trim() === "") {
+    if (event.target.value.trim() === '') {
       return;
     }
 
@@ -143,7 +143,7 @@ export class FloatingTags extends Component<
 
     // TODO: if exists cancel
 
-    event.target.value = "";
+    event.target.value = '';
 
     let updatedOptionsList = this.state.options;
     updatedOptionsList.push(newCondition);
@@ -151,7 +151,10 @@ export class FloatingTags extends Component<
     let updatedSelectedList = this.state.selected;
     updatedSelectedList.push(newCondition);
 
-    this.setState({ options: updatedOptionsList, selected: updatedSelectedList });
+    this.setState({
+      options: updatedOptionsList,
+      selected: updatedSelectedList,
+    });
   }
 
   onInputChange(event) {

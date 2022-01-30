@@ -5,22 +5,8 @@
  * All Rights Reserved.
  */
 
-import IExpertState from '../interfaces/IExpertState';
-
-class ExpertState implements IExpertState {
-  systemLoaded: boolean = false;
-  systemId: number = 0;
-  systemGuid: string = '';
-  systemVersion: string = '';
-  systemName: string = '';
-  systemDescription: string = '';
-  systemType: string = '';
-  systemQuestion: string = '';
-  systemCreatedAt: string = '';
-  systemUpdatedAt: string = '';
-  systemConditions: object = {};
-  systemProducts: object = {};
-}
+import IExpertState from './IExpertState';
+import ExpertState from './ExpertState';
 
 export default class GeniusApi {
   static async getSystemByGuid(guid: string): Promise<IExpertState> {

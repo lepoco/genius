@@ -5,8 +5,8 @@
  * All Rights Reserved.
  */
 
-import React, { Component } from 'react';
-import { useNavigate } from "react-router-dom";
+import { Component } from 'react';
+import { Link } from 'react-router-dom';
 import IProps from '../../interfaces/IProps';
 
 interface IAddExpertState {
@@ -155,11 +155,7 @@ export class Add extends Component<IProps, IAddExpertState> {
                   className='btn btn-dark btn-mobile -lg-mr-1'>
                   Create
                 </button>
-                <a
-                  href='/dashboard'
-                  className='btn btn-outline-dark btn-mobile'>
-                  Cancel
-                </a>
+                <Link to="/dashboard" className='btn btn-outline-dark btn-mobile'>Cancel</Link>
               </div>
             </form>
           </div>

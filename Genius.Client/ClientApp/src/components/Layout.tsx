@@ -5,7 +5,7 @@
  * All Rights Reserved.
  */
 
-import React, { Component } from 'react';
+import { Component } from 'react';
 import NavMenu from './NavMenu';
 import Footer from './Footer';
 

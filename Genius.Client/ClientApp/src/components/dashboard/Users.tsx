@@ -5,7 +5,7 @@
  * All Rights Reserved.
  */
 
-import React, { Component } from 'react';
+import { Component } from 'react';
 
 export class Users extends Component {
   static displayName = Users.name;

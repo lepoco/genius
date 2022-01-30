@@ -5,11 +5,11 @@
  * All Rights Reserved.
  */
 
+import { Link } from 'react-router-dom';
+import RoutedComponent from '../../common/RoutedComponent';
 import withRouter from './../../common/withRouter';
 import IRouterProps from './../../interfaces/IRouterProps';
-import IExpertState from './../../interfaces/IExpertState';
-import RoutedComponent from '../../common/RoutedComponent';
-import { Link } from 'react-router-dom';
+import IExpertState from './../../genius/IExpertState';
 
 class SystemDelete extends RoutedComponent<IExpertState> {
   static displayName = SystemDelete.name;
@@ -112,9 +112,7 @@ class SystemDelete extends RoutedComponent<IExpertState> {
 
         <div className="-reveal">
           <span>System name</span>
-          <h5 className="-font-secondary -fw-700">
-            {state.systemName ?? ''}
-          </h5>
+          <h5 className="-font-secondary -fw-700">{state.systemName ?? ''}</h5>
         </div>
 
         <div className="-reveal">

@@ -6,12 +6,12 @@
  */
 
 import { Component } from 'react';
+import { Link } from 'react-router-dom';
+import { FloatingTags } from '../FloatingTags';
 import withRouter from './../../common/withRouter';
 import IRouterProps from './../../interfaces/IRouterProps';
 import IRouter from './../../interfaces/IRouter';
-import IExpertState from './../../interfaces/IExpertState';
-import { Link } from 'react-router-dom';
-import { FloatingTags } from '../FloatingTags';
+import IExpertState from './../../genius/IExpertState';
 import ExpertCondition from './../../genius/ExpertCondition';
 
 class SystemEdit extends Component<IRouterProps, IExpertState> {

@@ -6,10 +6,10 @@
  */
 
 import { Component } from 'react';
+import { Link } from 'react-router-dom';
 import withRouter from './../common/withRouter';
 import IRouterProps from './../interfaces/IRouterProps';
 import IRouter from './../interfaces/IRouter';
-import { Link } from 'react-router-dom';
 
 class Footer extends Component<IRouterProps> {
   static displayName = Footer.name;

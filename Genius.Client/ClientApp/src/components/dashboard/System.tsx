@@ -5,11 +5,11 @@
  * All Rights Reserved.
  */
 
+import { Link } from 'react-router-dom';
+import RoutedComponent from '../../common/RoutedComponent';
 import withRouter from './../../common/withRouter';
 import IRouterProps from './../../interfaces/IRouterProps';
-import IExpertState from './../../interfaces/IExpertState';
-import RoutedComponent from '../../common/RoutedComponent';
-import { Link } from 'react-router-dom';
+import IExpertState from './../../genius/IExpertState';
 
 class System extends RoutedComponent<IExpertState> {
   static displayName = System.name;

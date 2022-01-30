@@ -7,7 +7,6 @@
 
 import IExpertCondition from './IExpertCondition';
 import IExpertProduct from './IExpertProduct';
-
 import IExpertSystem from './IExpertSystem';
 
 export default class ExpertSystem implements IExpertSystem {

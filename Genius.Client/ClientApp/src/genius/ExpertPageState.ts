@@ -6,6 +6,8 @@
  */
 
 import IExpertPageState from './IExpertPageState';
+import IExpertCondition from './IExpertCondition';
+import IExpertProduct from './IExpertProduct';
 
 export default class ExpertPageState implements IExpertPageState {
   systemLoaded: boolean = false;
@@ -18,6 +20,6 @@ export default class ExpertPageState implements IExpertPageState {
   systemQuestion: string = '';
   systemCreatedAt: string = '';
   systemUpdatedAt: string = '';
-  systemConditions: object = {};
-  systemProducts: object = {};
+  systemConditions: IExpertCondition[] = [];
+  systemProducts: IExpertProduct[] = [];
 }

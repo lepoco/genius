@@ -13,16 +13,40 @@ import ExpertSystem from './ExpertSystem';
 export default class GeniusApi {
   private static readonly BASE_GATEWAY: string = '/api/expert/';
 
-  static async getSystemByGuid(guid: string): Promise<IExpertSystem> {
+  static async getSystemByGuid(
+    guid: string,
+    fetchProducts: boolean = false,
+    fetchConditions: boolean = false,
+  ): Promise<IExpertSystem> {
     const response = await fetch(GeniusApi.BASE_GATEWAY + 'system/' + guid);
-    const data = await response.json();
+    const data = response.json();
 
-    return await GeniusApi.fetchObject(data, false, false);
+    return await GeniusApi.fetchObject(data, fetchProducts, fetchConditions);
   }
 
-  static async getAllSystems() {
+  static async getAllSystems(): Promise<IExpertSystem[]> {
     const response = await fetch(GeniusApi.BASE_GATEWAY + 'system');
     const data = await response.json();
+
+    return [];
+  }
+
+  static async addSystem(system: IExpertSystem): Promise<boolean> {
+    let formData = GeniusApi.buildFormData({
+      name: system.systemName,
+      description: system.systemDescription,
+      question: system.systemQuestion,
+      type: system.systemType,
+    });
+
+    let response = await fetch('api/expert/system', {
+      method: 'POST',
+      body: formData,
+    });
+
+    let responseText = await response.text();
+
+    return responseText === 'true';
   }
 
   static async getConditions(id: number): Promise<IExpertCondition[]> {
@@ -47,8 +71,8 @@ export default class GeniusApi {
 
   private static async fetchObject(
     dataObject: any,
-    fetchProducts: boolean = false,
-    fetchConditions: boolean = false,
+    fetchProducts: boolean,
+    fetchConditions: boolean,
   ): Promise<ExpertSystem> {
     const expertState = new ExpertSystem();
     expertState.systemId = dataObject.id ?? 0;
@@ -69,5 +93,15 @@ export default class GeniusApi {
       : [];
 
     return expertState;
+  }
+
+  private static buildFormData(data: object): FormData {
+    const formData = new FormData();
+
+    for (let key in data) {
+      formData.append(key, data[key]);
+    }
+
+    return formData;
   }
 }

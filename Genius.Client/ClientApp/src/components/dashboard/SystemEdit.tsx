@@ -35,8 +35,8 @@ class SystemEdit extends Component<IRouterProps, IExpertPageState> {
       systemQuestion: '',
       systemCreatedAt: '',
       systemUpdatedAt: '',
-      systemConditions: {},
-      systemProducts: {},
+      systemConditions: [],
+      systemProducts: [],
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);

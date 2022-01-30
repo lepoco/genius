@@ -28,8 +28,8 @@ class SystemDelete extends RoutedComponent<IExpertPageState> {
       systemQuestion: '',
       systemCreatedAt: '',
       systemUpdatedAt: '',
-      systemConditions: {},
-      systemProducts: {},
+      systemConditions: [],
+      systemProducts: [],
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);

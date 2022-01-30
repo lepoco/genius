@@ -5,18 +5,8 @@
  * All Rights Reserved.
  */
 
-export default interface IExpertPageState {
-  systemLoaded?: boolean;
-  systemId?: number;
-  systemGuid?: string;
-  systemVersion?: string;
-  systemName?: string;
-  systemDescription?: string;
-  systemType?: string;
-  systemQuestion?: string;
-  systemCreatedAt?: string;
-  systemUpdatedAt?: string;
+import IExpertSystem from './IExpertSystem';
 
-  systemConditions?: object;
-  systemProducts?: object;
+export default interface IExpertPageState extends IExpertSystem {
+  systemLoaded?: boolean;
 }

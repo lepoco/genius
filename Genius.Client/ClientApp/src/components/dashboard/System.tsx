@@ -30,8 +30,8 @@ class System extends RoutedComponent<IExpertPageState> {
       systemQuestion: '',
       systemCreatedAt: '',
       systemUpdatedAt: '',
-      systemConditions: {},
-      systemProducts: {},
+      systemConditions: [],
+      systemProducts: [],
     };
   }
 

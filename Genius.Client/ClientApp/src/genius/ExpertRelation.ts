@@ -9,7 +9,22 @@ import IExpertRelation from './IExpertRelation';
 
 export default class ExpertRelation implements IExpertRelation {
   id: number = 0;
+  systemId: number = 0;
   conditionId: number = 0;
   productId: number = 0;
-  weight: number = 0;
+  weight: number = 100;
+
+  constructor(
+    id: number,
+    systemId: number = 0,
+    conditionId: number = 0,
+    productId: number = 0,
+    weight: number = 100,
+  ) {
+    this.id = id;
+    this.systemId = systemId;
+    this.conditionId = conditionId;
+    this.productId = productId;
+    this.weight = weight;
+  }
 }

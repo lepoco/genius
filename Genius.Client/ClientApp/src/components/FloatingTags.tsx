@@ -142,10 +142,14 @@ export class FloatingTags extends Component<
       return;
     }
 
+    console.log(this.state);
+
     let conditionName = event.target.value.trim();
     let newCondition = new ExpertCondition(0, this.state.systemId, conditionName, '');
 
     let newConditionId = await GeniusApi.addCondition(newCondition);
+
+    // console.debug('\\FloatingTags\\onInputKeyPress\\newConditionId', newConditionId);
 
     if(newConditionId < 1) {
       return;

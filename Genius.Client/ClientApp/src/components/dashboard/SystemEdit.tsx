@@ -53,7 +53,7 @@ class SystemEdit extends Component<IRouterProps, IExpertPageState> {
       this.router.params.guid ?? '',
       true,
       true,
-      true
+      true,
     );
 
     this.setState({
@@ -68,6 +68,9 @@ class SystemEdit extends Component<IRouterProps, IExpertPageState> {
       systemType: system.systemType ?? '',
       systemCreatedAt: system.systemCreatedAt ?? '',
       systemUpdatedAt: system.systemUpdatedAt ?? '',
+      systemConditions: system.systemConditions ?? [],
+      systemProducts: system.systemProducts ?? [],
+      systemRelations: system.systemRelations ?? [],
     });
   }
 
@@ -189,29 +192,18 @@ class SystemEdit extends Component<IRouterProps, IExpertPageState> {
             <FloatingTags
               name="product_conditions_confirming"
               header="Conditions (confirming)"
-              options={[
-                new ExpertCondition(1, 0, 'Condition One'),
-                new ExpertCondition(2, 0, 'Condition Two'),
-                new ExpertCondition(3, 0, 'Condition Three'),
-                new ExpertCondition(4, 0, 'Condition Four'),
-              ]}
-              selected={[new ExpertCondition(1, 0, 'Condition One')]}
+              systemId={this.state.systemId ?? 0}
+              options={this.state.systemConditions}
+              selected={[]}
             />
 
-            <FloatingTags
+            {/* <FloatingTags
               name="product_conditions_negating"
               header="Conditions (negating)"
-              options={[
-                new ExpertCondition(1, 0, 'Condition One'),
-                new ExpertCondition(2, 0, 'Condition Two'),
-                new ExpertCondition(3, 0, 'Condition Three'),
-                new ExpertCondition(4, 0, 'Condition Four'),
-              ]}
-              selected={[
-                new ExpertCondition(1, 0, 'Condition One'),
-                new ExpertCondition(2, 0, 'Condition Two'),
-              ]}
-            />
+              systemId={this.state.systemId ?? 0}
+              options={this.state.systemConditions}
+              selected={[]}
+            /> */}
 
             <div className="-reveal -pb-2">
               <button

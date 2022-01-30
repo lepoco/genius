@@ -7,6 +7,7 @@
 
  export default interface IExpertRelation {
   id?: number;
+  systemId?: number;
   conditionId?: number;
   productId?: number;
   weight?: number;

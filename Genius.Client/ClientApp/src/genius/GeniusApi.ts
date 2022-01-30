@@ -10,6 +10,9 @@ import IExpertCondition from './IExpertCondition';
 import IExpertProduct from './IExpertProduct';
 import ExpertSystem from './ExpertSystem';
 import IExpertRelation from './IExpertRelation';
+import ExpertCondition from './ExpertCondition';
+import ExpertProduct from './ExpertProduct';
+import ExpertRelation from './ExpertRelation';
 
 /**
  * Contains logic responsible for polling the internal API that connects via gRPC to the Genius microservice.
@@ -36,7 +39,7 @@ export default class GeniusApi {
 
     console.debug('\\GeniusApi\\getSystemByGuid', data);
 
-    return await GeniusApi.fetchObject(
+    return await GeniusApi.fetchSystemObject(
       data,
       fetchProducts,
       fetchConditions,
@@ -67,7 +70,7 @@ export default class GeniusApi {
 
     for (let key in data) {
       systemsList.push(
-        await GeniusApi.fetchObject(
+        await GeniusApi.fetchSystemObject(
           data[key],
           fetchProducts,
           fetchConditions,
@@ -137,13 +140,56 @@ export default class GeniusApi {
    * @returns List of conditions assigned to the system.
    */
   static async getConditions(id: number): Promise<IExpertCondition[]> {
-    // TODO: do
-    return [];
+    const response = await fetch(
+      GeniusApi.BASE_GATEWAY + 'system/' + id + '/conditions',
+    );
+    const data = await response.json();
+
+    if (!(data instanceof Object)) {
+      return [];
+    }
+
+    let conditionsList: IExpertCondition[] = [];
+
+    for (let key in data) {
+      conditionsList.push(GeniusApi.fetchConditionObject(data[key]));
+    }
+
+    console.debug('\\GeniusApi\\getConditions', conditionsList);
+
+    return conditionsList;
+  }
+
+  static async getCondition(conditionId: number): Promise<IExpertCondition> {
+    const response = await fetch(
+      GeniusApi.BASE_GATEWAY + 'condition/' + conditionId,
+    );
+    const data = await response.json();
+
+    console.debug('\\GeniusApi\\getCondition', data);
+
+    return await GeniusApi.fetchConditionObject(data);
   }
 
   static async addCondition(condition: IExpertCondition): Promise<number> {
-    // TODO: do
-    return 0;
+    let formData = GeniusApi.buildFormData({
+      systemId: condition.system_id,
+      name: condition.name,
+      description: condition.description,
+    });
+
+    console.debug('\\GeniusApi\\addCondition\\condition', condition);
+
+    let response = await fetch('api/expert/condition', {
+      method: 'POST',
+      body: formData,
+    });
+
+    let responseText = await response.text();
+
+    console.debug('\\GeniusApi\\addCondition\\responseText', responseText);
+
+    return +responseText; //unary operator
   }
 
   /**
@@ -152,13 +198,56 @@ export default class GeniusApi {
    * @returns List of products assigned to the system.
    */
   static async getProducts(id: number): Promise<IExpertProduct[]> {
-    // TODO: do
-    return [];
+    const response = await fetch(
+      GeniusApi.BASE_GATEWAY + 'system/' + id + '/products',
+    );
+    const data = await response.json();
+
+    if (!(data instanceof Object)) {
+      return [];
+    }
+
+    let productsList: IExpertProduct[] = [];
+
+    for (let key in data) {
+      productsList.push(GeniusApi.fetchProductObject(data[key]));
+    }
+
+    console.debug('\\GeniusApi\\getProducts\\productsList', productsList);
+
+    return productsList;
+  }
+
+  static async getProduct(productId: number): Promise<IExpertCondition> {
+    const response = await fetch(
+      GeniusApi.BASE_GATEWAY + 'product/' + productId,
+    );
+    const data = await response.json();
+
+    console.debug('\\GeniusApi\\getProduct', data);
+
+    return await GeniusApi.fetchProductObject(data);
   }
 
   static async addProduct(product: IExpertProduct): Promise<number> {
-    // TODO: do
-    return 0;
+    let formData = GeniusApi.buildFormData({
+      systemId: product.system_id,
+      name: product.name,
+      description: product.description,
+    });
+
+    console.debug('\\GeniusApi\\addProduct\\product', product);
+
+    let response = await fetch('api/expert/product', {
+      method: 'POST',
+      body: formData,
+    });
+
+    let responseText = await response.text();
+
+    console.debug('\\GeniusApi\\addProduct\\responseText', +responseText);
+
+    return +responseText; //unary operator
   }
 
   /**
@@ -167,21 +256,65 @@ export default class GeniusApi {
    * @returns List of relations assigned to the system.
    */
   static async getRelations(id: number): Promise<IExpertProduct[]> {
-    // TODO: do
-    return [];
+    const response = await fetch(
+      GeniusApi.BASE_GATEWAY + 'system/' + id + '/relations',
+    );
+    const data = await response.json();
+
+    if (!(data instanceof Object)) {
+      return [];
+    }
+
+    let relationsList: IExpertRelation[] = [];
+
+    for (let key in data) {
+      relationsList.push(GeniusApi.fetchRelationObject(data[key]));
+    }
+
+    console.debug('\\GeniusApi\\getRelations\\productsList', relationsList);
+
+    return relationsList;
+  }
+
+  static async getRelation(relationId: number): Promise<IExpertCondition> {
+    const response = await fetch(
+      GeniusApi.BASE_GATEWAY + 'relation/' + relationId,
+    );
+    const data = await response.json();
+
+    console.debug('\\GeniusApi\\getRelation', data);
+
+    return await GeniusApi.fetchProductObject(data);
   }
 
   static async addRelation(relation: IExpertRelation): Promise<number> {
-    // TODO: do
-    return 0;
+    let formData = GeniusApi.buildFormData({
+      systemId: relation.systemId,
+      conditionId: relation.conditionId,
+      productId: relation.productId,
+      weight: relation.weight,
+    });
+
+    console.debug('\\GeniusApi\\addRelation\\relation', relation);
+
+    let response = await fetch('api/expert/relation', {
+      method: 'POST',
+      body: formData,
+    });
+
+    let responseText = await response.text();
+
+    console.debug('\\GeniusApi\\addRelation\\responseText', responseText);
+
+    return +responseText; //unary operator
   }
 
-  private static async fetchObject(
+  private static async fetchSystemObject(
     dataObject: any,
     fetchProducts: boolean,
     fetchConditions: boolean,
     fetchRelations: boolean,
-  ): Promise<ExpertSystem> {
+  ): Promise<IExpertSystem> {
     const expertState = new ExpertSystem();
     expertState.systemId = dataObject.id ?? 0;
     expertState.systemGuid = dataObject.guid ?? '';
@@ -206,6 +339,35 @@ export default class GeniusApi {
       : [];
 
     return expertState;
+  }
+
+  private static fetchConditionObject(dataObject: any): IExpertCondition {
+    return new ExpertCondition(
+      dataObject.id ?? 0,
+      dataObject.systemId ?? 0,
+      dataObject.name ?? '',
+      dataObject.description ?? '',
+    );
+  }
+
+  private static fetchProductObject(dataObject: any): IExpertProduct {
+    return new ExpertProduct(
+      dataObject.id ?? 0,
+      dataObject.systemId ?? 0,
+      dataObject.name ?? '',
+      dataObject.description ?? '',
+      dataObject.notes ?? '',
+    );
+  }
+
+  private static fetchRelationObject(dataObject: any): IExpertRelation {
+    return new ExpertRelation(
+      dataObject.id ?? 0,
+      dataObject.systemId ?? 0,
+      dataObject.conditionId ?? 0,
+      dataObject.productId ?? 0,
+      dataObject.weight ?? 100,
+    );
   }
 
   private static buildFormData(data: object): FormData {

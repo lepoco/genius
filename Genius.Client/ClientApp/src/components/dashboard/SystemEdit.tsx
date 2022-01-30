@@ -13,6 +13,7 @@ import IRouterProps from './../../interfaces/IRouterProps';
 import IRouter from './../../interfaces/IRouter';
 import IExpertPageState from '../../genius/IExpertPageState';
 import ExpertCondition from './../../genius/ExpertCondition';
+import GeniusApi from '../../genius/GeniusApi';
 
 class SystemEdit extends Component<IRouterProps, IExpertPageState> {
   static displayName = SystemEdit.name;
@@ -48,21 +49,25 @@ class SystemEdit extends Component<IRouterProps, IExpertPageState> {
   }
 
   async populateExpertSystemData() {
-    let guid = this.router.params.guid;
-    const response = await fetch('api/expert/system/' + guid);
-    const data = await response.json();
+    const system = await GeniusApi.getSystemByGuid(
+      this.router.params.guid ?? '',
+      true,
+      true,
+      true
+    );
 
     this.setState({
-      systemId: data.id ?? 0,
-      systemVersion: data.version ?? '',
-      systemName: data.name ?? '',
-      systemDescription: data.description ?? '',
-      systemGuid: data.guid ?? '',
-      systemQuestion: data.question ?? '',
-      systemType: data.type ?? '',
-      systemCreatedAt: data.createdAt ?? '',
-      systemUpdatedAt: data.updatedAt ?? '',
       systemLoaded: true,
+
+      systemId: system.systemId ?? 0,
+      systemVersion: system.systemVersion ?? '',
+      systemName: system.systemName ?? '',
+      systemDescription: system.systemDescription ?? '',
+      systemGuid: system.systemGuid ?? '',
+      systemQuestion: system.systemQuestion ?? '',
+      systemType: system.systemType ?? '',
+      systemCreatedAt: system.systemCreatedAt ?? '',
+      systemUpdatedAt: system.systemUpdatedAt ?? '',
     });
   }
 
@@ -78,6 +83,8 @@ class SystemEdit extends Component<IRouterProps, IExpertPageState> {
 
   async handleSubmit(event) {
     event.preventDefault();
+
+    console.debug(event);
 
     // const formData = new FormData();
 
@@ -97,7 +104,7 @@ class SystemEdit extends Component<IRouterProps, IExpertPageState> {
     //   });
   }
 
-  static renderSystemView(state: IExpertPageState) {
+  renderSystemView(state: IExpertPageState) {
     if ((state.systemId ?? 0) < 1) {
       return <p>No systems found</p>;
     }
@@ -136,7 +143,7 @@ class SystemEdit extends Component<IRouterProps, IExpertPageState> {
         </div>
 
         <div className="col-12">
-          <form id="addProduct" method="POST">
+          <form id="addProduct" method="POST" onSubmit={this.handleSubmit}>
             <h5 className="-font-secondary -fw-700 -pb-1 -reveal">
               New product
             </h5>
@@ -233,7 +240,7 @@ class SystemEdit extends Component<IRouterProps, IExpertPageState> {
         <em>Loading...</em>
       </p>
     ) : (
-      SystemEdit.renderSystemView(this.state)
+      this.renderSystemView(this.state)
     );
 
     return (

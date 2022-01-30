@@ -8,8 +8,11 @@
 import React, { Component } from 'react';
 import IExpertCondition from '../genius/IExpertCondition';
 import ExpertCondition from './../genius/ExpertCondition';
+import ExpertProduct from './../genius/ExpertProduct';
+import GeniusApi from './../genius/GeniusApi';
 
 interface IFloatingTagsProps {
+  systemId?: number;
   name?: string;
   header?: string;
   options?: IExpertCondition[];
@@ -19,6 +22,7 @@ interface IFloatingTagsProps {
 }
 
 interface IFloatingTagsState {
+  systemId?: number;
   name: string;
   header: string;
   options: IExpertCondition[];
@@ -35,6 +39,7 @@ export class FloatingTags extends Component<
   constructor(props: IFloatingTagsProps) {
     super(props);
     this.state = {
+      systemId: props.systemId ?? 0,
       name: props.name ?? '',
       header: props.header ?? '',
       inputValue: props.inputValue ?? '',
@@ -118,7 +123,7 @@ export class FloatingTags extends Component<
     );
   }
 
-  onInputKeyPress(event) {
+  async onInputKeyPress(event) {
     if (event.key !== 'Enter') {
       return;
     }
@@ -137,9 +142,16 @@ export class FloatingTags extends Component<
       return;
     }
 
-    // TODO: Add new condition via Genius API
+    let conditionName = event.target.value.trim();
+    let newCondition = new ExpertCondition(0, this.state.systemId, conditionName, '');
 
-    let newCondition = new ExpertCondition(0, event.target.value.trim());
+    let newConditionId = await GeniusApi.addCondition(newCondition);
+
+    if(newConditionId < 1) {
+      return;
+    }
+
+    newCondition.id = newConditionId;
 
     // TODO: if exists cancel
 

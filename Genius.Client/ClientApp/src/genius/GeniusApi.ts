@@ -9,6 +9,7 @@ import IExpertSystem from './IExpertSystem';
 import IExpertCondition from './IExpertCondition';
 import IExpertProduct from './IExpertProduct';
 import ExpertSystem from './ExpertSystem';
+import IExpertRelation from './IExpertRelation';
 
 /**
  * Contains logic responsible for polling the internal API that connects via gRPC to the Genius microservice.
@@ -31,7 +32,9 @@ export default class GeniusApi {
     fetchRelations: boolean = false,
   ): Promise<IExpertSystem> {
     const response = await fetch(GeniusApi.BASE_GATEWAY + 'system/' + guid);
-    const data = response.json();
+    const data = await response.json();
+
+    console.debug('\\GeniusApi\\getSystemByGuid', data);
 
     return await GeniusApi.fetchObject(
       data,
@@ -41,15 +44,52 @@ export default class GeniusApi {
     );
   }
 
-  static async getAllSystems(): Promise<IExpertSystem[]> {
+  /**
+   * Retrieves all known expert systems from the database.
+   * @param fetchProducts Whether the call should also fetch the system products.
+   * @param fetchConditions Whether the call should also fetch the system conditions.
+   * @param fetchRelations Whether the call should also fetch the system relations.
+   * @returns
+   */
+  static async getAllSystems(
+    fetchProducts: boolean = false,
+    fetchConditions: boolean = false,
+    fetchRelations: boolean = false,
+  ): Promise<IExpertSystem[]> {
     const response = await fetch(GeniusApi.BASE_GATEWAY + 'system');
     const data = await response.json();
 
-    return [];
+    if (!(data instanceof Object)) {
+      return [];
+    }
+
+    let systemsList: IExpertSystem[] = [];
+
+    for (let key in data) {
+      systemsList.push(
+        await GeniusApi.fetchObject(
+          data[key],
+          fetchProducts,
+          fetchConditions,
+          fetchRelations,
+        ),
+      );
+    }
+
+    console.debug('\\GeniusApi\\getAllSystems', systemsList);
+
+    return systemsList;
   }
 
+  /**
+   * Adds a new expert system to the database.
+   * @param system New system to be added.
+   * @returns true if the operation was successful.
+   */
   static async addSystem(system: IExpertSystem): Promise<boolean> {
     if (system.systemName === '' || system.systemType === '') {
+      console.debug('\\GeniusApi\\addSystem', 'name or type empty');
+
       return false;
     }
 
@@ -67,27 +107,73 @@ export default class GeniusApi {
 
     let responseText = await response.text();
 
+    console.debug('\\GeniusApi\\addSystem', responseText);
+
     return responseText === 'success';
   }
 
+  /**
+   * Tries to remove the expert system with the given ID.
+   * @param id Expert system identifier.
+   * @returns true if the operation was successful.
+   */
+  static async deleteSystem(id: number): Promise<boolean> {
+    const response = await fetch(GeniusApi.BASE_GATEWAY + 'system/' + id, {
+      method: 'DELETE',
+    });
+
+    console.debug('\\GeniusApi\\deleteSystem\\id', id);
+
+    const responseText = await response.text();
+
+    console.debug('\\GeniusApi\\deleteSystem\\responseText', responseText);
+
+    return responseText === 'success';
+  }
+
+  /**
+   * Retrieves the conditions assigned to the given expert system.
+   * @param id Expert system identifier.
+   * @returns List of conditions assigned to the system.
+   */
   static async getConditions(id: number): Promise<IExpertCondition[]> {
     // TODO: do
     return [];
   }
 
+  static async addCondition(condition: IExpertCondition): Promise<number> {
+    // TODO: do
+    return 0;
+  }
+
+  /**
+   * Retrieves the products assigned to the given expert system.
+   * @param id Expert system identifier.
+   * @returns List of products assigned to the system.
+   */
   static async getProducts(id: number): Promise<IExpertProduct[]> {
     // TODO: do
     return [];
   }
 
-  static async addProduct(): Promise<object> {
+  static async addProduct(product: IExpertProduct): Promise<number> {
     // TODO: do
-    return {};
+    return 0;
   }
 
-  static async addCondition(): Promise<object> {
+  /**
+   * Retrieves the relations assigned to the given expert system.
+   * @param id Expert system identifier.
+   * @returns List of relations assigned to the system.
+   */
+  static async getRelations(id: number): Promise<IExpertProduct[]> {
     // TODO: do
-    return {};
+    return [];
+  }
+
+  static async addRelation(relation: IExpertRelation): Promise<number> {
+    // TODO: do
+    return 0;
   }
 
   private static async fetchObject(
@@ -110,8 +196,13 @@ export default class GeniusApi {
     expertState.systemProducts = fetchProducts
       ? await GeniusApi.getProducts(expertState.systemId ?? 0)
       : [];
+
     expertState.systemConditions = fetchConditions
       ? await GeniusApi.getConditions(expertState.systemId ?? 0)
+      : [];
+
+    expertState.systemRelations = fetchRelations
+      ? await GeniusApi.getRelations(expertState.systemId ?? 0)
       : [];
 
     return expertState;

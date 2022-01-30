@@ -7,10 +7,12 @@
 
 import { Component } from 'react';
 import { Link } from 'react-router-dom';
+import GeniusApi from './../../genius/GeniusApi';
+import IExpertSystem from './../../genius/IExpertSystem';
 
 interface IMainState {
-  isLoading?: boolean;
-  systemsList?: any;
+  isLoading: boolean;
+  systemsList: IExpertSystem[];
 }
 
 export class Main extends Component<{}, IMainState> {
@@ -21,15 +23,15 @@ export class Main extends Component<{}, IMainState> {
 
     this.state = {
       isLoading: true,
-      systemsList: {}
-    }
+      systemsList: [],
+    };
   }
 
   componentDidMount() {
     this.populateExpertSystemsData();
   }
 
-  static renderSystemsList(systems) {
+  static renderSystemsList(systems: IExpertSystem[]) {
     if (Object.keys(systems).length < 1) {
       return <p>No systems found</p>;
     }
@@ -40,15 +42,15 @@ export class Main extends Component<{}, IMainState> {
           <div className="col-12 dashboard__section -mb-3 -reveal">
             <div className="dashboard__banner h-100 p-5 bg-light -rounded-2">
               <div>
-                <h4>{system.name ?? ''}</h4>
-                <p>{system.description ?? ''}</p>
+                <h4>{system.systemName ?? ''}</h4>
+                <p>{system.systemDescription ?? ''}</p>
                 <Link
-                  to={'/dashboard/sys/' + system.guid ?? '#'}
+                  to={'/dashboard/sys/' + system.systemGuid ?? '#'}
                   className="btn btn-outline-dark btn-mobile -lg-mr-1">
                   Run
                 </Link>
                 <Link
-                  to={'/dashboard/edit/' + system.guid ?? '#'}
+                  to={'/dashboard/edit/' + system.systemGuid ?? '#'}
                   className="btn btn-dark btn-mobile -lg-mr-1">
                   Edit
                 </Link>
@@ -83,11 +85,8 @@ export class Main extends Component<{}, IMainState> {
   }
 
   async populateExpertSystemsData() {
-    const response = await fetch('api/expert/system');
-    const data = await response.json();
+    const systems = await GeniusApi.getAllSystems();
 
-    console.debug('api/expert/system', data);
-
-    this.setState({ systemsList: data, isLoading: false });
+    this.setState({ systemsList: systems, isLoading: false });
   }
 }

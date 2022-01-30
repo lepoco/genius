@@ -10,14 +10,20 @@ import RoutedComponent from '../../common/RoutedComponent';
 import withRouter from './../../common/withRouter';
 import IRouterProps from './../../interfaces/IRouterProps';
 import IExpertPageState from '../../genius/IExpertPageState';
+import GeniusApi from '../../genius/GeniusApi';
 
-class SystemDelete extends RoutedComponent<IExpertPageState> {
+interface IDeleteExpertState extends IExpertPageState {
+  acceptDelete?: boolean;
+}
+
+class SystemDelete extends RoutedComponent<IDeleteExpertState> {
   static displayName = SystemDelete.name;
 
   constructor(props: IRouterProps) {
     super(props);
 
     this.state = {
+      acceptDelete: false,
       systemLoaded: false,
       systemId: 0,
       systemGuid: '',
@@ -72,31 +78,31 @@ class SystemDelete extends RoutedComponent<IExpertPageState> {
   async handleSubmit(event) {
     event.preventDefault();
 
-    // const formData = new FormData();
+    if (this.state.acceptDelete !== true) {
+      console.debug(
+        '\\SystemDelete\\handleSubmit',
+        'Checkbox has not been checked',
+      );
 
-    // formData.append('name', this.state.systemName ?? '');
-    // formData.append('description', this.state.systemDescription ?? '');
-    // formData.append('question', this.state.systemQuestion ?? '');
-    // formData.append('type', this.state.systemType ?? '');
+      return;
+    }
 
-    // await fetch('api/expert/system', {
-    //   method: 'UPDATE',
-    //   body: formData,
-    // })
-    //   .then(response => response.text())
-    //   .then(data => {
+    let apiResult = await GeniusApi.deleteSystem(this.state.systemId ?? 0);
 
-    //     //this.setState({ text: data, loading: false });
-    //   });
+    console.debug('\\SystemDelete\\handleSubmit', apiResult);
+
+    if (apiResult) {
+      this.router.navigate('/dashboard');
+    }
   }
 
-  static renderSystemView(state: IExpertPageState) {
+  renderSystemView(state: IDeleteExpertState) {
     if ((state.systemId ?? 0) < 1) {
       return <p>No systems found</p>;
     }
 
     return (
-      <form id="deleteSystem" method="POST">
+      <form id="deleteSystem" method="POST" onSubmit={this.handleSubmit}>
         <input type="hidden" name="action" value="DeleteSystem" />
         <input type="hidden" name="nonce" value="@nonce('deletesystem')" />
         <input
@@ -127,10 +133,11 @@ class SystemDelete extends RoutedComponent<IExpertPageState> {
             type="checkbox"
             className="form-check-input"
             id="accept_delete"
-            name="accept_delete"
-            value="accept_delete"
+            name="acceptDelete"
+            value="acceptDelete"
+            onChange={this.handleInputChange}
           />
-          <label htmlFor="accept_delete">
+          <label htmlFor="acceptDelete">
             Aware of the irreversibility of the changes, I want to delete the
             saved data.
           </label>
@@ -156,7 +163,7 @@ class SystemDelete extends RoutedComponent<IExpertPageState> {
         <em>Loading...</em>
       </p>
     ) : (
-      SystemDelete.renderSystemView(this.state)
+      this.renderSystemView(this.state)
     );
 
     return (

@@ -20,17 +20,29 @@ service Expert {
 
 	rpc Delete(ExpertLookupModel) returns (ExpertResponseModel);
 
-	rpc AddCondition(ConditionModel) returns (ExpertResponseModel);
+	rpc GetSystemConditions(ExpertLookupModel) returns (stream ConditionModel);
 
-	rpc UpdateCondition(ConditionModel) returns (ExpertResponseModel);
+	rpc GetSystemProducts(ExpertLookupModel) returns (stream ProductModel);
 
-	rpc AddProduct(ProductModel) returns (ExpertResponseModel);
+	rpc GetSystemRelations(ExpertLookupModel) returns (stream RelationModel);
 
-	rpc UpdateProduct(ProductModel) returns (ExpertResponseModel);
+	rpc AddCondition(ConditionModel) returns (ConditionModel);
 
-	rpc AddRelation(RelationModel) returns (ExpertResponseModel);
+	rpc GetCondition(ConditionLookupModel) returns (ConditionModel);
 
-	rpc UpdateRelation(RelationModel) returns (ExpertResponseModel);
+	rpc UpdateCondition(ConditionModel) returns (ConditionModel);
+
+	rpc AddProduct(ProductModel) returns (ProductModel);
+
+	rpc GetProduct(ProductLookupModel) returns (ProductModel);
+
+	rpc UpdateProduct(ProductModel) returns (ProductModel);
+
+	rpc AddRelation(RelationModel) returns (RelationModel);
+
+	rpc GetRelation(RelationLookupModel) returns (RelationModel);
+
+	rpc UpdateRelation(RelationModel) returns (RelationModel);
 }
 
 enum RelationType {
@@ -80,6 +92,18 @@ message ExpertEmptyModel {
 message ExpertLookupModel {
 	int32 id = 1;
 	string guid = 2;
+}
+
+message ConditionLookupModel {
+	int32 id = 1;
+}
+
+message ProductLookupModel {
+	int32 id = 1;
+}
+
+message RelationLookupModel {
+	int32 id = 1;
 }
 
 message ExpertResponseModel {

@@ -26,12 +26,12 @@ namespace Genius.Services
             _expertContext = expertContext;
         }
 
+        #region SYSTEM OPERATIONS
+
         public override async Task<ExpertResponseModel> Create(ExpertModel request, ServerCallContext context)
         {
-            if (string.IsNullOrEmpty(request?.Name) || string.IsNullOrEmpty(request?.Description))
-            {
+            if (String.IsNullOrEmpty(request?.Name) || String.IsNullOrEmpty(request?.Description))
                 return new ExpertResponseModel { Id = 0 };
-            }
 
             var insertedSystem = new Data.Models.Expert.System
             {
@@ -51,7 +51,8 @@ namespace Genius.Services
             return new ExpertResponseModel { Id = insertedSystem?.Id ?? 0 };
         }
 
-        public override async Task GetAll(ExpertEmptyModel request, IServerStreamWriter<ExpertModel> responseStream, ServerCallContext context)
+        public override async Task GetAll(ExpertEmptyModel request, IServerStreamWriter<ExpertModel> responseStream,
+            ServerCallContext context)
         {
             var savedSystems = _expertContext.Systems;
 
@@ -76,19 +77,16 @@ namespace Genius.Services
             Data.Models.Expert.System expertSystem = new Data.Models.Expert.System { Id = 0 };
 
             if (!String.IsNullOrEmpty(request?.Guid))
-            {
-                expertSystem = await _expertContext.Systems.Where(sys => sys.Guid == request.Guid.Trim()).FirstOrDefaultAsync() ?? new Data.Models.Expert.System { Id = 0 };
-            }
+                expertSystem =
+                    await _expertContext.Systems.Where(sys => sys.Guid == request.Guid.Trim()).FirstOrDefaultAsync() ??
+                    new Data.Models.Expert.System { Id = 0 };
 
             if ((request?.Id ?? 0) > 0)
-            {
-                expertSystem = await _expertContext.Systems.Where(sys => sys.Id == request.Id).FirstOrDefaultAsync() ?? new Data.Models.Expert.System { Id = 0 };
-            }
+                expertSystem = await _expertContext.Systems.Where(sys => sys.Id == request.Id).FirstOrDefaultAsync() ??
+                               new Data.Models.Expert.System { Id = 0 };
 
             if (expertSystem.Id < 1)
-            {
                 return new ExpertModel();
-            }
 
             return new ExpertModel
             {
@@ -102,5 +100,296 @@ namespace Genius.Services
                 UpdatedAt = expertSystem.UpdatedAt.ToString()
             };
         }
+
+        public override async Task<ExpertResponseModel> Delete(ExpertLookupModel request, ServerCallContext context)
+        {
+            if (request?.Id < 1)
+                return new ExpertResponseModel { Id = 0 };
+
+            var expertSystem = await _expertContext.Systems.Where(sys => sys.Id == request.Id).FirstOrDefaultAsync() ??
+                               new Data.Models.Expert.System { Id = 0 };
+
+            if (expertSystem.Id < 1)
+                return new ExpertResponseModel { Id = 0 };
+
+            int systemId = expertSystem.Id;
+
+            _expertContext.Systems.Remove(expertSystem);
+
+            // TODO: Remove conditions, products and relations
+
+            await _expertContext.SaveChangesAsync();
+
+            return new ExpertResponseModel { Id = systemId };
+        }
+
+        #endregion
+
+        #region ADD PARTIALS
+
+        public override async Task<ConditionModel> AddCondition(ConditionModel request, ServerCallContext context)
+        {
+            if (request == null)
+                return new ConditionModel { Id = 0 };
+
+            if (request?.SystemId < 1)
+                return request;
+
+            var expertSystem =
+                await _expertContext.Systems.Where(sys => sys.Id == request.SystemId).FirstOrDefaultAsync() ??
+                new Data.Models.Expert.System { Id = 0 };
+
+            if (expertSystem.Id < 1)
+                return request;
+
+            if (String.IsNullOrEmpty(request?.Name))
+                return request;
+
+            var insertedCondition = new Data.Models.Expert.Condition
+            {
+                SystemId = expertSystem.Id,
+                Name = request.Name,
+                Description = request.Description ?? String.Empty,
+            };
+
+            _expertContext.Conditions.Add(insertedCondition);
+
+            await _expertContext.SaveChangesAsync();
+
+            request.Id = insertedCondition.Id;
+
+            return request;
+        }
+
+        public override async Task<ProductModel> AddProduct(ProductModel request, ServerCallContext context)
+        {
+            if (request == null)
+                return new ProductModel { Id = 0 };
+
+            if (request?.SystemId < 1)
+                return request;
+
+            var expertSystem =
+                await _expertContext.Systems.Where(sys => sys.Id == request.SystemId).FirstOrDefaultAsync() ??
+                new Data.Models.Expert.System { Id = 0 };
+
+            if (expertSystem.Id < 1)
+                return request;
+
+            if (String.IsNullOrEmpty(request?.Name))
+                return request;
+
+            var insertedProduct = new Data.Models.Expert.Product
+            {
+                SystemId = expertSystem.Id,
+                Name = request.Name,
+                Description = request.Description ?? String.Empty,
+                Notes = request.Notes ?? String.Empty
+            };
+
+            _expertContext.Products.Add(insertedProduct);
+
+            await _expertContext.SaveChangesAsync();
+
+            request.Id = insertedProduct.Id;
+
+            return request;
+        }
+
+        public override async Task<RelationModel> AddRelation(RelationModel request, ServerCallContext context)
+        {
+            if (request == null)
+                return new RelationModel { Id = 0 };
+
+            if (request?.SystemId < 1 || request?.ConditionId < 1 || request?.ProductId < 1)
+                return request;
+
+            var expertSystem =
+                await _expertContext.Systems.Where(sys => sys.Id == request.SystemId).FirstOrDefaultAsync() ??
+                new Data.Models.Expert.System { Id = 0 };
+
+            var databaseCondition =
+                await _expertContext.Conditions.Where(con => con.Id == request.ConditionId).FirstOrDefaultAsync() ??
+                new Data.Models.Expert.Condition { Id = 0 };
+
+            var databaseProduct =
+                await _expertContext.Products.Where(prod => prod.Id == request.ProductId).FirstOrDefaultAsync() ??
+                new Data.Models.Expert.Product { Id = 0 };
+
+            if (expertSystem.Id < 1 || databaseProduct.Id < 1 || databaseCondition.Id < 1)
+                return request;
+
+            if (request.Weight > 100)
+                request.Weight = 100;
+
+            if (request.Weight < 0)
+                request.Weight = 0;
+
+            var insertedRelation = new Data.Models.Expert.Relation
+            {
+                SystemId = expertSystem.Id,
+                ProductId = databaseProduct.Id,
+                CondiotionId = databaseCondition.Id,
+                Weight = request.Weight
+            };
+
+            _expertContext.Relations.Add(insertedRelation);
+
+            await _expertContext.SaveChangesAsync();
+
+            request.Id = insertedRelation.Id;
+
+            return request;
+        }
+
+        #endregion
+
+        #region GET PARTIALS
+
+        public override async Task<ConditionModel> GetCondition(ConditionLookupModel request, ServerCallContext context)
+        {
+            if (request == null || request.Id < 1)
+                return new ConditionModel { Id = 0 };
+
+            var databaseCondition =
+                await _expertContext.Conditions.Where(con => con.Id == request.Id).FirstOrDefaultAsync() ??
+                new Data.Models.Expert.Condition { Id = 0, SystemId = 0 };
+
+            return new ConditionModel
+            {
+                Id = databaseCondition.Id,
+                SystemId = databaseCondition.SystemId,
+                Name = databaseCondition.Name ?? String.Empty,
+                Description = databaseCondition.Description ?? String.Empty
+            };
+        }
+
+        public override async Task<ProductModel> GetProduct(ProductLookupModel request, ServerCallContext context)
+        {
+            if (request == null || request.Id < 1)
+                return new ProductModel { Id = 0 };
+
+            var databaseProduct =
+                await _expertContext.Products.Where(prod => prod.Id == request.Id).FirstOrDefaultAsync() ??
+                new Data.Models.Expert.Product { Id = 0, SystemId = 0 };
+
+            return new ProductModel
+            {
+                Id = databaseProduct.Id,
+                SystemId = databaseProduct.SystemId,
+                Name = databaseProduct.Name ?? String.Empty,
+                Description = databaseProduct.Description ?? String.Empty,
+                Notes = databaseProduct.Notes ?? String.Empty
+            };
+        }
+
+        public override async Task<RelationModel> GetRelation(RelationLookupModel request, ServerCallContext context)
+        {
+            if (request == null || request.Id < 1)
+                return new RelationModel { Id = 0 };
+
+            var databaseRelation =
+                await _expertContext.Relations.Where(rel => rel.Id == request.Id).FirstOrDefaultAsync() ??
+                new Data.Models.Expert.Relation { Id = 0, SystemId = 0, CondiotionId = 0, ProductId = 0 };
+
+            return new RelationModel
+            {
+                Id = databaseRelation.Id,
+                SystemId = databaseRelation.SystemId,
+                ConditionId = databaseRelation.CondiotionId,
+                ProductId = databaseRelation.ProductId
+            };
+        }
+
+        #endregion
+
+        #region GETTERS FOR SYSTEM POOLS
+
+        public override async Task GetSystemConditions(ExpertLookupModel request,
+            IServerStreamWriter<ConditionModel> responseStream, ServerCallContext context)
+        {
+            if (request == null || request.Id < 1)
+                return;
+
+            var systemConditions = _expertContext.Conditions.Where(con => con.SystemId == request.Id);
+
+            foreach (Data.Models.Expert.Condition singleCondition in systemConditions)
+            {
+                await responseStream.WriteAsync(new ConditionModel
+                {
+                    Id = singleCondition.Id,
+                    SystemId = singleCondition.SystemId,
+                    Name = singleCondition.Name ?? String.Empty,
+                    Description = singleCondition.Description ?? String.Empty
+                });
+            }
+        }
+
+        public override async Task GetSystemProducts(ExpertLookupModel request,
+            IServerStreamWriter<ProductModel> responseStream, ServerCallContext context)
+        {
+            if (request == null || request.Id < 1)
+                return;
+
+            var systemProducts = _expertContext.Products.Where(prod => prod.SystemId == request.Id);
+
+            foreach (Data.Models.Expert.Product singleProduct in systemProducts)
+            {
+                await responseStream.WriteAsync(new ProductModel
+                {
+                    Id = singleProduct.Id,
+                    SystemId = singleProduct.SystemId,
+                    Name = singleProduct.Name ?? String.Empty,
+                    Description = singleProduct.Description ?? String.Empty,
+                    Notes = singleProduct.Notes ?? String.Empty
+                });
+            }
+        }
+
+        public override async Task GetSystemRelations(ExpertLookupModel request,
+            IServerStreamWriter<RelationModel> responseStream, ServerCallContext context)
+        {
+            if (request == null || request.Id < 1)
+                return;
+
+            var systemRelations = _expertContext.Relations.Where(rel => rel.SystemId == request.Id);
+
+            foreach (Data.Models.Expert.Relation singleRelation in systemRelations)
+            {
+                await responseStream.WriteAsync(new RelationModel
+                {
+                    Id = singleRelation.Id,
+                    SystemId = singleRelation.SystemId,
+                    ConditionId = singleRelation.CondiotionId,
+                    ProductId = singleRelation.ProductId,
+                });
+            }
+        }
+
+        #endregion
+
+        #region UPDATES
+
+        public override Task<ExpertResponseModel> Update(ExpertModel request, ServerCallContext context)
+        {
+            return base.Update(request, context);
+        }
+
+        public override Task<ConditionModel> UpdateCondition(ConditionModel request, ServerCallContext context)
+        {
+            return base.UpdateCondition(request, context);
+        }
+
+        public override Task<ProductModel> UpdateProduct(ProductModel request, ServerCallContext context)
+        {
+            return base.UpdateProduct(request, context);
+        }
+
+        public override Task<RelationModel> UpdateRelation(RelationModel request, ServerCallContext context)
+        {
+            return base.UpdateRelation(request, context);
+        }
+
+        #endregion
     }
 }

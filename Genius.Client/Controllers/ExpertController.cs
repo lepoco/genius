@@ -64,6 +64,15 @@ namespace Genius.Client.Controllers
             return await _expertClient.GetSystemByGuidAsync(guid);
         }
 
+        [HttpDelete]
+        [Route("system/{id}")]
+        public async Task<IActionResult> DeleteSingleSystem([FromRoute] int id)
+        {
+            bool isDeleted = await _expertClient.DeleteSystemAsync(new ExpertModel { Id = id }) > 0;
+
+            return StatusCode(200, isDeleted ? "success" : "error");
+        }
+
         [HttpPost]
         [Route("product")]
         public async Task<IActionResult> InsertProduct()
@@ -87,7 +96,6 @@ namespace Genius.Client.Controllers
             //return await _expertClient.GetSystemByGuidAsync(guid);
             return new ProductModel
             {
-
             };
         }
 
@@ -99,8 +107,8 @@ namespace Genius.Client.Controllers
         }
 
         [HttpPost]
-        [Route("condition/{guid}")]
-        public async Task<IEnumerable<ConditionModel>> GetAllConditions([FromRoute] string guid)
+        [Route("condition/{id}")]
+        public async Task<IEnumerable<ConditionModel>> GetAllConditions([FromRoute] int id)
         {
             List<ConditionModel> products = new List<ConditionModel>();
 
@@ -108,13 +116,12 @@ namespace Genius.Client.Controllers
         }
 
         [HttpGet]
-        [Route("condition/{guid}/{id}")]
-        public async Task<ConditionModel> GetSingleCondition([FromRoute] string guid, [FromRoute] int id)
+        [Route("condition/{systemId}/{id}")]
+        public async Task<ConditionModel> GetSingleCondition([FromRoute] int systemId, [FromRoute] int id)
         {
             //return await _expertClient.GetSystemByGuidAsync(guid);
             return new ConditionModel
             {
-
             };
         }
     }

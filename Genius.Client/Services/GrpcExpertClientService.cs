@@ -63,5 +63,14 @@ namespace Genius.Client.Services
             return (await _grpcClient.CreateAsync(system))?.Id ?? 0;
         }
 
+        public int DeleteSystem(ExpertModel system)
+        {
+            return _grpcClient.Delete(new ExpertLookupModel { Id = system.Id }).Id;
+        }
+
+        public async Task<int> DeleteSystemAsync(ExpertModel system)
+        {
+            return (await _grpcClient.DeleteAsync(new ExpertLookupModel { Id = system.Id })).Id;
+        }
     }
 }

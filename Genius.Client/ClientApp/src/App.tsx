@@ -25,7 +25,7 @@ import { Users } from './components/dashboard/Users';
 import { Password } from './components/dashboard/Password';
 import { Settings } from './components/dashboard/Settings';
 import System from './components/dashboard/System';
-import { Add as SystemAdd } from './components/dashboard/Add';
+import SystemAdd from './components/dashboard/SystemAdd';
 import SystemDelete from './components/dashboard/SystemDelete';
 import SystemEdit from './components/dashboard/SystemEdit';
 

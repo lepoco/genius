@@ -54,7 +54,7 @@ namespace Genius.Client.Controllers
             var serverResponse = await _expertClient.CreateSystemAsync(insertedSystem);
 
 
-            return StatusCode(200, true);
+            return StatusCode(200, "success");
         }
 
         [HttpGet]

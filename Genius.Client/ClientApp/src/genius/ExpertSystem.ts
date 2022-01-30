@@ -7,6 +7,7 @@
 
 import IExpertCondition from './IExpertCondition';
 import IExpertProduct from './IExpertProduct';
+import IExpertRelation from './IExpertRelation';
 import IExpertSystem from './IExpertSystem';
 
 export default class ExpertSystem implements IExpertSystem {
@@ -22,6 +23,7 @@ export default class ExpertSystem implements IExpertSystem {
 
   systemConditions: IExpertCondition[] = [];
   systemProducts: IExpertProduct[] = [];
+  systemRelations: IExpertRelation[] = [];
 
   constructor(
     systemId: number = 0,
@@ -35,6 +37,7 @@ export default class ExpertSystem implements IExpertSystem {
     systemUpdatedAt: string = '',
     systemConditions: IExpertCondition[] = [],
     systemProducts: IExpertProduct[] = [],
+    systemRelations: IExpertRelation[] = [],
   ) {
     this.systemId = systemId;
     this.systemGuid = systemGuid;
@@ -47,6 +50,7 @@ export default class ExpertSystem implements IExpertSystem {
     this.systemUpdatedAt = systemUpdatedAt;
     this.systemConditions = systemConditions;
     this.systemProducts = systemProducts;
+    this.systemRelations = systemRelations;
   }
 
   setConditions(conditions: IExpertCondition[]) {
@@ -55,5 +59,9 @@ export default class ExpertSystem implements IExpertSystem {
 
   setProducts(products: IExpertProduct[]) {
     this.systemProducts = products;
+  }
+
+  setRelations(relations: IExpertRelation[]) {
+    this.systemRelations = relations;
   }
 }

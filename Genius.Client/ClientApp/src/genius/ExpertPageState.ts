@@ -7,6 +7,7 @@
 
 import IExpertPageState from './IExpertPageState';
 import IExpertCondition from './IExpertCondition';
+import IExpertRelation from './IExpertRelation';
 import IExpertProduct from './IExpertProduct';
 
 export default class ExpertPageState implements IExpertPageState {
@@ -22,4 +23,5 @@ export default class ExpertPageState implements IExpertPageState {
   systemUpdatedAt: string = '';
   systemConditions: IExpertCondition[] = [];
   systemProducts: IExpertProduct[] = [];
+  systemRelations: IExpertRelation[] = [];
 }

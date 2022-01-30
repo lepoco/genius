@@ -6,6 +6,7 @@
  */
 import IExpertCondition from './IExpertCondition';
 import IExpertProduct from './IExpertProduct';
+import IExpertRelation from './IExpertRelation';
 
 export default interface IExpertSystem {
   systemId?: number;
@@ -20,4 +21,5 @@ export default interface IExpertSystem {
 
   systemConditions?: IExpertCondition[];
   systemProducts?: IExpertProduct[];
+  systemRelations?: IExpertRelation[];
 }

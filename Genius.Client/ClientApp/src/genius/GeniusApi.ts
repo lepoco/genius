@@ -10,18 +10,35 @@ import IExpertCondition from './IExpertCondition';
 import IExpertProduct from './IExpertProduct';
 import ExpertSystem from './ExpertSystem';
 
+/**
+ * Contains logic responsible for polling the internal API that connects via gRPC to the Genius microservice.
+ */
 export default class GeniusApi {
   private static readonly BASE_GATEWAY: string = '/api/expert/';
 
+  /**
+   * Get the system by its GUID.
+   * @param guid Universal identifier of system in the database.
+   * @param fetchProducts Whether the call should also fetch the system products.
+   * @param fetchConditions Whether the call should also fetch the system conditions.
+   * @param fetchRelations Whether the call should also fetch the system relations.
+   * @returns Instance of expert system.
+   */
   static async getSystemByGuid(
     guid: string,
     fetchProducts: boolean = false,
     fetchConditions: boolean = false,
+    fetchRelations: boolean = false,
   ): Promise<IExpertSystem> {
     const response = await fetch(GeniusApi.BASE_GATEWAY + 'system/' + guid);
     const data = response.json();
 
-    return await GeniusApi.fetchObject(data, fetchProducts, fetchConditions);
+    return await GeniusApi.fetchObject(
+      data,
+      fetchProducts,
+      fetchConditions,
+      fetchRelations,
+    );
   }
 
   static async getAllSystems(): Promise<IExpertSystem[]> {
@@ -32,6 +49,10 @@ export default class GeniusApi {
   }
 
   static async addSystem(system: IExpertSystem): Promise<boolean> {
+    if (system.systemName === '' || system.systemType === '') {
+      return false;
+    }
+
     let formData = GeniusApi.buildFormData({
       name: system.systemName,
       description: system.systemDescription,
@@ -46,7 +67,7 @@ export default class GeniusApi {
 
     let responseText = await response.text();
 
-    return responseText === 'true';
+    return responseText === 'success';
   }
 
   static async getConditions(id: number): Promise<IExpertCondition[]> {
@@ -73,6 +94,7 @@ export default class GeniusApi {
     dataObject: any,
     fetchProducts: boolean,
     fetchConditions: boolean,
+    fetchRelations: boolean,
   ): Promise<ExpertSystem> {
     const expertState = new ExpertSystem();
     expertState.systemId = dataObject.id ?? 0;

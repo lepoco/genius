@@ -5,9 +5,9 @@
  * All Rights Reserved.
  */
 
-import IExpertState from './IExpertState';
+import IExpertPageState from './IExpertPageState';
 
-export default class ExpertState implements IExpertState {
+export default class ExpertPageState implements IExpertPageState {
   systemLoaded: boolean = false;
   systemId: number = 0;
   systemGuid: string = '';

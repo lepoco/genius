@@ -5,7 +5,7 @@
  * All Rights Reserved.
  */
 
-export default interface IExpertState {
+export default interface IExpertPageState {
   systemLoaded?: boolean;
   systemId?: number;
   systemGuid?: string;

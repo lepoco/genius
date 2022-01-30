@@ -5,9 +5,10 @@
  * All Rights Reserved.
  */
 
-export default interface IExpertCondition {
+ export default interface IExpertProduct {
   id?: number;
   system_id?: number;
   name?: string;
   description?: string;
+  notes?: string;
 }

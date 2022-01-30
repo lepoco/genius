@@ -63,5 +63,59 @@ namespace Genius.Client.Controllers
         {
             return await _expertClient.GetSystemByGuidAsync(guid);
         }
+
+        [HttpPost]
+        [Route("product")]
+        public async Task<IActionResult> InsertProduct()
+        {
+            return StatusCode(200, true);
+        }
+
+        [HttpPost]
+        [Route("product/{guid}")]
+        public async Task<IEnumerable<ProductModel>> GetAllProducts()
+        {
+            List<ProductModel> products = new List<ProductModel>();
+
+            return products;
+        }
+
+        [HttpGet]
+        [Route("product/{guid}/{id}")]
+        public async Task<ProductModel> GetSingleProduct([FromRoute] string guid, [FromRoute] int id)
+        {
+            //return await _expertClient.GetSystemByGuidAsync(guid);
+            return new ProductModel
+            {
+
+            };
+        }
+
+        [HttpPost]
+        [Route("condition")]
+        public async Task<IActionResult> InsertCondition()
+        {
+            return StatusCode(200, true);
+        }
+
+        [HttpPost]
+        [Route("condition/{guid}")]
+        public async Task<IEnumerable<ConditionModel>> GetAllConditions([FromRoute] string guid)
+        {
+            List<ConditionModel> products = new List<ConditionModel>();
+
+            return products;
+        }
+
+        [HttpGet]
+        [Route("condition/{guid}/{id}")]
+        public async Task<ConditionModel> GetSingleCondition([FromRoute] string guid, [FromRoute] int id)
+        {
+            //return await _expertClient.GetSystemByGuidAsync(guid);
+            return new ConditionModel
+            {
+
+            };
+        }
     }
 }

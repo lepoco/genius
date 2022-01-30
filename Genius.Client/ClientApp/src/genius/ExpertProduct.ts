@@ -5,23 +5,26 @@
  * All Rights Reserved.
  */
 
-import IExpertCondition from './IExpertCondition';
+import IExpertProduct from './IExpertProduct';
 
-export default class ExpertCondition implements IExpertCondition {
+export default class ExpertProduct implements IExpertProduct {
   id: number = 0;
   system_id: number = 0;
   name: string = '';
   description: string = '';
+  notes: string = '';
 
   constructor(
     id: number,
     system_id: number = 0,
     name: string = '',
     description: string = '',
+    notes: string = '',
   ) {
     this.id = id;
     this.system_id = system_id;
     this.name = name;
     this.description = description;
+    this.notes = notes;
   }
 }

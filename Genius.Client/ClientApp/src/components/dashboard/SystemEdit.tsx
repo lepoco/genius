@@ -11,10 +11,10 @@ import { FloatingTags } from '../FloatingTags';
 import withRouter from './../../common/withRouter';
 import IRouterProps from './../../interfaces/IRouterProps';
 import IRouter from './../../interfaces/IRouter';
-import IExpertState from './../../genius/IExpertState';
+import IExpertPageState from '../../genius/IExpertPageState';
 import ExpertCondition from './../../genius/ExpertCondition';
 
-class SystemEdit extends Component<IRouterProps, IExpertState> {
+class SystemEdit extends Component<IRouterProps, IExpertPageState> {
   static displayName = SystemEdit.name;
 
   router: IRouter;
@@ -97,7 +97,7 @@ class SystemEdit extends Component<IRouterProps, IExpertState> {
     //   });
   }
 
-  static renderSystemView(state: IExpertState) {
+  static renderSystemView(state: IExpertPageState) {
     if ((state.systemId ?? 0) < 1) {
       return <p>No systems found</p>;
     }
@@ -183,26 +183,26 @@ class SystemEdit extends Component<IRouterProps, IExpertState> {
               name="product_conditions_confirming"
               header="Conditions (confirming)"
               options={[
-                new ExpertCondition(1, 'Condition One'),
-                new ExpertCondition(2, 'Condition Two'),
-                new ExpertCondition(3, 'Condition Three'),
-                new ExpertCondition(4, 'Condition Four'),
+                new ExpertCondition(1, 0, 'Condition One'),
+                new ExpertCondition(2, 0, 'Condition Two'),
+                new ExpertCondition(3, 0, 'Condition Three'),
+                new ExpertCondition(4, 0, 'Condition Four'),
               ]}
-              selected={[new ExpertCondition(1, 'Condition One')]}
+              selected={[new ExpertCondition(1, 0, 'Condition One')]}
             />
 
             <FloatingTags
               name="product_conditions_negating"
               header="Conditions (negating)"
               options={[
-                new ExpertCondition(1, 'Condition One'),
-                new ExpertCondition(2, 'Condition Two'),
-                new ExpertCondition(3, 'Condition Three'),
-                new ExpertCondition(4, 'Condition Four'),
+                new ExpertCondition(1, 0, 'Condition One'),
+                new ExpertCondition(2, 0, 'Condition Two'),
+                new ExpertCondition(3, 0, 'Condition Three'),
+                new ExpertCondition(4, 0, 'Condition Four'),
               ]}
               selected={[
-                new ExpertCondition(1, 'Condition One'),
-                new ExpertCondition(2, 'Condition Two'),
+                new ExpertCondition(1, 0, 'Condition One'),
+                new ExpertCondition(2, 0, 'Condition Two'),
               ]}
             />
 

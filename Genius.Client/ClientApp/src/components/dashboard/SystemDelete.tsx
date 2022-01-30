@@ -9,9 +9,9 @@ import { Link } from 'react-router-dom';
 import RoutedComponent from '../../common/RoutedComponent';
 import withRouter from './../../common/withRouter';
 import IRouterProps from './../../interfaces/IRouterProps';
-import IExpertState from './../../genius/IExpertState';
+import IExpertPageState from '../../genius/IExpertPageState';
 
-class SystemDelete extends RoutedComponent<IExpertState> {
+class SystemDelete extends RoutedComponent<IExpertPageState> {
   static displayName = SystemDelete.name;
 
   constructor(props: IRouterProps) {
@@ -90,7 +90,7 @@ class SystemDelete extends RoutedComponent<IExpertState> {
     //   });
   }
 
-  static renderSystemView(state: IExpertState) {
+  static renderSystemView(state: IExpertPageState) {
     if ((state.systemId ?? 0) < 1) {
       return <p>No systems found</p>;
     }

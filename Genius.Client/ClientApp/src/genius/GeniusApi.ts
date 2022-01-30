@@ -5,34 +5,52 @@
  * All Rights Reserved.
  */
 
-import IExpertState from './IExpertState';
-import ExpertState from './ExpertState';
+import IExpertSystem from './IExpertSystem';
+import IExpertCondition from './IExpertCondition';
+import IExpertProduct from './IExpertProduct';
+import ExpertSystem from './ExpertSystem';
 
 export default class GeniusApi {
-  static async getSystemByGuid(guid: string): Promise<IExpertState> {
-    const response = await fetch('api/expert/system/' + guid);
+  private static readonly BASE_GATEWAY: string = '/api/expert/';
+
+  static async getSystemByGuid(guid: string): Promise<IExpertSystem> {
+    const response = await fetch(GeniusApi.BASE_GATEWAY + 'system/' + guid);
     const data = await response.json();
 
-    return GeniusApi.fetchObject(data, false, false);
+    return await GeniusApi.fetchObject(data, false, false);
   }
 
-  static async getConditions(id: number): Promise<object> {
+  static async getAllSystems() {
+    const response = await fetch(GeniusApi.BASE_GATEWAY + 'system');
+    const data = await response.json();
+  }
+
+  static async getConditions(id: number): Promise<IExpertCondition[]> {
+    // TODO: do
+    return [];
+  }
+
+  static async getProducts(id: number): Promise<IExpertProduct[]> {
+    // TODO: do
+    return [];
+  }
+
+  static async addProduct(): Promise<object> {
     // TODO: do
     return {};
   }
 
-  static async getProducts(id: number): Promise<object> {
+  static async addCondition(): Promise<object> {
     // TODO: do
     return {};
   }
 
-  private static fetchObject(
+  private static async fetchObject(
     dataObject: any,
     fetchProducts: boolean = false,
     fetchConditions: boolean = false,
-  ): ExpertState {
-    const expertState = new ExpertState();
-    expertState.systemLoaded = true;
+  ): Promise<ExpertSystem> {
+    const expertState = new ExpertSystem();
     expertState.systemId = dataObject.id ?? 0;
     expertState.systemGuid = dataObject.guid ?? '';
     expertState.systemVersion = dataObject.version ?? '';
@@ -44,11 +62,11 @@ export default class GeniusApi {
     expertState.systemUpdatedAt = dataObject.updatedAt ?? '';
 
     expertState.systemProducts = fetchProducts
-      ? GeniusApi.getProducts(expertState.systemId ?? 0)
-      : {};
+      ? await GeniusApi.getProducts(expertState.systemId ?? 0)
+      : [];
     expertState.systemConditions = fetchConditions
-      ? GeniusApi.getConditions(expertState.systemId ?? 0)
-      : {};
+      ? await GeniusApi.getConditions(expertState.systemId ?? 0)
+      : [];
 
     return expertState;
   }

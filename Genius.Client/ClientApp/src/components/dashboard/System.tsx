@@ -9,9 +9,9 @@ import { Link } from 'react-router-dom';
 import RoutedComponent from '../../common/RoutedComponent';
 import withRouter from './../../common/withRouter';
 import IRouterProps from './../../interfaces/IRouterProps';
-import IExpertState from './../../genius/IExpertState';
+import IExpertPageState from '../../genius/IExpertPageState';
 
-class System extends RoutedComponent<IExpertState> {
+class System extends RoutedComponent<IExpertPageState> {
   static displayName = System.name;
 
   conditionalQuestion: boolean = false;

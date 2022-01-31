@@ -11,6 +11,10 @@ import ExpertCondition from './../genius/ExpertCondition';
 import ExpertProduct from './../genius/ExpertProduct';
 import GeniusApi from './../genius/GeniusApi';
 
+interface TagsUpdated<T = any> {
+  (options: T, selected: T): void;
+}
+
 interface IFloatingTagsProps {
   systemId?: number;
   name?: string;
@@ -18,7 +22,7 @@ interface IFloatingTagsProps {
   options?: IExpertCondition[];
   selected?: IExpertCondition[];
   inputValue?: string;
-  onUpdate?: CallableFunction;
+  onUpdate?: TagsUpdated<IExpertCondition[]>;
 }
 
 interface IFloatingTagsState {
@@ -36,6 +40,8 @@ export class FloatingTags extends Component<
 > {
   static displayName = FloatingTags.name;
 
+  private onUpdate?: TagsUpdated<IExpertCondition[]>;
+
   constructor(props: IFloatingTagsProps) {
     super(props);
     this.state = {
@@ -47,10 +53,8 @@ export class FloatingTags extends Component<
       selected: props.selected ?? [],
     };
 
-    console.log(this.state);
+    this.onUpdate = props.onUpdate;
   }
-
-  incrementCounter() {}
 
   tagAddOnClick(
     event: React.MouseEvent<HTMLSpanElement>,
@@ -60,6 +64,10 @@ export class FloatingTags extends Component<
     updatedList.push(condition);
 
     this.setState({ selected: updatedList });
+
+    if (this.onUpdate !== undefined) {
+      this.onUpdate(this.state.options ?? [], this.state.selected ?? []);
+    }
   }
 
   tagRemoveOnClick(
@@ -71,6 +79,10 @@ export class FloatingTags extends Component<
     );
 
     this.setState({ selected: updatedList });
+
+    if (this.onUpdate !== undefined) {
+      this.onUpdate(this.state.options ?? [], this.state.selected ?? []);
+    }
   }
 
   generateSelectedTags() {
@@ -145,13 +157,18 @@ export class FloatingTags extends Component<
     console.log(this.state);
 
     let conditionName = event.target.value.trim();
-    let newCondition = new ExpertCondition(0, this.state.systemId, conditionName, '');
+    let newCondition = new ExpertCondition(
+      0,
+      this.state.systemId,
+      conditionName,
+      '',
+    );
 
     let newConditionId = await GeniusApi.addCondition(newCondition);
 
     // console.debug('\\FloatingTags\\onInputKeyPress\\newConditionId', newConditionId);
 
-    if(newConditionId < 1) {
+    if (newConditionId < 1) {
       return;
     }
 
@@ -171,6 +188,10 @@ export class FloatingTags extends Component<
       options: updatedOptionsList,
       selected: updatedSelectedList,
     });
+
+    if (this.onUpdate !== undefined) {
+      this.onUpdate(this.state.options ?? [], this.state.selected ?? []);
+    }
   }
 
   onInputChange(event) {
@@ -194,6 +215,10 @@ export class FloatingTags extends Component<
     // this.setState({
     //   [name]: value,
     // });
+  }
+
+  clear() {
+    this.setState({ selected: [] });
   }
 
   render() {

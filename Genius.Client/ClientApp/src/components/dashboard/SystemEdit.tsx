@@ -5,25 +5,33 @@
  * All Rights Reserved.
  */
 
-import { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { FloatingTags } from '../FloatingTags';
-import withRouter from './../../common/withRouter';
+import RoutedComponent from '../../common/RoutedComponent';
 import IRouterProps from './../../interfaces/IRouterProps';
-import IRouter from './../../interfaces/IRouter';
+import withRouter from './../../common/withRouter';
 import IExpertPageState from '../../genius/IExpertPageState';
-import ExpertCondition from './../../genius/ExpertCondition';
+import IExpertCondition from './../../genius/IExpertCondition';
 import GeniusApi from '../../genius/GeniusApi';
+import ExpertProduct from '../../genius/ExpertProduct';
 
-class SystemEdit extends Component<IRouterProps, IExpertPageState> {
+class ProductWithConditions {
+  id: number = 0;
+  name: string = '';
+  description: string = '';
+  notes: string = '';
+  conditions: IExpertCondition[] = [];
+}
+
+class SystemEdit extends RoutedComponent<IExpertPageState> {
   static displayName = SystemEdit.name;
 
-  router: IRouter;
+  private newProduct: ProductWithConditions = new ProductWithConditions();
+
+  private conditionsCloud: FloatingTags | null = null;
 
   constructor(props: IRouterProps) {
     super(props);
-
-    this.router = props.router;
 
     this.state = {
       systemLoaded: false,
@@ -39,9 +47,6 @@ class SystemEdit extends Component<IRouterProps, IExpertPageState> {
       systemConditions: [],
       systemProducts: [],
     };
-
-    this.handleInputChange = this.handleInputChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentDidMount() {
@@ -87,24 +92,58 @@ class SystemEdit extends Component<IRouterProps, IExpertPageState> {
   async handleSubmit(event) {
     event.preventDefault();
 
-    console.debug(event);
+    if (this.state.systemId === undefined) {
+      return;
+    }
 
-    // const formData = new FormData();
+    if (this.newProduct.name === '' || this.state.systemId < 1) {
+      return;
+    }
 
-    // formData.append('name', this.state.systemName ?? '');
-    // formData.append('description', this.state.systemDescription ?? '');
-    // formData.append('question', this.state.systemQuestion ?? '');
-    // formData.append('type', this.state.systemType ?? '');
+    if (this.newProduct.conditions.length < 1) {
+      return;
+    }
 
-    // await fetch('api/expert/system', {
-    //   method: 'UPDATE',
-    //   body: formData,
-    // })
-    //   .then(response => response.text())
-    //   .then(data => {
+    let productToAdd = new ExpertProduct(
+      0,
+      this.state.systemId,
+      this.newProduct.name,
+      this.newProduct.description,
+      this.newProduct.notes,
+    );
 
-    //     //this.setState({ text: data, loading: false });
-    //   });
+    let apiResult = await GeniusApi.addProductWithConditions(
+      productToAdd,
+      this.newProduct.conditions,
+    );
+
+    if (apiResult < 1) {
+      return;
+    }
+
+    productToAdd.id = apiResult;
+
+    let currentProducts = this.state.systemProducts;
+    currentProducts?.push(productToAdd);
+
+    this.setState({ systemProducts: currentProducts });
+
+    //if success reset and add
+    if (!(event.target instanceof HTMLFormElement)) {
+      return;
+    }
+
+    const FORM: HTMLFormElement = event.target;
+
+    FORM.reset();
+
+    if (this.conditionsCloud !== null) {
+      this.conditionsCloud.clear();
+    }
+  }
+
+  conditionsUpdated(options: IExpertCondition[], selected: IExpertCondition[]) {
+    this.newProduct.conditions = selected;
   }
 
   renderSystemView(state: IExpertPageState) {
@@ -146,7 +185,10 @@ class SystemEdit extends Component<IRouterProps, IExpertPageState> {
         </div>
 
         <div className="col-12">
-          <form id="addProduct" method="POST" onSubmit={this.handleSubmit}>
+          <form
+            id="addProduct"
+            method="POST"
+            onSubmit={this.handleSubmit.bind(this)}>
             <h5 className="-font-secondary -fw-700 -pb-1 -reveal">
               New product
             </h5>
@@ -165,6 +207,10 @@ class SystemEdit extends Component<IRouterProps, IExpertPageState> {
                 type="text"
                 placeholder="Name"
                 name="product_name"
+                defaultValue={this.newProduct.name}
+                onChange={event => {
+                  this.newProduct.name = event.target.value;
+                }}
               />
               <label htmlFor="product_name">Name</label>
             </div>
@@ -174,9 +220,27 @@ class SystemEdit extends Component<IRouterProps, IExpertPageState> {
                 className="floating-input__field"
                 type="text"
                 placeholder="Description"
+                defaultValue={this.newProduct.description}
+                onChange={event => {
+                  this.newProduct.description = event.target.value;
+                }}
                 name="product_description"
               />
               <label htmlFor="product_description">Description</label>
+            </div>
+
+            <div className="floating-input -reveal">
+              <input
+                className="floating-input__field"
+                type="text"
+                placeholder="Notes"
+                defaultValue={this.newProduct.notes}
+                onChange={event => {
+                  this.newProduct.notes = event.target.value;
+                }}
+                name="product_notes"
+              />
+              <label htmlFor="product_notes">Notes</label>
             </div>
 
             <p>
@@ -192,16 +256,20 @@ class SystemEdit extends Component<IRouterProps, IExpertPageState> {
             <FloatingTags
               name="product_conditions_confirming"
               header="Conditions (confirming)"
+              ref={element => {
+                this.conditionsCloud = element;
+              }}
               systemId={this.state.systemId ?? 0}
-              options={this.state.systemConditions}
+              options={this.state.systemConditions ?? []}
               selected={[]}
+              onUpdate={this.conditionsUpdated.bind(this)}
             />
 
             {/* <FloatingTags
               name="product_conditions_negating"
               header="Conditions (negating)"
               systemId={this.state.systemId ?? 0}
-              options={this.state.systemConditions}
+              options={this.state.systemConditions ?? []}
               selected={[]}
             /> */}
 

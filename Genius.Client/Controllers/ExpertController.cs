@@ -47,14 +47,12 @@ namespace Genius.Client.Controllers
             };
 
             if (String.IsNullOrEmpty(newSystem.Name) || String.IsNullOrEmpty(newSystem.Description))
-            {
                 return StatusCode(200, false);
-            }
 
-            var serverResponse = await _expertClient.CreateSystemAsync(newSystem);
+            var newSystemId = await _expertClient.CreateSystemAsync(newSystem);
 
 
-            return StatusCode(200, "success");
+            return StatusCode(200, newSystemId > 0 ? "success" : "error");
         }
 
         [HttpGet]
@@ -109,6 +107,8 @@ namespace Genius.Client.Controllers
             if (systemId < 1)
                 return StatusCode(200, 0);
 
+            string rawConditionsList = HttpContext.Request.Form["conditions"];
+
             var newProduct = new ProductModel
             {
                 SystemId = systemId,
@@ -117,9 +117,12 @@ namespace Genius.Client.Controllers
                 Notes = HttpContext.Request.Form["notes"]
             };
 
-            var serverResponse = await _expertClient.AddProductAsync(newProduct);
+            var newProductId = await _expertClient.AddProductAsync(newProduct);
 
-            return StatusCode(200, serverResponse);
+            if (newProductId > 0 && !String.IsNullOrEmpty(rawConditionsList))
+                await AddProductRelations(systemId, newProductId, rawConditionsList);
+
+            return StatusCode(200, newProductId);
         }
 
         [HttpGet]
@@ -145,9 +148,9 @@ namespace Genius.Client.Controllers
                 Description = HttpContext.Request.Form["description"],
             };
 
-            var serverResponse = await _expertClient.AddConditionAsync(newCondition);
+            var newConditionId = await _expertClient.AddConditionAsync(newCondition);
 
-            return StatusCode(200, serverResponse);
+            return StatusCode(200, newConditionId);
         }
 
         [HttpGet]
@@ -193,6 +196,42 @@ namespace Genius.Client.Controllers
         public async Task<RelationModel> GetSingleRelation([FromRoute] int id)
         {
             return await _expertClient.GetRelationAsync(id);
+        }
+
+        private async Task<IEnumerable<int>> AddProductRelations(int systemId, int productId, string rawRelations)
+        {
+            string[] conditionsList = rawRelations.Trim().Split(',');
+            int currentCondition = 0;
+
+            List<int> relationIds = new List<int>();
+
+            foreach (var rawCondition in conditionsList)
+            {
+                Int32.TryParse(rawCondition, out currentCondition);
+
+                if (currentCondition < 1)
+                    continue;
+
+                var dbCondition = await _expertClient.GetConditionAsync(currentCondition);
+
+                if (dbCondition?.Id > 0 || dbCondition?.SystemId == systemId)
+                {
+                    var newRelation = await _expertClient.AddRelationAsync(new RelationModel
+                    {
+                        SystemId = systemId,
+                        ProductId = productId,
+                        ConditionId = dbCondition.Id,
+                        Weight = 100
+                    });
+
+                    if (newRelation > 0)
+                    {
+                        relationIds.Add(newRelation);
+                    }
+                }
+            }
+
+            return relationIds;
         }
     }
 }

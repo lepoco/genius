@@ -31,9 +31,6 @@ class SystemAdd extends RoutedComponent<IAddExpertState> {
       systemType: 'fuzzy',
       systemQuestion: 'Does your gnome have {condition}?',
     };
-
-    this.handleInputChange = this.handleInputChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleInputChange(event) {
@@ -74,7 +71,10 @@ class SystemAdd extends RoutedComponent<IAddExpertState> {
             <h4 className="-font-secondary -fw-700 -pb-3 -reveal">Add</h4>
           </div>
           <div className="col-12">
-            <form id="addSystem" method="POST" onSubmit={this.handleSubmit}>
+            <form
+              id="addSystem"
+              method="POST"
+              onSubmit={this.handleSubmit.bind(this)}>
               <input type="hidden" name="nonce" readOnly value="addsystem" />
 
               <h5 className="-font-secondary -fw-700 -pb-1 -reveal">
@@ -88,7 +88,7 @@ class SystemAdd extends RoutedComponent<IAddExpertState> {
                   placeholder="Name"
                   name="systemName"
                   value={this.state.systemName}
-                  onChange={this.handleInputChange}
+                  onChange={this.handleInputChange.bind(this)}
                 />
                 <label htmlFor="systemName">Name</label>
               </div>
@@ -100,7 +100,7 @@ class SystemAdd extends RoutedComponent<IAddExpertState> {
                   placeholder="Description"
                   name="systemDescription"
                   value={this.state.systemDescription}
-                  onChange={this.handleInputChange}
+                  onChange={this.handleInputChange.bind(this)}
                 />
                 <label htmlFor="systemDescription">Description</label>
               </div>
@@ -113,7 +113,7 @@ class SystemAdd extends RoutedComponent<IAddExpertState> {
                   name="systemType"
                   placeholder="Type"
                   value={this.state.systemQuestion}
-                  onChange={this.handleInputChange}>
+                  onChange={this.handleInputChange.bind(this)}>
                   <option disabled value="relational">
                     Relation based
                   </option>
@@ -133,7 +133,7 @@ class SystemAdd extends RoutedComponent<IAddExpertState> {
                   placeholder="Primary question"
                   name="systemQuestion"
                   value={this.state.systemQuestion}
-                  onChange={this.handleInputChange}
+                  onChange={this.handleInputChange.bind(this)}
                 />
                 <label htmlFor="systemQuestion">Primary question</label>
               </div>

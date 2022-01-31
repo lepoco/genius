@@ -362,6 +362,7 @@ namespace Genius.Services
                     SystemId = singleRelation.SystemId,
                     ConditionId = singleRelation.CondiotionId,
                     ProductId = singleRelation.ProductId,
+                    Weight = singleRelation.Weight
                 });
             }
         }

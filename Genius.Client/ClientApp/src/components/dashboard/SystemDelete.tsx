@@ -37,9 +37,6 @@ class SystemDelete extends RoutedComponent<IDeleteExpertState> {
       systemConditions: [],
       systemProducts: [],
     };
-
-    this.handleInputChange = this.handleInputChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentDidMount() {
@@ -102,7 +99,10 @@ class SystemDelete extends RoutedComponent<IDeleteExpertState> {
     }
 
     return (
-      <form id="deleteSystem" method="POST" onSubmit={this.handleSubmit}>
+      <form
+        id="deleteSystem"
+        method="POST"
+        onSubmit={this.handleSubmit.bind(this)}>
         <input type="hidden" name="action" value="DeleteSystem" />
         <input type="hidden" name="nonce" value="@nonce('deletesystem')" />
         <input
@@ -135,7 +135,7 @@ class SystemDelete extends RoutedComponent<IDeleteExpertState> {
             id="accept_delete"
             name="acceptDelete"
             value="acceptDelete"
-            onChange={this.handleInputChange}
+            onChange={this.handleInputChange.bind(this)}
           />
           <label htmlFor="acceptDelete">
             Aware of the irreversibility of the changes, I want to delete the

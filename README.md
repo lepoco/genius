@@ -1,5 +1,4 @@
 # Genius
-[Created with ❤ in Poland by Pomianowski Leszek](https://dev.lepo.co/)  
 Genius is a microservice-based tool for building expert systems.  
 Application created for the defense of the thesis in the field of computer systems engineering in technology and environment.  
 **Kazimierz Wielki University in Bydgoszcz, Poland**

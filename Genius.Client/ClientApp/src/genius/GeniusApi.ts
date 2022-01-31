@@ -235,7 +235,7 @@ export default class GeniusApi {
       systemId: product.system_id ?? 0,
       name: product.name ?? '',
       description: product.description ?? '',
-      notes: product.notes ?? ''
+      notes: product.notes ?? '',
     });
 
     console.debug('\\GeniusApi\\addProduct\\product', product);
@@ -256,14 +256,13 @@ export default class GeniusApi {
     product: IExpertProduct,
     conditions: IExpertCondition[],
   ): Promise<number> {
-
     let systemId: number = product.system_id ?? 0;
 
     if (systemId < 1) {
       return 0;
     }
 
-    let conditionIds:number[] = [];
+    let conditionIds: number[] = [];
 
     for (let key in conditions) {
       let conditionId: number = conditions[key].id ?? 0;
@@ -278,13 +277,13 @@ export default class GeniusApi {
       name: product.name ?? '',
       description: product.description ?? '',
       notes: product.notes ?? '',
-      conditions: conditionIds
+      conditions: conditionIds,
     });
 
     console.debug('\\GeniusApi\\addProductWithConditions', {
       product: product,
       conditionIds: conditionIds,
-      formData: formData
+      formData: formData,
     });
 
     let response = await fetch('api/expert/product', {
@@ -294,7 +293,10 @@ export default class GeniusApi {
 
     let responseText = await response.text();
 
-    console.debug('\\GeniusApi\\addProductWithConditions\\responseText', +responseText);
+    console.debug(
+      '\\GeniusApi\\addProductWithConditions\\responseText',
+      +responseText,
+    );
 
     return +responseText;
   }

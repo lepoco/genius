@@ -14,6 +14,7 @@ import IExpertPageState from '../../genius/IExpertPageState';
 import IExpertCondition from './../../genius/IExpertCondition';
 import GeniusApi from '../../genius/GeniusApi';
 import ExpertProduct from '../../genius/ExpertProduct';
+import IExpertProduct from '../../genius/IExpertProduct';
 
 class ProductWithConditions {
   id: number = 0;
@@ -126,7 +127,17 @@ class SystemEdit extends RoutedComponent<IExpertPageState> {
     let currentProducts = this.state.systemProducts;
     currentProducts?.push(productToAdd);
 
-    this.setState({ systemProducts: currentProducts });
+    let updatedRelations = await GeniusApi.getRelations(this.state.systemId);
+
+    this.setState({
+      systemRelations: updatedRelations,
+      systemProducts: currentProducts,
+    });
+
+    console.debug(
+      '\\SystemEdit\\handleSubmit\\relations',
+      this.state.systemRelations,
+    );
 
     //if success reset and add
     if (!(event.target instanceof HTMLFormElement)) {
@@ -146,10 +157,54 @@ class SystemEdit extends RoutedComponent<IExpertPageState> {
     this.newProduct.conditions = selected;
   }
 
+  renderProductsTable(state: IExpertPageState) {
+    let products: IExpertProduct[] = state.systemProducts ?? [];
+
+    if (products.length < 1) {
+      return;
+    }
+
+    return (
+      <tbody>
+        {products.map((singleProduct, i) => {
+          let productRelations = (state.systemRelations ?? []).filter(element => element.productId === singleProduct.id);
+
+          console.debug('Product relations', productRelations);
+
+          return (
+            <tr>
+              <th scope="row">{singleProduct.id ?? '0'}</th>
+              <td>{singleProduct.name ?? ''}</td>
+              <td>
+                {(singleProduct.description ?? '') === '' ? (
+                  '---'
+                ) : (
+                  <i>{singleProduct.description}</i>
+                )}
+              </td>
+              <td>
+                {(singleProduct.notes ?? '') === '' ? (
+                  '---'
+                ) : (
+                  <i>{singleProduct.notes}</i>
+                )}
+              </td>
+              <td>
+                ---
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
+    );
+  }
+
   renderSystemView(state: IExpertPageState) {
     if ((state.systemId ?? 0) < 1) {
       return <p>No systems found</p>;
     }
+
+    let productsTable = this.renderProductsTable(this.state);
 
     return (
       <div className="row">
@@ -290,6 +345,19 @@ class SystemEdit extends RoutedComponent<IExpertPageState> {
         <div className="col-12">
           <h5 className="-font-secondary -fw-700 -pb-1 -reveal">Products</h5>
         </div>
+
+        <table className="table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Name</th>
+              <th scope="col">Description</th>
+              <th scope="col">Notes</th>
+              <th scope="col">Conditions</th>
+            </tr>
+          </thead>
+          {productsTable}
+        </table>
       </div>
     );
   }

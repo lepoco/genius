@@ -145,7 +145,10 @@ class SystemEdit extends RoutedComponent<IExpertPageState> {
       this.state.systemRelations,
     );
 
-    // Rest on success
+    this.resetForm();
+  }
+
+  resetForm() {
     if (this.productNameInput !== null) {
       this.productNameInput.value = '';
     }

@@ -13,13 +13,44 @@ import IExpertRelation from './IExpertRelation';
 import ExpertCondition from './ExpertCondition';
 import ExpertProduct from './ExpertProduct';
 import ExpertRelation from './ExpertRelation';
+import ISolverQuestion from './ISolverQuestion';
+import ISolverResponse from './ISolverResponse';
+import SolverResponse from './SolverResponse';
 import System from '../components/dashboard/System';
 
 /**
  * Contains logic responsible for polling the internal API that connects via gRPC to the Genius microservice.
  */
 export default class GeniusApi {
-  private static readonly BASE_GATEWAY: string = '/api/expert/';
+  private static readonly BASE_EXPERT_GATEWAY: string = '/api/expert/';
+
+  private static readonly BASE_SOLVER_GATEWAY: string = '/api/solver/';
+
+  /**
+   * Asks a question to the service solving expert systems.
+   * @param question Terms of the question
+   * @returns Response from solver.
+   */
+  static async ask(question: ISolverQuestion): Promise<ISolverResponse> {
+    let formData = GeniusApi.buildFormData({
+      systemId: question.systemId ?? 0,
+      multiple: question.multiple ?? false,
+      confirming: question.confirming ?? [],
+      negating: question.negating ?? [],
+      indifferent: question.indifferent ?? [],
+    });
+
+    let response = await fetch(GeniusApi.BASE_SOLVER_GATEWAY + 'ask', {
+      method: 'GET',
+      body: formData,
+    });
+
+    const responseData = await response.json();
+
+    console.debug('\\GeniusApi\\ask\\responseData', responseData);
+
+    return this.fetchResponseObject(responseData);
+  }
 
   /**
    * Get the system by its GUID.
@@ -35,7 +66,9 @@ export default class GeniusApi {
     fetchConditions: boolean = false,
     fetchRelations: boolean = false,
   ): Promise<IExpertSystem> {
-    const response = await fetch(GeniusApi.BASE_GATEWAY + 'system/' + guid);
+    const response = await fetch(
+      GeniusApi.BASE_EXPERT_GATEWAY + 'system/' + guid,
+    );
     const data = await response.json();
 
     console.debug('\\GeniusApi\\getSystemByGuid\\data', data);
@@ -60,7 +93,7 @@ export default class GeniusApi {
     fetchConditions: boolean = false,
     fetchRelations: boolean = false,
   ): Promise<IExpertSystem[]> {
-    const response = await fetch(GeniusApi.BASE_GATEWAY + 'system');
+    const response = await fetch(GeniusApi.BASE_EXPERT_GATEWAY + 'system');
     const data = await response.json();
 
     if (!(data instanceof Object)) {
@@ -122,9 +155,12 @@ export default class GeniusApi {
    * @returns true if the operation was successful.
    */
   static async deleteSystem(id: number): Promise<boolean> {
-    const response = await fetch(GeniusApi.BASE_GATEWAY + 'system/' + id, {
-      method: 'DELETE',
-    });
+    const response = await fetch(
+      GeniusApi.BASE_EXPERT_GATEWAY + 'system/' + id,
+      {
+        method: 'DELETE',
+      },
+    );
 
     console.debug('\\GeniusApi\\deleteSystem\\id', id);
 
@@ -142,7 +178,7 @@ export default class GeniusApi {
    */
   static async getConditions(id: number): Promise<IExpertCondition[]> {
     const response = await fetch(
-      GeniusApi.BASE_GATEWAY + 'system/' + id + '/conditions',
+      GeniusApi.BASE_EXPERT_GATEWAY + 'system/' + id + '/conditions',
     );
     const data = await response.json();
 
@@ -163,7 +199,7 @@ export default class GeniusApi {
 
   static async getCondition(conditionId: number): Promise<IExpertCondition> {
     const response = await fetch(
-      GeniusApi.BASE_GATEWAY + 'condition/' + conditionId,
+      GeniusApi.BASE_EXPERT_GATEWAY + 'condition/' + conditionId,
     );
     const data = await response.json();
 
@@ -200,7 +236,7 @@ export default class GeniusApi {
    */
   static async getProducts(id: number): Promise<IExpertProduct[]> {
     const response = await fetch(
-      GeniusApi.BASE_GATEWAY + 'system/' + id + '/products',
+      GeniusApi.BASE_EXPERT_GATEWAY + 'system/' + id + '/products',
     );
     const data = await response.json();
 
@@ -221,7 +257,7 @@ export default class GeniusApi {
 
   static async getProduct(productId: number): Promise<IExpertCondition> {
     const response = await fetch(
-      GeniusApi.BASE_GATEWAY + 'product/' + productId,
+      GeniusApi.BASE_EXPERT_GATEWAY + 'product/' + productId,
     );
     const data = await response.json();
 
@@ -308,7 +344,7 @@ export default class GeniusApi {
    */
   static async getRelations(id: number): Promise<IExpertProduct[]> {
     const response = await fetch(
-      GeniusApi.BASE_GATEWAY + 'system/' + id + '/relations',
+      GeniusApi.BASE_EXPERT_GATEWAY + 'system/' + id + '/relations',
     );
     const data = await response.json();
 
@@ -329,7 +365,7 @@ export default class GeniusApi {
 
   static async getRelation(relationId: number): Promise<IExpertCondition> {
     const response = await fetch(
-      GeniusApi.BASE_GATEWAY + 'relation/' + relationId,
+      GeniusApi.BASE_EXPERT_GATEWAY + 'relation/' + relationId,
     );
     const data = await response.json();
 
@@ -418,6 +454,17 @@ export default class GeniusApi {
       dataObject.conditionId ?? 0,
       dataObject.productId ?? 0,
       dataObject.weight ?? 100,
+    );
+  }
+
+  private static fetchResponseObject(dataObject: any): ISolverResponse {
+    // TODO: Fix solving
+    return new SolverResponse(
+      dataObject.systemId ?? 0,
+      dataObject.isSolved ?? false,
+      dataObject.status ?? 0,
+      dataObject.products ?? [], // Solve products
+      dataObject.nextCondition ?? null, // Solve condition
     );
   }
 

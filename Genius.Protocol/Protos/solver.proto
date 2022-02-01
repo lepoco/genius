@@ -22,8 +22,10 @@ message SolverQuestion {
 }
 
 message SolverResponse {
-	bool is_solved = 1;
-	bool multiple = 2;
-	int32 status = 3;
-	repeated int32 products = 4;
+	int32 system_id = 1;
+	bool is_solved = 2;
+	bool multiple = 3;
+	int32 status = 4;
+	int32 next_condition = 5;
+	repeated int32 products = 6;
 }

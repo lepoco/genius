@@ -38,11 +38,11 @@ export class FloatingTags extends Component<
   IFloatingTagsProps,
   IFloatingTagsState
 > {
-  static displayName = FloatingTags.name;
+  public static displayName: string = FloatingTags.name;
 
   private onUpdate?: TagsUpdated<IExpertCondition[]>;
 
-  constructor(props: IFloatingTagsProps) {
+  public constructor(props: IFloatingTagsProps) {
     super(props);
     this.state = {
       systemId: props.systemId ?? 0,
@@ -56,10 +56,14 @@ export class FloatingTags extends Component<
     this.onUpdate = props.onUpdate;
   }
 
-  tagAddOnClick(
+  public clear(): void {
+    this.setState({ selected: [] });
+  }
+
+  private tagAddOnClick(
     event: React.MouseEvent<HTMLSpanElement>,
     condition: IExpertCondition,
-  ) {
+  ): void {
     let updatedList = this.state.selected;
     updatedList.push(condition);
 
@@ -70,10 +74,10 @@ export class FloatingTags extends Component<
     }
   }
 
-  tagRemoveOnClick(
+  private tagRemoveOnClick(
     event: React.MouseEvent<HTMLSpanElement>,
     condition: IExpertCondition,
-  ) {
+  ): void {
     let updatedList = this.state.selected.filter(
       singleCondition => singleCondition.id !== condition.id,
     );
@@ -85,57 +89,7 @@ export class FloatingTags extends Component<
     }
   }
 
-  generateSelectedTags() {
-    return (
-      <div className="floating-tags__list">
-        {this.state.selected.map((singleOption, i) => {
-          return (
-            <span
-              onClick={event => this.tagRemoveOnClick(event, singleOption)}
-              className="tag -blue">
-              {singleOption.name ?? '__UNKNOWN_NAME'}
-              <div className="tag__action">
-                <span data-role="remove"></span>
-              </div>
-            </span>
-          );
-        })}
-      </div>
-    );
-  }
-
-  generateAvailableTags() {
-    return (
-      <div className="floating-tags__list">
-        {this.state.options.map((singleOption, i) => {
-          let isSelected = false;
-
-          this.state.selected.forEach(element => {
-            if (element.id === singleOption.id) {
-              isSelected = true;
-            }
-          });
-
-          if (isSelected) {
-            return false;
-          }
-
-          return (
-            <span
-              onClick={event => this.tagAddOnClick(event, singleOption)}
-              className="tag -green">
-              {singleOption.name ?? '__UNKNOWN_NAME'}
-              <div className="tag__action">
-                <span data-role="add"></span>
-              </div>
-            </span>
-          );
-        })}
-      </div>
-    );
-  }
-
-  async onInputKeyPress(event) {
+  private async onInputKeyPress(event): Promise<void> {
     if (event.key !== 'Enter') {
       return;
     }
@@ -194,7 +148,7 @@ export class FloatingTags extends Component<
     }
   }
 
-  onInputChange(event) {
+  private onInputChange(event): void {
     event.preventDefault();
 
     const target = event.target;
@@ -217,11 +171,57 @@ export class FloatingTags extends Component<
     // });
   }
 
-  clear() {
-    this.setState({ selected: [] });
+  private generateSelectedTags(): JSX.Element {
+    return (
+      <div className="floating-tags__list">
+        {this.state.selected.map((singleOption, i) => {
+          return (
+            <span
+              onClick={event => this.tagRemoveOnClick(event, singleOption)}
+              className="tag -blue">
+              {singleOption.name ?? '__UNKNOWN_NAME'}
+              <div className="tag__action">
+                <span data-role="remove"></span>
+              </div>
+            </span>
+          );
+        })}
+      </div>
+    );
   }
 
-  render() {
+  private generateAvailableTags(): JSX.Element {
+    return (
+      <div className="floating-tags__list">
+        {this.state.options.map((singleOption, i) => {
+          let isSelected = false;
+
+          this.state.selected.forEach(element => {
+            if (element.id === singleOption.id) {
+              isSelected = true;
+            }
+          });
+
+          if (isSelected) {
+            return false;
+          }
+
+          return (
+            <span
+              onClick={event => this.tagAddOnClick(event, singleOption)}
+              className="tag -green">
+              {singleOption.name ?? '__UNKNOWN_NAME'}
+              <div className="tag__action">
+                <span data-role="add"></span>
+              </div>
+            </span>
+          );
+        })}
+      </div>
+    );
+  }
+
+  public render(): JSX.Element {
     const selectedTagsList = this.generateSelectedTags();
     const availableTagsList = this.generateAvailableTags();
 

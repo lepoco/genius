@@ -13,11 +13,11 @@ import { Link } from 'react-router-dom';
 import { Dropdown as BootstrapDropdown } from 'bootstrap';
 
 class NavMenu extends Component<IRouterProps> {
-  static displayName = NavMenu.name;
+  public static displayName: string = NavMenu.name;
 
-  router: IRouter;
+  private router: IRouter;
 
-  constructor(props: IRouterProps) {
+  public constructor(props: IRouterProps) {
     super(props);
 
     this.router = props.router;
@@ -42,7 +42,7 @@ class NavMenu extends Component<IRouterProps> {
   //   });
   // }
 
-  render() {
+  public render(): JSX.Element {
     return (
       <section className="navbar navbar-expand-lg navbar-light">
         <div className="container">

@@ -17,9 +17,9 @@ interface IDeleteExpertState extends IExpertPageState {
 }
 
 class SystemDelete extends RoutedComponent<IDeleteExpertState> {
-  static displayName = SystemDelete.name;
+  public static displayName: string = SystemDelete.name;
 
-  constructor(props: IRouterProps) {
+  public constructor(props: IRouterProps) {
     super(props);
 
     this.state = {
@@ -39,11 +39,11 @@ class SystemDelete extends RoutedComponent<IDeleteExpertState> {
     };
   }
 
-  componentDidMount() {
+  public componentDidMount(): void {
     this.populateExpertSystemData();
   }
 
-  async populateExpertSystemData() {
+  private async populateExpertSystemData(): Promise<void> {
     let guid = this.router.params.guid;
     const response = await fetch('api/expert/system/' + guid);
     const data = await response.json();
@@ -62,7 +62,7 @@ class SystemDelete extends RoutedComponent<IDeleteExpertState> {
     });
   }
 
-  handleInputChange(event) {
+  private handleInputChange(event): void {
     const target = event.target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
     const name = target.name;
@@ -72,7 +72,7 @@ class SystemDelete extends RoutedComponent<IDeleteExpertState> {
     });
   }
 
-  async handleSubmit(event) {
+  private async handleSubmit(event): Promise<void> {
     event.preventDefault();
 
     if (this.state.acceptDelete !== true) {
@@ -93,7 +93,7 @@ class SystemDelete extends RoutedComponent<IDeleteExpertState> {
     }
   }
 
-  renderSystemView(state: IDeleteExpertState) {
+  private renderSystemView(state: IDeleteExpertState): JSX.Element {
     if ((state.systemId ?? 0) < 1) {
       return <p>No systems found</p>;
     }
@@ -157,7 +157,7 @@ class SystemDelete extends RoutedComponent<IDeleteExpertState> {
     );
   }
 
-  render() {
+  public render(): JSX.Element {
     let contents = !this.state.systemLoaded ? (
       <p>
         <em>Loading...</em>

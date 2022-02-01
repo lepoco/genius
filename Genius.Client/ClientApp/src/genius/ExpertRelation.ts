@@ -14,7 +14,7 @@ export default class ExpertRelation implements IExpertRelation {
   productId: number = 0;
   weight: number = 100;
 
-  constructor(
+  public constructor(
     id: number,
     systemId: number = 0,
     conditionId: number = 0,

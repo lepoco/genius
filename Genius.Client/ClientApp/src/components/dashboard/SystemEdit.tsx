@@ -18,14 +18,18 @@ import IExpertProduct from '../../genius/IExpertProduct';
 
 class ProductWithConditions {
   id: number = 0;
+
   name: string = '';
+
   description: string = '';
+
   notes: string = '';
+
   conditions: IExpertCondition[] = [];
 }
 
 class SystemEdit extends RoutedComponent<IExpertPageState> {
-  static displayName = SystemEdit.name;
+  public static displayName: string = SystemEdit.name;
 
   private newProduct: ProductWithConditions = new ProductWithConditions();
 
@@ -37,7 +41,7 @@ class SystemEdit extends RoutedComponent<IExpertPageState> {
 
   private productNotesInput: HTMLInputElement | null = null;
 
-  constructor(props: IRouterProps) {
+  public constructor(props: IRouterProps) {
     super(props);
 
     this.state = {
@@ -56,11 +60,11 @@ class SystemEdit extends RoutedComponent<IExpertPageState> {
     };
   }
 
-  componentDidMount() {
+  public componentDidMount(): void {
     this.populateExpertSystemData();
   }
 
-  async populateExpertSystemData() {
+  private async populateExpertSystemData(): Promise<void> {
     const system = await GeniusApi.getSystemByGuid(
       this.router.params.guid ?? '',
       true,
@@ -86,7 +90,7 @@ class SystemEdit extends RoutedComponent<IExpertPageState> {
     });
   }
 
-  handleInputChange(event) {
+  private handleInputChange(event): void {
     const target = event.target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
     const name = target.name;
@@ -96,7 +100,7 @@ class SystemEdit extends RoutedComponent<IExpertPageState> {
     });
   }
 
-  async handleSubmit(event) {
+  private async handleSubmit(event): Promise<void> {
     event.preventDefault();
 
     if (this.state.systemId === undefined) {
@@ -148,7 +152,7 @@ class SystemEdit extends RoutedComponent<IExpertPageState> {
     this.resetForm();
   }
 
-  resetForm() {
+  private resetForm(): void {
     if (this.productNameInput !== null) {
       this.productNameInput.value = '';
     }
@@ -166,15 +170,18 @@ class SystemEdit extends RoutedComponent<IExpertPageState> {
     }
   }
 
-  conditionsUpdated(options: IExpertCondition[], selected: IExpertCondition[]) {
+  private conditionsUpdated(
+    options: IExpertCondition[],
+    selected: IExpertCondition[],
+  ): void {
     this.newProduct.conditions = selected;
   }
 
-  renderProductsTable(state: IExpertPageState) {
+  private renderProductsTable(state: IExpertPageState): JSX.Element {
     let products: IExpertProduct[] = state.systemProducts ?? [];
 
     if (products.length < 1) {
-      return;
+      return <tr></tr>;
     }
 
     return (
@@ -212,7 +219,7 @@ class SystemEdit extends RoutedComponent<IExpertPageState> {
     );
   }
 
-  renderSystemView(state: IExpertPageState) {
+  private renderSystemView(state: IExpertPageState): JSX.Element {
     if ((state.systemId ?? 0) < 1) {
       return <p>No systems found</p>;
     }
@@ -384,7 +391,7 @@ class SystemEdit extends RoutedComponent<IExpertPageState> {
     );
   }
 
-  render() {
+  public render(): JSX.Element {
     let contents = !this.state.systemLoaded ? (
       <p>
         <em>Loading...</em>

@@ -10,9 +10,9 @@ import NavMenu from './NavMenu';
 import Footer from './Footer';
 
 export class Layout extends Component {
-  static displayName = Layout.name;
+  public static displayName: string = Layout.name;
 
-  render() {
+  public render(): JSX.Element {
     return (
       <div id="app">
         <NavMenu />

@@ -8,9 +8,9 @@
 import { Component } from 'react';
 
 export class Users extends Component {
-  static displayName = Users.name;
+  public static displayName: string = Users.name;
 
-  render() {
+  public render(): JSX.Element {
     return (
       <div className="container -pt-5">
         <div className="row">

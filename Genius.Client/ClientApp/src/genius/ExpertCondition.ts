@@ -13,7 +13,7 @@ export default class ExpertCondition implements IExpertCondition {
   name: string = '';
   description: string = '';
 
-  constructor(
+  public constructor(
     id: number,
     system_id: number = 0,
     name: string = '',

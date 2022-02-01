@@ -7,8 +7,8 @@
 
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
-export default function withRouter(Component) {
-  function AddComponentProps(props) {
+export default function withRouter(Component): (props: any) => JSX.Element {
+  function AddComponentProps(props: any): JSX.Element {
     let location = useLocation();
     let navigate = useNavigate();
     let params = useParams();

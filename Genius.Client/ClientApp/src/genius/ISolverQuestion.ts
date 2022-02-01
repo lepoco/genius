@@ -8,7 +8,9 @@ import IExpertCondition from './IExpertCondition';
 
 export default interface ISolverQuestion {
   systemId?: number;
+
   multiple?: boolean;
+
   confirming?: IExpertCondition[];
 
   negating?: IExpertCondition[];

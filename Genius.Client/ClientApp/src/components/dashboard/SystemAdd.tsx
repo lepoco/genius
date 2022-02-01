@@ -20,9 +20,9 @@ interface IAddExpertState {
 }
 
 class SystemAdd extends RoutedComponent<IAddExpertState> {
-  static displayName: string = SystemAdd.name;
+  public static displayName: string = SystemAdd.name;
 
-  constructor(props: IRouterProps) {
+  public constructor(props: IRouterProps) {
     super(props);
 
     this.state = {
@@ -33,7 +33,7 @@ class SystemAdd extends RoutedComponent<IAddExpertState> {
     };
   }
 
-  handleInputChange(event) {
+  private handleInputChange(event): void {
     const target = event.target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
     const name = target.name;
@@ -43,7 +43,7 @@ class SystemAdd extends RoutedComponent<IAddExpertState> {
     });
   }
 
-  async handleSubmit(event) {
+  private async handleSubmit(event): Promise<void> {
     event.preventDefault();
 
     const EXPERT_SYSTEM = new ExpertSystem(
@@ -63,7 +63,7 @@ class SystemAdd extends RoutedComponent<IAddExpertState> {
     }
   }
 
-  render() {
+  public render(): JSX.Element {
     return (
       <div className="dashboard container pt-5 pb-5">
         <div className="row">

@@ -31,7 +31,7 @@ export default class GeniusApi {
    * @param question Terms of the question
    * @returns Response from solver.
    */
-  static async ask(question: ISolverQuestion): Promise<ISolverResponse> {
+  public static async ask(question: ISolverQuestion): Promise<ISolverResponse> {
     let formData = GeniusApi.buildFormData({
       systemId: question.systemId ?? 0,
       multiple: question.multiple ?? false,
@@ -60,7 +60,7 @@ export default class GeniusApi {
    * @param fetchRelations Whether the call should also fetch the system relations.
    * @returns Instance of expert system.
    */
-  static async getSystemByGuid(
+  public static async getSystemByGuid(
     guid: string,
     fetchProducts: boolean = false,
     fetchConditions: boolean = false,
@@ -88,7 +88,7 @@ export default class GeniusApi {
    * @param fetchRelations Whether the call should also fetch the system relations.
    * @returns
    */
-  static async getAllSystems(
+  public static async getAllSystems(
     fetchProducts: boolean = false,
     fetchConditions: boolean = false,
     fetchRelations: boolean = false,
@@ -123,7 +123,7 @@ export default class GeniusApi {
    * @param system New system to be added.
    * @returns true if the operation was successful.
    */
-  static async addSystem(system: IExpertSystem): Promise<boolean> {
+  public static async addSystem(system: IExpertSystem): Promise<boolean> {
     if (system.systemName === '' || system.systemType === '') {
       console.debug('\\GeniusApi\\addSystem', false);
 
@@ -154,7 +154,7 @@ export default class GeniusApi {
    * @param id Expert system identifier.
    * @returns true if the operation was successful.
    */
-  static async deleteSystem(id: number): Promise<boolean> {
+  public static async deleteSystem(id: number): Promise<boolean> {
     const response = await fetch(
       GeniusApi.BASE_EXPERT_GATEWAY + 'system/' + id,
       {
@@ -176,7 +176,7 @@ export default class GeniusApi {
    * @param id Expert system identifier.
    * @returns List of conditions assigned to the system.
    */
-  static async getConditions(id: number): Promise<IExpertCondition[]> {
+  public static async getConditions(id: number): Promise<IExpertCondition[]> {
     const response = await fetch(
       GeniusApi.BASE_EXPERT_GATEWAY + 'system/' + id + '/conditions',
     );
@@ -197,7 +197,9 @@ export default class GeniusApi {
     return conditionsList;
   }
 
-  static async getCondition(conditionId: number): Promise<IExpertCondition> {
+  public static async getCondition(
+    conditionId: number,
+  ): Promise<IExpertCondition> {
     const response = await fetch(
       GeniusApi.BASE_EXPERT_GATEWAY + 'condition/' + conditionId,
     );
@@ -208,7 +210,9 @@ export default class GeniusApi {
     return await GeniusApi.fetchConditionObject(data);
   }
 
-  static async addCondition(condition: IExpertCondition): Promise<number> {
+  public static async addCondition(
+    condition: IExpertCondition,
+  ): Promise<number> {
     let formData = GeniusApi.buildFormData({
       systemId: condition.system_id ?? 0,
       name: condition.name ?? '',
@@ -234,7 +238,7 @@ export default class GeniusApi {
    * @param id Expert system identifier.
    * @returns List of products assigned to the system.
    */
-  static async getProducts(id: number): Promise<IExpertProduct[]> {
+  public static async getProducts(id: number): Promise<IExpertProduct[]> {
     const response = await fetch(
       GeniusApi.BASE_EXPERT_GATEWAY + 'system/' + id + '/products',
     );
@@ -255,7 +259,7 @@ export default class GeniusApi {
     return productsList;
   }
 
-  static async getProduct(productId: number): Promise<IExpertCondition> {
+  public static async getProduct(productId: number): Promise<IExpertCondition> {
     const response = await fetch(
       GeniusApi.BASE_EXPERT_GATEWAY + 'product/' + productId,
     );
@@ -266,7 +270,7 @@ export default class GeniusApi {
     return await GeniusApi.fetchProductObject(data);
   }
 
-  static async addProduct(product: IExpertProduct): Promise<number> {
+  public static async addProduct(product: IExpertProduct): Promise<number> {
     let formData = GeniusApi.buildFormData({
       systemId: product.system_id ?? 0,
       name: product.name ?? '',
@@ -288,7 +292,7 @@ export default class GeniusApi {
     return +responseText; //unary operator
   }
 
-  static async addProductWithConditions(
+  public static async addProductWithConditions(
     product: IExpertProduct,
     conditions: IExpertCondition[],
   ): Promise<number> {
@@ -342,7 +346,7 @@ export default class GeniusApi {
    * @param id Expert system identifier.
    * @returns List of relations assigned to the system.
    */
-  static async getRelations(id: number): Promise<IExpertProduct[]> {
+  public static async getRelations(id: number): Promise<IExpertProduct[]> {
     const response = await fetch(
       GeniusApi.BASE_EXPERT_GATEWAY + 'system/' + id + '/relations',
     );
@@ -363,7 +367,9 @@ export default class GeniusApi {
     return relationsList;
   }
 
-  static async getRelation(relationId: number): Promise<IExpertCondition> {
+  public static async getRelation(
+    relationId: number,
+  ): Promise<IExpertCondition> {
     const response = await fetch(
       GeniusApi.BASE_EXPERT_GATEWAY + 'relation/' + relationId,
     );
@@ -374,7 +380,7 @@ export default class GeniusApi {
     return await GeniusApi.fetchProductObject(data);
   }
 
-  static async addRelation(relation: IExpertRelation): Promise<number> {
+  public static async addRelation(relation: IExpertRelation): Promise<number> {
     let formData = GeniusApi.buildFormData({
       systemId: relation.systemId,
       conditionId: relation.conditionId,

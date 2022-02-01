@@ -9,7 +9,9 @@ import IExpertCondition from './IExpertCondition';
 
 export default class SolverQuestion implements ISolverQuestion {
   systemId: number = 0;
+
   multiple: boolean = false;
+
   confirming: IExpertCondition[] = [];
 
   negating: IExpertCondition[] = [];

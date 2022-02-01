@@ -16,7 +16,6 @@ import { Legal } from './components/Legal';
 import { Terms } from './components/Terms';
 import { Privacy } from './components/Privacy';
 import { SignIn } from './components/SignIn';
-import { Counter } from './components/Counter';
 
 import { Main as Dashboard } from './components/dashboard/Main';
 import { Account } from './components/dashboard/Account';
@@ -32,9 +31,9 @@ import SystemEdit from './components/dashboard/SystemEdit';
 import { NotFound } from './components/NotFound';
 
 class App extends RoutedComponent {
-  static displayName = App.name;
+  public static displayName: string = App.name;
 
-  render() {
+  public render(): JSX.Element {
     return (
       <Layout>
         <Routes>
@@ -44,7 +43,6 @@ class App extends RoutedComponent {
           <Route path="/terms" element={<Terms />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/signin" element={<SignIn />} />
-          <Route path="/counter" element={<Counter />} />
 
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/dashboard/account" element={<Account />} />

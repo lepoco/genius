@@ -19,7 +19,7 @@ export default class SolverResponse implements ISolverResponse {
 
   products: IExpertProduct[] = [];
 
-  constructor(
+  public constructor(
     systemId: number,
     isSolved: boolean,
     status: number,

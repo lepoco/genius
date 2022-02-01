@@ -12,8 +12,11 @@ import IRouter from './../interfaces/IRouter';
 /**
  * Contains the logic for a component that is part of the DOM router.
  */
-export default class RoutedComponent<S = {}> extends Component<IRouterProps, S> {
-  router: IRouter;
+export default class RoutedComponent<S = {}> extends Component<
+  IRouterProps,
+  S
+> {
+  public router: IRouter;
 
   constructor(props: IRouterProps) {
     super(props);

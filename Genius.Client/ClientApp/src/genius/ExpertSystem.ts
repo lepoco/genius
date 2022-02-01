@@ -25,7 +25,7 @@ export default class ExpertSystem implements IExpertSystem {
   systemProducts: IExpertProduct[] = [];
   systemRelations: IExpertRelation[] = [];
 
-  constructor(
+  public constructor(
     systemId: number = 0,
     systemGuid: string = '',
     systemVersion: string = '1.0.0',
@@ -53,15 +53,15 @@ export default class ExpertSystem implements IExpertSystem {
     this.systemRelations = systemRelations;
   }
 
-  setConditions(conditions: IExpertCondition[]) {
+  public setConditions(conditions: IExpertCondition[]): void {
     this.systemConditions = conditions;
   }
 
-  setProducts(products: IExpertProduct[]) {
+  public setProducts(products: IExpertProduct[]): void {
     this.systemProducts = products;
   }
 
-  setRelations(relations: IExpertRelation[]) {
+  public setRelations(relations: IExpertRelation[]): void {
     this.systemRelations = relations;
   }
 }

@@ -16,9 +16,9 @@ interface IMainState {
 }
 
 export class Main extends Component<{}, IMainState> {
-  static displayName = Main.name;
+  public static displayName: string = Main.name;
 
-  constructor(props) {
+  public constructor(props) {
     super(props);
 
     this.state = {
@@ -27,11 +27,17 @@ export class Main extends Component<{}, IMainState> {
     };
   }
 
-  componentDidMount() {
+  public componentDidMount(): void {
     this.populateExpertSystemsData();
   }
 
-  static renderSystemsList(systems: IExpertSystem[]) {
+  private async populateExpertSystemsData(): Promise<void> {
+    const systems = await GeniusApi.getAllSystems();
+
+    this.setState({ systemsList: systems, isLoading: false });
+  }
+
+  private static renderSystemsList(systems: IExpertSystem[]): JSX.Element {
     if (Object.keys(systems).length < 1) {
       return <p>No systems found</p>;
     }
@@ -62,7 +68,7 @@ export class Main extends Component<{}, IMainState> {
     );
   }
 
-  render() {
+  public render(): JSX.Element {
     let contents = this.state.isLoading ? (
       <p>
         <em>Loading...</em>
@@ -82,11 +88,5 @@ export class Main extends Component<{}, IMainState> {
         {contents}
       </div>
     );
-  }
-
-  async populateExpertSystemsData() {
-    const systems = await GeniusApi.getAllSystems();
-
-    this.setState({ systemsList: systems, isLoading: false });
   }
 }

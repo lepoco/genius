@@ -14,7 +14,7 @@ export default class ExpertProduct implements IExpertProduct {
   description: string = '';
   notes: string = '';
 
-  constructor(
+  public constructor(
     id: number,
     system_id: number = 0,
     name: string = '',

@@ -12,17 +12,17 @@ import IRouterProps from './../interfaces/IRouterProps';
 import IRouter from './../interfaces/IRouter';
 
 class Footer extends Component<IRouterProps> {
-  static displayName = Footer.name;
+  public static displayName: string = Footer.name;
 
-  router: IRouter;
+  private router: IRouter;
 
-  constructor(props: IRouterProps) {
+  public constructor(props: IRouterProps) {
     super(props);
 
     this.router = props.router;
   }
 
-  render() {
+  public render(): JSX.Element {
     return (
       <section className="expanded-footer">
         <div className="container py-4">

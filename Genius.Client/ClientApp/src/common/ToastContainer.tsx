@@ -11,11 +11,9 @@ import { Component } from 'react';
  * Contains the logic for a component that is part of the DOM router.
  */
 export default class ToastContainer extends Component {
-  static sendNotification(header:string, message:string) {
-    
-  }
+  public static sendNotification(header: string, message: string): void {}
 
-  render() {
+  public render(): JSX.Element {
     const notifications = [];
 
     return <section className="toast__container">{notifications}</section>;

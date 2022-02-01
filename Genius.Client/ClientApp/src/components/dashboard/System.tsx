@@ -5,21 +5,38 @@
  * All Rights Reserved.
  */
 
-import { Link } from 'react-router-dom';
 import RoutedComponent from '../../common/RoutedComponent';
 import withRouter from './../../common/withRouter';
 import IRouterProps from './../../interfaces/IRouterProps';
 import IExpertPageState from '../../genius/IExpertPageState';
+import IExpertCondition from '../../genius/IExpertCondition';
+import SolverQuestion from '../../genius/SolverQuestion';
+import GeniusApi from '../../genius/GeniusApi';
 
-class System extends RoutedComponent<IExpertPageState> {
-  static displayName = System.name;
+class SolverState {
+  confirming: IExpertCondition[] = [];
 
-  conditionalQuestion: boolean = false;
+  negating: IExpertCondition[] = [];
 
-  constructor(props: IRouterProps) {
+  indifferent: IExpertCondition[] = [];
+}
+
+interface IExpertRunState extends IExpertPageState {
+  currentQuestion?: string;
+  isConditional?: boolean;
+}
+
+class System extends RoutedComponent<IExpertRunState> {
+  public static displayName: string = System.name;
+
+  private solverState: SolverState = new SolverState();
+
+  public constructor(props: IRouterProps) {
     super(props);
 
     this.state = {
+      isConditional: false,
+      currentQuestion: '__{UNKOWN QUESTION}__',
       systemLoaded: false,
       systemId: 0,
       systemGuid: '',
@@ -32,50 +49,72 @@ class System extends RoutedComponent<IExpertPageState> {
       systemUpdatedAt: '',
       systemConditions: [],
       systemProducts: [],
+      systemRelations: [],
     };
   }
 
-  componentDidMount() {
+  public componentDidMount(): void {
     this.populateExpertSystemData();
   }
 
-  async populateExpertSystemData() {
-    let guid = this.router.params.guid;
-    const response = await fetch('api/expert/system/' + guid);
-    const data = await response.json();
-
+  private validateQuestion(): void {
     this.setState({
-      systemId: data.id ?? 0,
-      systemVersion: data.version ?? '',
-      systemName: data.name ?? '',
-      systemDescription: data.description ?? '',
-      systemGuid: data.guid ?? '',
-      systemQuestion: data.question ?? '',
-      systemType: data.type ?? '',
-      systemCreatedAt: data.createdAt ?? '',
-      systemUpdatedAt: data.updatedAt ?? '',
-      systemLoaded: true,
+      isConditional:
+        this.state.systemQuestion?.includes('{condition}') ?? false,
     });
   }
 
-  async handleSubmit(event) {
-    event.preventDefault();
+  private async populateExpertSystemData(): Promise<void> {
+    const system = await GeniusApi.getSystemByGuid(
+      this.router.params.guid ?? '',
+      true,
+      true,
+      true,
+    );
 
-    const formData = new FormData();
+    this.setState({
+      systemId: system.systemId ?? 0,
+      systemVersion: system.systemVersion ?? '1.0.0',
+      systemName: system.systemName ?? '',
+      systemDescription: system.systemDescription ?? '',
+      systemGuid: system.systemGuid ?? '',
+      systemQuestion: system.systemQuestion ?? '',
+      systemType: system.systemType ?? '',
+      systemCreatedAt: system.systemCreatedAt ?? '',
+      systemUpdatedAt: system.systemUpdatedAt ?? '',
+      systemConditions: system.systemConditions ?? [],
+      systemProducts: system.systemProducts ?? [],
+      systemRelations: system.systemRelations ?? [],
+      systemLoaded: true,
+    });
 
-    await fetch('api/expert/system/response', {
-      method: 'POST',
-      body: formData,
-    })
-      .then(response => response.text())
-      .then(data => {
-        console.debug('Respone', data);
-
-        //this.setState({ text: data, loading: false });
-      });
+    this.validateQuestion();
   }
 
-  renderSystemView() {
+  private async askQuestion(): Promise<void> {
+    let question = new SolverQuestion();
+    question.multiple = true; // Always allow multiple results
+    question.systemId = this.state.systemId ?? 0;
+    question.confirming = this.solverState.confirming ?? [];
+    question.negating = this.solverState.negating ?? [];
+    question.indifferent = this.solverState.indifferent ?? [];
+
+    let solverResponse = await GeniusApi.ask(question);
+
+    console.debug('\\System\\handleSubmit\\solverResponse', solverResponse);
+  }
+
+  private async handleSubmit(event): Promise<void> {
+    event.preventDefault();
+
+    this.askQuestion();
+  }
+
+  private replaceQuestionCondition(question: string): string {
+    return question.replace('{condition}', 'replacedCON');
+  }
+
+  private renderSystemView(): JSX.Element {
     if ((this.state.systemId ?? 0) < 1) {
       return <p>System not found</p>;
     }
@@ -90,10 +129,10 @@ class System extends RoutedComponent<IExpertPageState> {
         </div>
 
         <div className="col-12 -reveal">
-          {!this.conditionalQuestion ? (
+          {this.state.isConditional ? (
             <h4 className="-font-secondary -fw-700 -pb-3">
               <span className="--current_condition -pattern">
-                question__pattern
+                {this.replaceQuestionCondition(this.state.systemQuestion ?? '')}
               </span>
             </h4>
           ) : (
@@ -103,7 +142,7 @@ class System extends RoutedComponent<IExpertPageState> {
               </p>
               <h4 className="-font-secondary -fw-700 -pb-3">
                 <span className="--current_condition">
-                  non conditional question
+                  {this.state.currentQuestion}
                 </span>
               </h4>
             </div>
@@ -142,7 +181,7 @@ class System extends RoutedComponent<IExpertPageState> {
     );
   }
 
-  render() {
+  public render(): JSX.Element {
     let contents = !this.state.systemLoaded ? (
       <p>
         <em>Loading...</em>

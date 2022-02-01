@@ -5,14 +5,38 @@
  * All Rights Reserved.
  */
 
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  Location,
+  NavigateFunction,
+  Params,
+} from 'react-router-dom';
 
-export default function withRouter(Component): (props: any) => JSX.Element {
+/**
+ * Ugly static way to make React component classes variable from a router.
+ * @param Component Instance of React component.
+ * @returns JSX.Element with DOM Router parameters applied.
+ */
+export default function withRouter(
+  Component: any,
+): (props: any) => JSX.Element {
   function AddComponentProps(props: any): JSX.Element {
-    let location = useLocation();
-    let navigate = useNavigate();
-    let params = useParams();
-    return <Component {...props} router={{ location, navigate, params }} />;
+    const DOM_ROUTER_LOCATION: Location = useLocation();
+    const DOM_ROUTER_NAVIGATE: NavigateFunction = useNavigate();
+    const DOM_ROUTER_PARAMS: Readonly<Params<any>> = useParams();
+
+    return (
+      <Component
+        {...props}
+        router={{
+          location: DOM_ROUTER_LOCATION,
+          navigate: DOM_ROUTER_NAVIGATE,
+          params: DOM_ROUTER_PARAMS,
+        }}
+      />
+    );
   }
 
   return AddComponentProps;

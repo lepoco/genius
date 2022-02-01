@@ -18,7 +18,7 @@ export default class RoutedComponent<S = {}> extends Component<
 > {
   public router: IRouter;
 
-  constructor(props: IRouterProps) {
+  public constructor(props: IRouterProps) {
     super(props);
 
     this.router = props.router;

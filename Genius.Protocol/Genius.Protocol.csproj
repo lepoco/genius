@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <None Remove="Protos\expert.proto" />
+    <None Remove="Protos\solver.proto" />
     <None Remove="Protos\statistic.proto" />
     <None Remove="Protos\user.proto" />
   </ItemGroup>
@@ -20,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Protobuf Include="Protos\solver.proto" />
     <Protobuf Include="Protos\expert.proto" />
     <Protobuf Include="Protos\statistic.proto" />
     <Protobuf Include="Protos\user.proto" />

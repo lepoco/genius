@@ -72,9 +72,7 @@ namespace Genius
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
-            {
                 app.UseDeveloperExceptionPage();
-            }
 
             app.UseRouting();
 
@@ -83,6 +81,7 @@ namespace Genius
                 endpoints.MapGrpcService<GrpcUserService>();
                 endpoints.MapGrpcService<GrpcStatisticsServer>();
                 endpoints.MapGrpcService<GrpcExpertService>();
+                endpoints.MapGrpcService<GrpcSolverService>();
 
                 endpoints.MapGet("/", async context =>
                 {

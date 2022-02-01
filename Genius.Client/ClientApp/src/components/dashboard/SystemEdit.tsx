@@ -31,6 +31,12 @@ class SystemEdit extends RoutedComponent<IExpertPageState> {
 
   private conditionsCloud: FloatingTags | null = null;
 
+  private productNameInput: HTMLInputElement | null = null;
+
+  private productDescriptionInput: HTMLInputElement | null = null;
+
+  private productNotesInput: HTMLInputElement | null = null;
+
   constructor(props: IRouterProps) {
     super(props);
 
@@ -139,14 +145,18 @@ class SystemEdit extends RoutedComponent<IExpertPageState> {
       this.state.systemRelations,
     );
 
-    //if success reset and add
-    if (!(event.target instanceof HTMLFormElement)) {
-      return;
+    // Rest on success
+    if (this.productNameInput !== null) {
+      this.productNameInput.value = '';
     }
 
-    const FORM: HTMLFormElement = event.target;
+    if (this.productDescriptionInput !== null) {
+      this.productDescriptionInput.value = '';
+    }
 
-    FORM.reset();
+    if (this.productNotesInput !== null) {
+      this.productNotesInput.value = '';
+    }
 
     if (this.conditionsCloud !== null) {
       this.conditionsCloud.clear();
@@ -167,7 +177,9 @@ class SystemEdit extends RoutedComponent<IExpertPageState> {
     return (
       <tbody>
         {products.map((singleProduct, i) => {
-          let productRelations = (state.systemRelations ?? []).filter(element => element.productId === singleProduct.id);
+          let productRelations = (state.systemRelations ?? []).filter(
+            element => element.productId === singleProduct.id,
+          );
 
           console.debug('Product relations', productRelations);
 
@@ -189,9 +201,7 @@ class SystemEdit extends RoutedComponent<IExpertPageState> {
                   <i>{singleProduct.notes}</i>
                 )}
               </td>
-              <td>
-                ---
-              </td>
+              <td>---</td>
             </tr>
           );
         })}
@@ -266,6 +276,9 @@ class SystemEdit extends RoutedComponent<IExpertPageState> {
                 onChange={event => {
                   this.newProduct.name = event.target.value;
                 }}
+                ref={element => {
+                  this.productNameInput = element;
+                }}
               />
               <label htmlFor="product_name">Name</label>
             </div>
@@ -278,6 +291,9 @@ class SystemEdit extends RoutedComponent<IExpertPageState> {
                 defaultValue={this.newProduct.description}
                 onChange={event => {
                   this.newProduct.description = event.target.value;
+                }}
+                ref={element => {
+                  this.productDescriptionInput = element;
                 }}
                 name="product_description"
               />
@@ -292,6 +308,9 @@ class SystemEdit extends RoutedComponent<IExpertPageState> {
                 defaultValue={this.newProduct.notes}
                 onChange={event => {
                   this.newProduct.notes = event.target.value;
+                }}
+                ref={element => {
+                  this.productNotesInput = element;
                 }}
                 name="product_notes"
               />

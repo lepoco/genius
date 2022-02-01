@@ -1,0 +1,110 @@
+/**
+ * Copyright (c) 2022 by Tucker Massad (https://codepen.io/tuckermassad/pen/ExwGEoo)
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+.wave-loader {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 300px;
+  height: 300px;
+  margin: auto;
+
+  &__dot {
+    position: absolute;
+    top: 52.5%;
+    left: 150px;
+    width: 20px;
+    height: 20px;
+    background-color: #909090;
+    border-radius: 5rem;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.wave-loader .wave-loader__dot:nth-child(1) {
+  left: 80px;
+  animation: waveUp 2s, smallExtend 2s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+.wave-loader .wave-loader__dot:nth-child(2) {
+  left: 115px;
+  animation: waveUp 2s, largeExtend 2s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-delay: 0.15s;
+}
+.wave-loader .wave-loader__dot:nth-child(3) {
+  animation: waveUp 2s, smallExtend 2s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-delay: 0.3s;
+}
+.wave-loader .wave-loader__dot:nth-child(4) {
+  left: 185px;
+  animation: waveUp 2s, largeExtend 2s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-delay: 0.45s;
+}
+.wave-loader .wave-loader__dot:nth-child(5) {
+  left: 220px;
+  animation: waveUp 2s, smallExtend 2s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-delay: 0.6s;
+}
+@keyframes waveUp {
+  0%,
+  15% {
+    top: 50%;
+  }
+  45%,
+  65% {
+    top: 42.5%;
+  }
+  85%,
+  100% {
+    top: 50%;
+  }
+}
+@keyframes smallExtend {
+  0%,
+  8% {
+    height: 20px;
+    background-color: #909090;
+  }
+  14%,
+  34% {
+    height: 47.5px;
+    background-color: #f8f8f8;
+  }
+  46%,
+  100% {
+    height: 20px;
+    background-color: #909090;
+  }
+}
+@keyframes largeExtend {
+  0%,
+  8% {
+    height: 20px;
+    background-color: #909090;
+  }
+  14%,
+  34% {
+    height: 82.5px;
+    background-color: #f8f8f8;
+  }
+  46%,
+  100% {
+    height: 20px;
+    background-color: #909090;
+  }
+}

@@ -9,6 +9,7 @@ import { Component } from 'react';
 import { Link } from 'react-router-dom';
 import GeniusApi from './../../genius/GeniusApi';
 import IExpertSystem from './../../genius/IExpertSystem';
+import WaveLoader from './../WaveLoader';
 
 interface IMainState {
   isLoading: boolean;
@@ -45,7 +46,9 @@ export class Main extends Component<{}, IMainState> {
     return (
       <div className="row">
         {systems.map(system => (
-          <div className="col-12 dashboard__section -mb-3 -reveal">
+          <div
+            key={system.systemId ?? 0}
+            className="col-12 dashboard__section -mb-3 -reveal">
             <div className="dashboard__banner h-100 p-5 bg-light -rounded-2">
               <div>
                 <h4>{system.systemName ?? ''}</h4>
@@ -70,9 +73,7 @@ export class Main extends Component<{}, IMainState> {
 
   public render(): JSX.Element {
     let contents = this.state.isLoading ? (
-      <p>
-        <em>Loading...</em>
-      </p>
+      <WaveLoader />
     ) : (
       Main.renderSystemsList(this.state.systemsList)
     );

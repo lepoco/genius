@@ -8,7 +8,7 @@
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 import App from './App';
-//import registerServiceWorker from "./registerServiceWorker";
+import ServiceWorkerRegistrar from './common/ServiceWorkerRegistrar';
 
 import './styles/app.scss';
 
@@ -22,4 +22,4 @@ ReactDOM.render(
   document.getElementById('root'),
 );
 
-//registerServiceWorker();
+new ServiceWorkerRegistrar().register(true);

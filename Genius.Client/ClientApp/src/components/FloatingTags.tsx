@@ -177,6 +177,7 @@ export class FloatingTags extends Component<
         {this.state.selected.map((singleOption, i) => {
           return (
             <span
+              key={singleOption.id ?? 0}
               onClick={event => this.tagRemoveOnClick(event, singleOption)}
               className="tag -blue">
               {singleOption.name ?? '__UNKNOWN_NAME'}
@@ -208,6 +209,7 @@ export class FloatingTags extends Component<
 
           return (
             <span
+              key={singleOption.id ?? 0}
               onClick={event => this.tagAddOnClick(event, singleOption)}
               className="tag -green">
               {singleOption.name ?? '__UNKNOWN_NAME'}

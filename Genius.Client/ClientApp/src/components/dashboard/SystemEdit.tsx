@@ -181,7 +181,7 @@ class SystemEdit extends RoutedComponent<IExpertPageState> {
     let products: IExpertProduct[] = state.systemProducts ?? [];
 
     if (products.length < 1) {
-      return <tr></tr>;
+      return <tbody><tr></tr></tbody>;
     }
 
     return (

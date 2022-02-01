@@ -22,9 +22,14 @@ class NavMenu extends Component<IRouterProps> {
 
     this.router = props.router;
 
-    window.onload = function (e) {
+    window.onload = function (this: GlobalEventHandlers, event: Event) {
+      // TODO: Causes console error
       new BootstrapDropdown();
     };
+  }
+
+  private getBrandLink(): string {
+    return '/'; // /dashboard
   }
 
   // constructor (props) {
@@ -46,7 +51,7 @@ class NavMenu extends Component<IRouterProps> {
     return (
       <section className="navbar navbar-expand-lg navbar-light">
         <div className="container">
-          <Link className="navbar-brand" to={'/'}>
+          <Link className="navbar-brand" to={this.getBrandLink()}>
             <p>Genius</p>
           </Link>
           <button

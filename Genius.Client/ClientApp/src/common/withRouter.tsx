@@ -20,7 +20,7 @@ import {
  * @returns JSX.Element with DOM Router parameters applied.
  */
 export default function withRouter(
-  Component: any,
+  ReactComponent: any,
 ): (props: any) => JSX.Element {
   function AddComponentProps(props: any): JSX.Element {
     const DOM_ROUTER_LOCATION: Location = useLocation();
@@ -28,7 +28,7 @@ export default function withRouter(
     const DOM_ROUTER_PARAMS: Readonly<Params<any>> = useParams();
 
     return (
-      <Component
+      <ReactComponent
         {...props}
         router={{
           location: DOM_ROUTER_LOCATION,

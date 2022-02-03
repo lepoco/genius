@@ -153,6 +153,8 @@ class SystemEdit extends RoutedComponent<IExpertPageState> {
   }
 
   private resetForm(): void {
+    this.newProduct = new ProductWithConditions();
+
     if (this.productNameInput !== null) {
       this.productNameInput.value = '';
     }

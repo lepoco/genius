@@ -117,6 +117,7 @@ namespace Genius.Services
             var expertSystem = await _expertContext.Systems.Where(sys => sys.Id == request.Id).FirstOrDefaultAsync() ??
                                new Data.Models.Expert.System { Id = 0 };
 
+            // Does not exist
             if (expertSystem.Id < 1)
                 return new ExpertResponseModel { Id = 0 };
 
@@ -156,6 +157,7 @@ namespace Genius.Services
             var existingConditions = await _expertContext.Conditions
                 .Where(con => con.SystemId == expertSystem.Id && con.Name == request.Name).ToListAsync();
 
+            // Already exists
             if (existingConditions.Count > 0)
                 return request;
 
@@ -191,6 +193,13 @@ namespace Genius.Services
                 return request;
 
             if (String.IsNullOrEmpty(request?.Name))
+                return request;
+
+            var existingProducts = await _expertContext.Products
+                .Where(prod => prod.SystemId == expertSystem.Id && prod.Name == request.Name).ToListAsync();
+
+            // Already exists
+            if (existingProducts.Count > 0)
                 return request;
 
             var insertedProduct = new Data.Models.Expert.Product

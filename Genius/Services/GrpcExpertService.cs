@@ -30,7 +30,15 @@ namespace Genius.Services
 
         public override async Task<ExpertResponseModel> Create(ExpertModel request, ServerCallContext context)
         {
+            _logger.LogInformation($"{nameof(Create)}, with new request: {request.Name}, {request.Description}");
+
             if (String.IsNullOrEmpty(request?.Name) || String.IsNullOrEmpty(request?.Description))
+                return new ExpertResponseModel { Id = 0 };
+
+            var existingSystems = await _expertContext.Systems.Where(sys => sys.Name == request.Name).ToListAsync();
+
+            // System already exist
+            if (existingSystems.Count > 0)
                 return new ExpertResponseModel { Id = 0 };
 
             var insertedSystem = new Data.Models.Expert.System
@@ -143,6 +151,12 @@ namespace Genius.Services
                 return request;
 
             if (String.IsNullOrEmpty(request?.Name))
+                return request;
+
+            var existingConditions = await _expertContext.Conditions
+                .Where(con => con.SystemId == expertSystem.Id && con.Name == request.Name).ToListAsync();
+
+            if (existingConditions.Count > 0)
                 return request;
 
             var insertedCondition = new Data.Models.Expert.Condition

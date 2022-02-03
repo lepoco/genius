@@ -16,7 +16,6 @@ import ExpertRelation from './ExpertRelation';
 import ISolverQuestion from './ISolverQuestion';
 import ISolverResponse from './ISolverResponse';
 import SolverResponse from './SolverResponse';
-import System from '../components/dashboard/System';
 
 /**
  * Contains logic responsible for polling the internal API that connects via gRPC to the Genius microservice.

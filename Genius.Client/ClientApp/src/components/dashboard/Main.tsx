@@ -40,7 +40,12 @@ export class Main extends Component<{}, IMainState> {
 
   private static renderSystemsList(systems: IExpertSystem[]): JSX.Element {
     if (Object.keys(systems).length < 1) {
-      return <p>No systems found</p>;
+      return (
+        <div>
+          <p>No systems found</p>
+          <Link to={'/dashboard/add'}>Add new expert system</Link>
+        </div>
+      );
     }
 
     return (

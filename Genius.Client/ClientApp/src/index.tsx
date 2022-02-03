@@ -22,4 +22,4 @@ ReactDOM.render(
   document.getElementById('root'),
 );
 
-new ServiceWorkerRegistrar().register(true);
+new ServiceWorkerRegistrar().unregister();

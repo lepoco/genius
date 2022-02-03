@@ -5,6 +5,7 @@
  * All Rights Reserved.
  */
 
+import { Link } from 'react-router-dom';
 import RoutedComponent from '../../common/RoutedComponent';
 import withRouter from './../../common/withRouter';
 import IRouterProps from './../../interfaces/IRouterProps';
@@ -116,7 +117,12 @@ class System extends RoutedComponent<IExpertRunState> {
 
   private renderSystemView(): JSX.Element {
     if ((this.state.systemId ?? 0) < 1) {
-      return <p>System not found</p>;
+      return (
+        <div>
+          <p>The specified expert system could not be found</p>
+          <Link to={'/dashboard/add'}>Add new expert system</Link>
+        </div>
+      );
     }
 
     return (

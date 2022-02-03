@@ -51,11 +51,10 @@ namespace Genius.Client.Controllers
                 Question = HttpContext.Request.Form["question"]
             };
 
-            if (String.IsNullOrEmpty(newSystem.Name) || String.IsNullOrEmpty(newSystem.Description))
+            if (String.IsNullOrEmpty(newSystem.Name) || String.IsNullOrEmpty(newSystem.Question))
                 return StatusCode(200, false);
 
             var newSystemId = await _expertClient.CreateSystemAsync(newSystem);
-
 
             return StatusCode(200, newSystemId > 0 ? "success" : "error");
         }

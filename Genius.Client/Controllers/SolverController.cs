@@ -7,6 +7,7 @@ using Genius.Client.Services;
 using GeniusProtocol;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Threading.Tasks;
 
 namespace Genius.Client.Controllers
@@ -31,16 +32,36 @@ namespace Genius.Client.Controllers
             return StatusCode(404, "The service does not support direct reading.");
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("ask")]
         public async Task<SolverResponse> AskQuestion()
         {
+            int systemId = Int32.Parse(HttpContext.Request.Form["systemId"]);
+
+            if (systemId < 1)
+                return new SolverResponse
+                { IsSolved = false, Multiple = true, NextCondition = 0, Products = { }, Status = 0, SystemId = 0 };
+
+
+            string rawConfirming = HttpContext.Request.Form["confirming"];
+            string rawNegating = HttpContext.Request.Form["negating"];
+            string rawIndifferent = HttpContext.Request.Form["indifferent"];
+
             var question = new SolverQuestion
             {
-
+                SystemId = systemId,
+                Multiple = HttpContext.Request.Form["multiple"] == "true" || HttpContext.Request.Form["multiple"] == "1",
+                Confirming = { FetchRawArray(rawConfirming) },
+                Negating = { FetchRawArray(rawNegating) },
+                Indifferent = { FetchRawArray(rawIndifferent) },
             };
 
             return await _solverClient.AskAsync(question);
+        }
+
+        private int[] FetchRawArray(string rawArray)
+        {
+            return new int[] { };
         }
     }
 }

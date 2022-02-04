@@ -3,9 +3,14 @@
 // Copyright (C) 2022 Leszek Pomianowski.
 // All Rights Reserved.
 
+using Genius.Data.Contexts;
+
 namespace Genius.Expert.Interfaces
 {
     public interface IExpertService
     {
+        public ExpertContext ExpertContext { get; }
+
+        public Solver Solver { get; }
     }
 }

@@ -40,7 +40,7 @@ export default class GeniusApi {
     });
 
     let response = await fetch(GeniusApi.BASE_SOLVER_GATEWAY + 'ask', {
-      method: 'GET',
+      method: 'POST',
       body: formData,
     });
 
@@ -48,7 +48,7 @@ export default class GeniusApi {
 
     console.debug('\\GeniusApi\\ask\\responseData', responseData);
 
-    return this.fetchResponseObject(responseData);
+    return await this.fetchResponseObject(responseData);
   }
 
   /**
@@ -462,14 +462,14 @@ export default class GeniusApi {
     );
   }
 
-  private static fetchResponseObject(dataObject: any): ISolverResponse {
+  private static async fetchResponseObject(dataObject: any): Promise<ISolverResponse> {
     // TODO: Fix solving
     return new SolverResponse(
       dataObject.systemId ?? 0,
       dataObject.isSolved ?? false,
       dataObject.status ?? 0,
       dataObject.products ?? [], // Solve products
-      dataObject.nextCondition ?? null, // Solve condition
+      await this.getCondition(dataObject.nextCondition ?? 0), // Solve condition
     );
   }
 

@@ -13,6 +13,7 @@ import IExpertPageState from '../../genius/IExpertPageState';
 import IExpertCondition from '../../genius/IExpertCondition';
 import SolverQuestion from '../../genius/SolverQuestion';
 import GeniusApi from '../../genius/GeniusApi';
+import ExpertCondition from '../../genius/ExpertCondition';
 
 class SolverState {
   confirming: IExpertCondition[] = [];
@@ -65,6 +66,22 @@ class System extends RoutedComponent<IExpertRunState> {
     });
   }
 
+  private async getFirstCondition(): Promise<void>
+  {
+    let systemId: number = this.state.systemId ?? 0;
+
+    // ERROR, something went wrong
+    if (systemId < 1) {
+      return;
+    }
+
+    this.solverState.confirming = [];
+    this.solverState.negating = [];
+    this.solverState.indifferent = [];
+
+    await this.askQuestion();
+  }
+
   private async populateExpertSystemData(): Promise<void> {
     const system = await GeniusApi.getSystemByGuid(
       this.router.params.guid ?? '',
@@ -90,10 +107,13 @@ class System extends RoutedComponent<IExpertRunState> {
     });
 
     this.validateQuestion();
+
+    await this.getFirstCondition();
   }
 
   private async askQuestion(): Promise<void> {
     let question = new SolverQuestion();
+
     question.multiple = true; // Always allow multiple results
     question.systemId = this.state.systemId ?? 0;
     question.confirming = this.solverState.confirming ?? [];
@@ -102,13 +122,28 @@ class System extends RoutedComponent<IExpertRunState> {
 
     let solverResponse = await GeniusApi.ask(question);
 
+    let nextCondition: IExpertCondition = solverResponse.nextCondition ?? new ExpertCondition(0);
+    let nextConditionId = nextCondition.id ?? 0;
+
+    if (nextConditionId > 0) {
+      this.displayCondition(nextCondition);
+
+      return;
+    }
+
+    console.debug('\\System\\handleSubmit\\state', this.state);
     console.debug('\\System\\handleSubmit\\solverResponse', solverResponse);
+  }
+
+  private displayCondition(condition: IExpertCondition): void
+  {
+    this.setState({currentQuestion: condition.name});
   }
 
   private async handleSubmit(event): Promise<void> {
     event.preventDefault();
 
-    this.askQuestion();
+    await this.askQuestion();
   }
 
   private replaceQuestionCondition(question: string): string {
@@ -156,7 +191,7 @@ class System extends RoutedComponent<IExpertRunState> {
         </div>
 
         <div className="col-12 -reveal">
-          <form id="answer" method="POST" onSubmit={this.handleSubmit}>
+          <form id="answer" method="POST" onSubmit={this.handleSubmit.bind(this)}>
             <button
               type="submit"
               id="submit_yes"

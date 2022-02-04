@@ -4,20 +4,23 @@
 // All Rights Reserved.
 
 using Genius.Data.Contexts;
+using Genius.Expert;
 using Genius.Expert.Interfaces;
-using Microsoft.Extensions.Logging;
 
 namespace Genius.Services
 {
     public class GeniusService : IExpertService
     {
-        private readonly ILogger<GeniusService> _logger;
-        private readonly ExpertContext _expertContext;
+        public ExpertContext ExpertContext { get; }
 
-        public GeniusService(ILogger<GeniusService> logger, ExpertContext expertContext)
+        public Solver Solver { get; }
+
+        public GeniusService(ExpertContext expertContext)
         {
-            _logger = logger;
-            _expertContext = expertContext;
+            ExpertContext = expertContext;
+
+            Solver = new Solver();
+            Solver.SetContext(expertContext);
         }
     }
 }

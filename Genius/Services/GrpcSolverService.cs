@@ -3,33 +3,71 @@
 // Copyright (C) 2022 Leszek Pomianowski.
 // All Rights Reserved.
 
-using Genius.Data.Contexts;
+using Genius.Expert.Interfaces;
 using GeniusProtocol;
 using Grpc.Core;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Genius.Services
 {
-    public class GrpcSolverService : GeniusProtocol.Solver.SolverBase
+    public class GrpcSolverService : Solver.SolverBase
     {
         private readonly ILogger<GrpcSolverService> _logger;
 
-        private readonly ExpertContext _expertContext;
+        private readonly IExpertService _genius;
 
-        public GrpcSolverService(ILogger<GrpcSolverService> logger, ExpertContext expertContext)
+        public GrpcSolverService(ILogger<GrpcSolverService> logger, IExpertService genius)
         {
             _logger = logger;
-            _expertContext = expertContext;
+            _genius = genius;
         }
 
         public override async Task<SolverResponse> Ask(SolverQuestion request, ServerCallContext context)
         {
-            // TODO:
+            var response = await _genius.Solver.Solve(await BuildQuestion(request));
+
+            int nextCondition = 0;
+
+            if (response.NextConditions != null && response.NextConditions.Any())
+                nextCondition = response.NextConditions.First().Id;
+
+            IEnumerable<int> productIds = new int[] { };
+
+            if (response.ResultingProducts.Any())
+                productIds = response.ResultingProducts.Select(prod => prod.Id).ToArray();
+
             return new SolverResponse
             {
-                IsSolved = false
+                SystemId = response.SystemId,
+                IsSolved = response.IsSolved,
+                Multiple = response.IsMultiple,
+                NextCondition = nextCondition,
+                Status = (int)response.Status,
+                Products = { productIds }
             };
+        }
+
+        private async Task<ISolverQuestion> BuildQuestion(SolverQuestion grpcQuestion)
+        {
+            var internalQuestion = new Expert.SolverQuestion
+            {
+                IsMultiple = grpcQuestion?.Multiple ?? true,
+                SystemId = grpcQuestion?.SystemId ?? 0
+            };
+
+            var confirmingConditionsIds = grpcQuestion?.Confirming.ToArray();
+            var negatingConditionsIds = grpcQuestion?.Negating.ToArray();
+            var indifferentConditionsIds = grpcQuestion?.Indifferent.ToArray();
+
+            internalQuestion.Confirming = await _genius.ExpertContext.Conditions.Where(con => confirmingConditionsIds.Contains(con.Id)).ToListAsync();
+            internalQuestion.Negating = await _genius.ExpertContext.Conditions.Where(con => negatingConditionsIds.Contains(con.Id)).ToListAsync();
+            internalQuestion.Indifferent = await _genius.ExpertContext.Conditions.Where(con => indifferentConditionsIds.Contains(con.Id)).ToListAsync();
+
+            return internalQuestion;
         }
     }
 }

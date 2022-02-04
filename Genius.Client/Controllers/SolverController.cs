@@ -8,6 +8,8 @@ using GeniusProtocol;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Genius.Client.Controllers
@@ -43,25 +45,39 @@ namespace Genius.Client.Controllers
                 { IsSolved = false, Multiple = true, NextCondition = 0, Products = { }, Status = 0, SystemId = 0 };
 
 
-            string rawConfirming = HttpContext.Request.Form["confirming"];
-            string rawNegating = HttpContext.Request.Form["negating"];
-            string rawIndifferent = HttpContext.Request.Form["indifferent"];
+            IEnumerable<int> idsConfirming = FetchRawArray(HttpContext.Request.Form["confirming"]);
+            IEnumerable<int> idsNegating = FetchRawArray(HttpContext.Request.Form["negating"]);
+            IEnumerable<int> idsIndifferent = FetchRawArray(HttpContext.Request.Form["indifferent"]);
 
             var question = new SolverQuestion
             {
                 SystemId = systemId,
                 Multiple = HttpContext.Request.Form["multiple"] == "true" || HttpContext.Request.Form["multiple"] == "1",
-                Confirming = { FetchRawArray(rawConfirming) },
-                Negating = { FetchRawArray(rawNegating) },
-                Indifferent = { FetchRawArray(rawIndifferent) },
+                Confirming = { idsConfirming },
+                Negating = { idsNegating },
+                Indifferent = { idsIndifferent },
             };
 
             return await _solverClient.AskAsync(question);
         }
 
-        private int[] FetchRawArray(string rawArray)
+        private IEnumerable<int> FetchRawArray(string rawArray)
         {
-            return new int[] { };
+            rawArray = Regex.Replace(rawArray, "[^0-9,]", "");
+
+            string[] idsRawArray = rawArray.Split(',');
+
+            var idsList = new List<int>() { };
+
+            foreach (var singleRawId in idsRawArray)
+            {
+                Int32.TryParse(singleRawId, out int conditionId);
+
+                if (conditionId > 0 && !idsList.Contains(conditionId))
+                    idsList.Add(conditionId);
+            }
+
+            return idsList.ToArray();
         }
     }
 }

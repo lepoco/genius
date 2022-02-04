@@ -6,19 +6,26 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Genius.Data.Models.System
+namespace Genius.OAuth.Data.Models.System
 {
-    public class Statistic
+    public class User
     {
         public int Id { get; set; }
 
         [Required]
-        public string Context { get; set; }
+        public string Name { get; set; }
 
         [Required]
-        public StatisticType Type { get; set; }
+        public string Email { get; set; }
 
         [Required]
+        public string Password { get; set; }
+
+        [Required]
+        public UserRole Role { get; set; }
+
         public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+        public DateTime UpdatedAt { get; set; } = DateTime.Now;
     }
 }

@@ -3,9 +3,8 @@
 // Copyright (C) 2022 Leszek Pomianowski.
 // All Rights Reserved.
 
-using Genius.Data.Contexts;
-using Genius.Expert.Interfaces;
-using Genius.Services;
+using Genius.OAuth.Data.Contexts;
+using Genius.OAuth.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -15,12 +14,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 
-namespace Genius
+namespace Genius.OAuth
 {
     public class Startup
     {
-
-        public string DbExpertPath { get; internal set; }
+        public string DbSystemPath { get; internal set; }
 
         public Startup(IConfiguration configuration)
         {
@@ -29,46 +27,49 @@ namespace Genius
 
         public void SetupDatabase(IConfiguration configuration)
         {
-            string expertDatabasePath = configuration.GetConnectionString("ExpertDatabase");
+            string systemDatabasePath = configuration.GetConnectionString("SystemDatabase");
 
-            if (String.IsNullOrEmpty(expertDatabasePath))
+            if (String.IsNullOrEmpty(systemDatabasePath))
             {
                 var folder = Environment.SpecialFolder.LocalApplicationData;
                 var path = Environment.GetFolderPath(folder);
 
-                expertDatabasePath = System.IO.Path.Join(path, "GeniusExpert.db");
+                systemDatabasePath = System.IO.Path.Join(path, "GeniusSystem.db");
             }
 
-            DbExpertPath = expertDatabasePath;
+            DbSystemPath = systemDatabasePath;
         }
 
+        // This method gets called by the runtime. Use this method to add services to the container.
+        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ExpertContext>(options =>
+            services.AddDbContext<SystemContext>(options =>
             {
-                options.UseSqlite($"Data Source={DbExpertPath}");
+                options.UseSqlite($"Data Source={DbSystemPath}");
             });
-
-            services.AddScoped<IExpertService, GeniusService>();
 
             services.AddGrpc();
         }
 
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
+            {
                 app.UseDeveloperExceptionPage();
+            }
 
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGrpcService<GrpcExpertService>();
-                endpoints.MapGrpcService<GrpcSolverService>();
+                endpoints.MapGrpcService<GrpcUserService>();
+                endpoints.MapGrpcService<GrpcStatisticsServer>();
 
                 endpoints.MapGet("/", async context =>
                 {
-                    await context.Response.WriteAsync("Communication with gRPC endpoints must be made through a gRPC client.");
+                    await context.Response.WriteAsync("Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
                 });
             });
         }

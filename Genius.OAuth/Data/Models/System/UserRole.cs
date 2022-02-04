@@ -3,7 +3,7 @@
 // Copyright (C) 2022 Leszek Pomianowski.
 // All Rights Reserved.
 
-namespace Genius.Data.Models.System
+namespace Genius.OAuth.Data.Models.System
 {
     public enum UserRole
     {

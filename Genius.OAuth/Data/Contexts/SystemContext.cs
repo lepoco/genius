@@ -3,10 +3,10 @@
 // Copyright (C) 2022 Leszek Pomianowski.
 // All Rights Reserved.
 
-using Genius.Data.Models.System;
+using Genius.OAuth.Data.Models.System;
 using Microsoft.EntityFrameworkCore;
 
-namespace Genius.Data.Contexts
+namespace Genius.OAuth.Data.Contexts
 {
     /// <summary>
     /// Represents the database responsible for the application logic.

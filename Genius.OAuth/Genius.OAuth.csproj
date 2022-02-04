@@ -5,7 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="nlog.config" />
+    <ProjectReference Include="..\Genius.Protocol\Genius.Protocol.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Data\Migrations\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -15,21 +19,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="NLog.Web.AspNetCore" Version="5.0.0-rc2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Genius.Protocol\Genius.Protocol.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Data\Migrations\Expert\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="nlog.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>

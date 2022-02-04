@@ -8,7 +8,7 @@ using Grpc.Core;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
-namespace Genius.Services
+namespace Genius.OAuth.Services
 {
     public class GrpcUserService : User.UserBase
     {

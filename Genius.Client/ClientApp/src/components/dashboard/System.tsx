@@ -38,7 +38,7 @@ class System extends RoutedComponent<IExpertRunState> {
 
     this.state = {
       isConditional: false,
-      currentQuestion: '__{UNKOWN QUESTION}__',
+      currentQuestion: '',
       systemLoaded: false,
       systemId: 0,
       systemGuid: '',
@@ -85,9 +85,9 @@ class System extends RoutedComponent<IExpertRunState> {
   private async populateExpertSystemData(): Promise<void> {
     const system = await GeniusApi.getSystemByGuid(
       this.router.params.guid ?? '',
-      true,
-      true,
-      true,
+      false,
+      false,
+      false,
     );
 
     this.setState({

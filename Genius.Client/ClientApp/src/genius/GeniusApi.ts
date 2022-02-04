@@ -31,12 +31,17 @@ export default class GeniusApi {
    * @returns Response from solver.
    */
   public static async ask(question: ISolverQuestion): Promise<ISolverResponse> {
+    
+    const confirmingIds: number[] = (question.confirming ?? []).map(({ id }) => id ?? 0);
+    const negatingIds: number[] = (question.negating ?? []).map(({ id }) => id ?? 0);
+    const indifferentIds: number[] = (question.indifferent ?? []).map(({ id }) => id ?? 0);
+    
     let formData = GeniusApi.buildFormData({
       systemId: question.systemId ?? 0,
       multiple: question.multiple ?? false,
-      confirming: question.confirming ?? [],
-      negating: question.negating ?? [],
-      indifferent: question.indifferent ?? [],
+      confirming: confirmingIds,
+      negating: negatingIds,
+      indifferent: indifferentIds,
     });
 
     let response = await fetch(GeniusApi.BASE_SOLVER_GATEWAY + 'ask', {
@@ -469,7 +474,7 @@ export default class GeniusApi {
       dataObject.isSolved ?? false,
       dataObject.status ?? 0,
       dataObject.products ?? [], // Solve products
-      await this.getCondition(dataObject.nextCondition ?? 0), // Solve condition
+      await this.getCondition(parseInt(dataObject.nextCondition ?? 0)), // Solve condition
     );
   }
 

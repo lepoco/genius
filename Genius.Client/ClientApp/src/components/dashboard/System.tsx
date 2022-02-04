@@ -14,8 +14,17 @@ import IExpertCondition from '../../genius/IExpertCondition';
 import SolverQuestion from '../../genius/SolverQuestion';
 import GeniusApi from '../../genius/GeniusApi';
 import ExpertCondition from '../../genius/ExpertCondition';
+import ISolverResponse from '../../genius/ISolverResponse';
+
+enum ConditionType {
+  Confirming,
+  Negating,
+  Indifferent,
+}
 
 class SolverState {
+  currentCondition: IExpertCondition = new ExpertCondition(0, 0);
+
   confirming: IExpertCondition[] = [];
 
   negating: IExpertCondition[] = [];
@@ -66,8 +75,7 @@ class System extends RoutedComponent<IExpertRunState> {
     });
   }
 
-  private async getFirstCondition(): Promise<void>
-  {
+  private async getFirstCondition(): Promise<void> {
     let systemId: number = this.state.systemId ?? 0;
 
     // ERROR, something went wrong
@@ -111,7 +119,7 @@ class System extends RoutedComponent<IExpertRunState> {
     await this.getFirstCondition();
   }
 
-  private async askQuestion(): Promise<void> {
+  private async askQuestion(): Promise<ISolverResponse> {
     let question = new SolverQuestion();
 
     question.multiple = true; // Always allow multiple results
@@ -122,28 +130,58 @@ class System extends RoutedComponent<IExpertRunState> {
 
     let solverResponse = await GeniusApi.ask(question);
 
-    let nextCondition: IExpertCondition = solverResponse.nextCondition ?? new ExpertCondition(0);
+    let nextCondition: IExpertCondition =
+      solverResponse.nextCondition ?? new ExpertCondition(0);
     let nextConditionId = nextCondition.id ?? 0;
 
     if (nextConditionId > 0) {
+      this.solverState.currentCondition = nextCondition;
+
       this.displayCondition(nextCondition);
 
-      return;
+      return solverResponse;
     }
 
-    console.debug('\\System\\handleSubmit\\state', this.state);
-    console.debug('\\System\\handleSubmit\\solverResponse', solverResponse);
+    return solverResponse;
   }
 
-  private displayCondition(condition: IExpertCondition): void
-  {
-    this.setState({currentQuestion: condition.name});
+  private displayCondition(condition: IExpertCondition): void {
+    this.setState({ currentQuestion: condition.name });
   }
 
-  private async handleSubmit(event): Promise<void> {
+  private async handleSubmitClick(
+    event: any,
+    conditionType: ConditionType,
+  ): Promise<void> {
     event.preventDefault();
 
-    await this.askQuestion();
+    let currentCondition = this.solverState.currentCondition;
+
+    if ((currentCondition.id ?? 0) > 0) {
+      switch (conditionType) {
+        case ConditionType.Confirming: {
+          this.solverState.confirming.push(currentCondition);
+          break;
+        }
+        case ConditionType.Negating: {
+          this.solverState.negating.push(currentCondition);
+          break;
+        }
+        default: {
+          this.solverState.indifferent.push(currentCondition);
+          break;
+        }
+      }
+    }
+
+    let solverResponse: ISolverResponse = await this.askQuestion();
+
+    console.debug('\\System\\handleSubmitClick\\conditionType', conditionType);
+    console.debug('\\System\\handleSubmitClick\\event', event);
+    console.debug(
+      '\\System\\handleSubmitClick\\solverResponse',
+      solverResponse,
+    );
   }
 
   private replaceQuestionCondition(question: string): string {
@@ -191,32 +229,24 @@ class System extends RoutedComponent<IExpertRunState> {
         </div>
 
         <div className="col-12 -reveal">
-          <form id="answer" method="POST" onSubmit={this.handleSubmit.bind(this)}>
-            <button
-              type="submit"
-              id="submit_yes"
-              name="submit_yes"
-              value="yes"
-              className="-yes btn btn-dark btn-mobile -lg-mr-1">
-              Yes
-            </button>
-            <button
-              type="submit"
-              id="submit_no"
-              name="submit_no"
-              value="no"
-              className="-no btn btn-outline-dark btn-mobile -lg-mr-1">
-              No
-            </button>
-            <button
-              type="submit"
-              id="submit_dontknow"
-              name="submit_dontknow"
-              value="dontknow"
-              className="-dontknow btn btn-outline-dark btn-mobile">
-              I do not know
-            </button>
-          </form>
+          <button
+            type="button"
+            onClick={e => this.handleSubmitClick(e, ConditionType.Confirming)}
+            className="btn btn-dark btn-mobile -lg-mr-1">
+            Yes
+          </button>
+          <button
+            type="button"
+            onClick={e => this.handleSubmitClick(e, ConditionType.Negating)}
+            className="btn btn-outline-dark btn-mobile -lg-mr-1">
+            No
+          </button>
+          <button
+            type="button"
+            onClick={e => this.handleSubmitClick(e, ConditionType.Indifferent)}
+            className="btn btn-outline-dark btn-mobile">
+            I do not know
+          </button>
         </div>
       </div>
     );

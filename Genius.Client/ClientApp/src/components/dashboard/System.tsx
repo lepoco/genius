@@ -15,6 +15,7 @@ import SolverQuestion from '../../genius/SolverQuestion';
 import GeniusApi from '../../genius/GeniusApi';
 import ExpertCondition from '../../genius/ExpertCondition';
 import ISolverResponse from '../../genius/ISolverResponse';
+import IExpertProduct from '../../genius/IExpertProduct';
 
 enum ConditionType {
   Confirming,
@@ -24,6 +25,8 @@ enum ConditionType {
 
 class SolverState {
   currentCondition: IExpertCondition = new ExpertCondition(0, 0);
+
+  solvedProducts: IExpertProduct[] = [];
 
   confirming: IExpertCondition[] = [];
 
@@ -138,10 +141,10 @@ class System extends RoutedComponent<IExpertRunState> {
       solverResponse.nextCondition ?? new ExpertCondition(0);
     let nextConditionId = nextCondition.id ?? 0;
 
-    let solverResponseProducts = solverResponse.products ?? [];
+    this.solverState.solvedProducts = solverResponse.products ?? [];
 
-    if (solverResponseProducts.length > 0) {
-      this.displayResults(solverResponse);
+    if (this.solverState.solvedProducts.length > 0) {
+      this.setState({ isSolved: true });
 
       return solverResponse;
     }
@@ -149,7 +152,7 @@ class System extends RoutedComponent<IExpertRunState> {
     if (nextConditionId > 0) {
       this.solverState.currentCondition = nextCondition;
 
-      this.displayCondition(nextCondition);
+      this.setCurrentCondition(nextCondition);
 
       return solverResponse;
     }
@@ -157,12 +160,8 @@ class System extends RoutedComponent<IExpertRunState> {
     return solverResponse;
   }
 
-  private displayCondition(condition: IExpertCondition): void {
+  private setCurrentCondition(condition: IExpertCondition): void {
     this.setState({ currentQuestion: condition.name });
-  }
-
-  private displayResults(solverResponse: ISolverResponse): void {
-    this.setState({ isSolved: true });
   }
 
   private async handleSubmitClick(
@@ -207,7 +206,7 @@ class System extends RoutedComponent<IExpertRunState> {
   private renderQuestionForm(): JSX.Element {
     return (
       <div className="col-12">
-        <div className="col-12 -reveal">
+        <div className="-reveal">
           {this.state.isConditional ? (
             <h4 className="-font-secondary -fw-700 -pb-3">
               <span className="--current_condition -pattern">
@@ -228,7 +227,7 @@ class System extends RoutedComponent<IExpertRunState> {
           )}
         </div>
 
-        <div className="col-12 -reveal">
+        <div className="-reveal">
           <button
             type="button"
             onClick={e => this.handleSubmitClick(e, ConditionType.Confirming)}
@@ -253,7 +252,43 @@ class System extends RoutedComponent<IExpertRunState> {
   }
 
   private renderResults(): JSX.Element {
-    return <div className="col-12">Solved!</div>;
+    return (
+      <div className="col-12">
+        <div>
+          <p>
+            <strong>
+              Found <i>{this.solverState.solvedProducts.length}</i> results.
+            </strong>
+          </p>
+        </div>
+        <div>
+          {this.solverState.solvedProducts.map((singleProduct, i) => {
+            return (
+              <div>
+                <h4>{singleProduct.name ?? ''}</h4>
+                {/* <span>
+                  <i>
+                    <small>{singleProduct.id ?? '0'}</small>
+                  </i>
+                </span> */}
+                {(singleProduct.description ?? '') === '' ? (
+                  false
+                ) : (
+                  <p>{singleProduct.description}</p>
+                )}
+                {(singleProduct.notes ?? '') === '' ? (
+                  false
+                ) : (
+                  <p>{singleProduct.notes}</p>
+                )}
+
+                {i > 0 ? <hr /> : false}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
   }
 
   private renderSystemView(): JSX.Element {

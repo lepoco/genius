@@ -6,7 +6,6 @@
 using Genius.Expert.Interfaces;
 using GeniusProtocol;
 using Grpc.Core;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,13 +58,13 @@ namespace Genius.Services
                 SystemId = grpcQuestion?.SystemId ?? 0
             };
 
-            var confirmingConditionsIds = grpcQuestion?.Confirming.ToArray();
-            var negatingConditionsIds = grpcQuestion?.Negating.ToArray();
-            var indifferentConditionsIds = grpcQuestion?.Indifferent.ToArray();
+            internalQuestion.Confirming = grpcQuestion?.Confirming.ToArray();
+            internalQuestion.Negating = grpcQuestion?.Negating.ToArray();
+            internalQuestion.Indifferent = grpcQuestion?.Indifferent.ToArray();
 
-            internalQuestion.Confirming = await _genius.ExpertContext.Conditions.Where(con => confirmingConditionsIds.Contains(con.Id)).ToListAsync();
-            internalQuestion.Negating = await _genius.ExpertContext.Conditions.Where(con => negatingConditionsIds.Contains(con.Id)).ToListAsync();
-            internalQuestion.Indifferent = await _genius.ExpertContext.Conditions.Where(con => indifferentConditionsIds.Contains(con.Id)).ToListAsync();
+            //internalQuestion.Confirming = await _genius.ExpertContext.Conditions.Where(con => confirmingConditionsIds.Contains(con.Id)).ToListAsync();
+            //internalQuestion.Negating = await _genius.ExpertContext.Conditions.Where(con => negatingConditionsIds.Contains(con.Id)).ToListAsync();
+            //internalQuestion.Indifferent = await _genius.ExpertContext.Conditions.Where(con => indifferentConditionsIds.Contains(con.Id)).ToListAsync();
 
             return internalQuestion;
         }

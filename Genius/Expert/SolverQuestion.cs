@@ -1,5 +1,4 @@
-﻿using Genius.Data.Models.Expert;
-using Genius.Expert.Interfaces;
+﻿using Genius.Expert.Interfaces;
 using System.Collections.Generic;
 
 namespace Genius.Expert
@@ -10,10 +9,10 @@ namespace Genius.Expert
 
         public bool IsMultiple { get; set; } = true;
 
-        public IEnumerable<Condition> Confirming { get; set; } = new List<Condition>();
+        public IEnumerable<int> Confirming { get; set; } = new List<int>();
 
-        public IEnumerable<Condition> Negating { get; set; } = new List<Condition>();
+        public IEnumerable<int> Negating { get; set; } = new List<int>();
 
-        public IEnumerable<Condition> Indifferent { get; set; } = new List<Condition>();
+        public IEnumerable<int> Indifferent { get; set; } = new List<int>();
     }
 }

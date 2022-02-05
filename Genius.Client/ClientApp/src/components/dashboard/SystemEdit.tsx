@@ -137,7 +137,9 @@ class SystemEdit extends RoutedComponent<IExpertPageState> {
     let currentProducts = this.state.systemProducts;
     currentProducts?.push(productToAdd);
 
-    let updatedRelations = await GeniusApi.getRelations(this.state.systemId);
+    let updatedRelations = await GeniusApi.getSystemRelations(
+      this.state.systemId,
+    );
 
     this.setState({
       systemRelations: updatedRelations,
@@ -183,7 +185,11 @@ class SystemEdit extends RoutedComponent<IExpertPageState> {
     let products: IExpertProduct[] = state.systemProducts ?? [];
 
     if (products.length < 1) {
-      return <tbody><tr></tr></tbody>;
+      return (
+        <tbody>
+          <tr></tr>
+        </tbody>
+      );
     }
 
     return (

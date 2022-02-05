@@ -34,7 +34,10 @@ class SolverState {
 
 interface IExpertRunState extends IExpertPageState {
   currentQuestion?: string;
+
   isConditional?: boolean;
+
+  isSolved?: boolean;
 }
 
 class System extends RoutedComponent<IExpertRunState> {
@@ -46,6 +49,7 @@ class System extends RoutedComponent<IExpertRunState> {
     super(props);
 
     this.state = {
+      isSolved: false,
       isConditional: false,
       currentQuestion: '',
       systemLoaded: false,
@@ -134,6 +138,14 @@ class System extends RoutedComponent<IExpertRunState> {
       solverResponse.nextCondition ?? new ExpertCondition(0);
     let nextConditionId = nextCondition.id ?? 0;
 
+    let solverResponseProducts = solverResponse.products ?? [];
+
+    if (solverResponseProducts.length > 0) {
+      this.displayResults(solverResponse);
+
+      return solverResponse;
+    }
+
     if (nextConditionId > 0) {
       this.solverState.currentCondition = nextCondition;
 
@@ -147,6 +159,10 @@ class System extends RoutedComponent<IExpertRunState> {
 
   private displayCondition(condition: IExpertCondition): void {
     this.setState({ currentQuestion: condition.name });
+  }
+
+  private displayResults(solverResponse: ISolverResponse): void {
+    this.setState({ isSolved: true });
   }
 
   private async handleSubmitClick(
@@ -188,25 +204,9 @@ class System extends RoutedComponent<IExpertRunState> {
     return question.replace('{condition}', 'replacedCON');
   }
 
-  private renderSystemView(): JSX.Element {
-    if ((this.state.systemId ?? 0) < 1) {
-      return (
-        <div>
-          <p>The specified expert system could not be found</p>
-          <Link to={'/dashboard/add'}>Add new expert system</Link>
-        </div>
-      );
-    }
-
+  private renderQuestionForm(): JSX.Element {
     return (
-      <div className="row">
-        <div className="col-12 -mb-3">
-          <h4 className="-font-secondary -fw-700 -reveal">
-            {this.state.systemName ?? ''}
-          </h4>
-          <p className="-reveal">{this.state.systemDescription ?? ''}</p>
-        </div>
-
+      <div className="col-12">
         <div className="col-12 -reveal">
           {this.state.isConditional ? (
             <h4 className="-font-secondary -fw-700 -pb-3">
@@ -248,6 +248,38 @@ class System extends RoutedComponent<IExpertRunState> {
             I do not know
           </button>
         </div>
+      </div>
+    );
+  }
+
+  private renderResults(): JSX.Element {
+    return <div className="col-12">Solved!</div>;
+  }
+
+  private renderSystemView(): JSX.Element {
+    if ((this.state.systemId ?? 0) < 1) {
+      return (
+        <div>
+          <p>The specified expert system could not be found</p>
+          <Link to={'/dashboard/add'}>Add new expert system</Link>
+        </div>
+      );
+    }
+
+    let contents = this.state.isSolved
+      ? this.renderResults()
+      : this.renderQuestionForm();
+
+    return (
+      <div className="row">
+        <div className="col-12 -mb-3">
+          <h4 className="-font-secondary -fw-700 -reveal">
+            {this.state.systemName ?? ''}
+          </h4>
+          <p className="-reveal">{this.state.systemDescription ?? ''}</p>
+        </div>
+
+        {contents}
       </div>
     );
   }

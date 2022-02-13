@@ -16,7 +16,7 @@ namespace Genius.Expert.Interfaces
         /// <summary>
         /// Points to the database ORM.
         /// </summary>
-        public IExpertContext ExpertContext { get; }
+        public IExpertContext Context { get; }
 
         /// <summary>
         /// Takes an instance of the specified solver.

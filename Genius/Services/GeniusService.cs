@@ -19,11 +19,11 @@ namespace Genius.Services
         /// </summary>
         private readonly List<ISolver> _solvers = new();
 
-        public IExpertContext ExpertContext { get; }
+        public IExpertContext Context { get; }
 
         public GeniusService(IExpertContext expertContext)
         {
-            ExpertContext = expertContext;
+            Context = expertContext;
         }
 
         public async Task<ISolverResponse> Solve<T>(ISolverQuestion question)
@@ -43,7 +43,7 @@ namespace Genius.Services
                 if (solverObject == null)
                     throw new ArgumentNullException($"Creating new solver of type {typeof(T)} failed.");
 
-                solverObject.SetContext(ExpertContext);
+                solverObject.SetContext(Context);
 
                 _solvers.Add(solverObject);
             }

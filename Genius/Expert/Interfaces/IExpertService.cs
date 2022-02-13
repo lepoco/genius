@@ -9,8 +9,8 @@ namespace Genius.Expert.Interfaces
 {
     public interface IExpertService
     {
-        public ExpertContext ExpertContext { get; }
+        public IExpertContext ExpertContext { get; }
 
-        public Solver Solver { get; }
+        public ISolver Solver { get; }
     }
 }

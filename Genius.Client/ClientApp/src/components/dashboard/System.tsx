@@ -200,7 +200,7 @@ class System extends RoutedComponent<IExpertRunState> {
   }
 
   private replaceQuestionCondition(question: string): string {
-    return question.replace('{condition}', 'replacedCON');
+    return question.replace('{condition}', this.state.currentQuestion ?? '###');
   }
 
   private renderQuestionForm(): JSX.Element {
@@ -257,14 +257,20 @@ class System extends RoutedComponent<IExpertRunState> {
         <div>
           <p>
             <strong>
-              Found <i>{this.solverState.solvedProducts.length}</i> results.
+              <i>
+                Found {this.solverState.solvedProducts.length}{' '}
+                {this.solverState.solvedProducts.length > 1
+                  ? 'results'
+                  : 'result'}
+                .
+              </i>
             </strong>
           </p>
         </div>
         <div>
           {this.solverState.solvedProducts.map((singleProduct, i) => {
             return (
-              <div>
+              <div key={singleProduct.id ?? 0}>
                 <h4>{singleProduct.name ?? ''}</h4>
                 {/* <span>
                   <i>
@@ -286,6 +292,13 @@ class System extends RoutedComponent<IExpertRunState> {
               </div>
             );
           })}
+        </div>
+        <div className="-pt-3">
+          <Link
+            to={'/dashboard/sys/' + this.state.systemGuid ?? '#'}
+            className="btn btn-outline-dark btn-mobile">
+            Restart
+          </Link>
         </div>
       </div>
     );

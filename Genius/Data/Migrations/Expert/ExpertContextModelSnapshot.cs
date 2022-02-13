@@ -15,7 +15,7 @@ namespace Genius.Data.Migrations.Expert
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "6.0.1");
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.2");
 
             modelBuilder.Entity("Genius.Data.Models.Expert.Condition", b =>
                 {
@@ -112,6 +112,9 @@ namespace Genius.Data.Migrations.Expert
                     b.Property<string>("Question")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("TEXT");

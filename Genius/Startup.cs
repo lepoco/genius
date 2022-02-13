@@ -44,7 +44,7 @@ namespace Genius
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ExpertContext>(options =>
+            services.AddDbContext<IExpertContext, ExpertContext>(options =>
             {
                 options.UseSqlite($"Data Source={DbExpertPath}");
             });

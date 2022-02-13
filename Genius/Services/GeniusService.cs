@@ -11,15 +11,16 @@ namespace Genius.Services
 {
     public class GeniusService : IExpertService
     {
-        public ExpertContext ExpertContext { get; }
+        public IExpertContext ExpertContext { get; }
 
-        public Solver Solver { get; }
+        public ISolver Solver { get; }
 
-        public GeniusService(ExpertContext expertContext)
+        public GeniusService(IExpertContext expertContext)
         {
             ExpertContext = expertContext;
 
-            Solver = new Solver();
+            // TODO: Set different solver
+            Solver = new ConditionalSolver();
             Solver.SetContext(expertContext);
         }
     }

@@ -16,15 +16,15 @@ namespace Genius.Expert
     /// <summary>
     /// Solves questions on the basis of the provided <see cref="Condition"/>'s by searching for a suitable <see cref="Product"/> or by returning the next <see cref="Condition"/> to ask.
     /// </summary>
-    public class Solver
+    public class ConditionalSolver : ISolver
     {
-        private ExpertContext _expertContext;
+        private IExpertContext _expertContext;
 
         /// <summary>
         /// Defines the database context.
         /// </summary>
         /// <param name="context">Database context.</param>
-        public void SetContext(ExpertContext context)
+        public void SetContext(IExpertContext context)
         {
             _expertContext = context;
         }
@@ -64,6 +64,7 @@ namespace Genius.Expert
             if (!nextConditionsEnumerable.Any())
             {
                 response.ResultingProducts = await FindProducts(
+                    response.SystemId,
                     question.Confirming,
                     question.Negating,
                     question.Indifferent);
@@ -91,12 +92,12 @@ namespace Genius.Expert
             var conditions = new List<Condition>();
 
             var matchingProducts =
-                await GetMatchingProducts(confirmingConditions, negatingConditions, indifferentConditions);
+                await GetMatchingProducts(systemId, confirmingConditions, negatingConditions, indifferentConditions);
 
             // If only one product matches the current pool, don't return anything because that's the result.
             var productsEnumerable = matchingProducts.ToList();
             if (productsEnumerable?.Count() < 1)
-                return conditions;
+                return conditions; // find which condition changes the most
 
             var matchedProductsIds = productsEnumerable.Select(product => product.Id).ToList();
 
@@ -134,11 +135,12 @@ namespace Genius.Expert
         /// <param name="indifferentConditions">Indifferent conditions represent logical <see langword="OR"/>.</param>
         /// <returns></returns>
         public async Task<IEnumerable<Product>> FindProducts(
+            int systemId,
             IEnumerable<int> confirmingConditions,
             IEnumerable<int> negatingConditions,
             IEnumerable<int> indifferentConditions)
         {
-            return await GetMatchingProducts(confirmingConditions, negatingConditions, indifferentConditions);
+            return await GetMatchingProducts(systemId, confirmingConditions, negatingConditions, indifferentConditions);
         }
 
         // Good Old Fashioned AI
@@ -186,13 +188,25 @@ namespace Genius.Expert
         }
 
         private async Task<IEnumerable<Product>> GetMatchingProducts(
+            int systemId,
             IEnumerable<int> confirmingConditions,
             IEnumerable<int> negatingConditions,
             IEnumerable<int> indifferentConditions)
         {
-            var matchedRelations = await _expertContext.Relations
-                .Where(relation => confirmingConditions.Contains(relation.CondiotionId))
+            List<Relation> matchedRelations;
+
+            // TODO: This array can be pretty huge
+            // Select from database all relations which don't contradict
+            matchedRelations = await _expertContext.Relations
+                .Where(relation => relation.SystemId == systemId && !negatingConditions.Contains(relation.CondiotionId))
                 .ToListAsync();
+
+            // If there's confirming, get only them
+            var conditionsEnumerable = confirmingConditions as int[] ?? confirmingConditions.ToArray();
+
+            if (conditionsEnumerable.Any())
+                matchedRelations = matchedRelations
+                    .Where(relation => conditionsEnumerable.Contains(relation.CondiotionId)).ToList();
 
             // Create matrix of products with its conditions count
             var productsWeight = new Dictionary<int, int>();
@@ -206,7 +220,7 @@ namespace Genius.Expert
             }
 
             // Get only products which fulfill current conditions count
-            productsWeight = productsWeight.Where(i => i.Value >= confirmingConditions.Count())
+            productsWeight = productsWeight.Where(i => i.Value >= conditionsEnumerable.Count())
                 .ToDictionary(i => i.Key, i => i.Value);
 
             // Order by most common??

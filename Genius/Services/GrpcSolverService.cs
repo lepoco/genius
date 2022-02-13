@@ -27,7 +27,7 @@ namespace Genius.Services
 
         public override async Task<SolverResponse> Ask(SolverQuestion request, ServerCallContext context)
         {
-            var response = await _genius.Solver.Solve(await BuildQuestion(request));
+            var response = await _genius.Solver.Solve(BuildQuestion(request));
 
             int nextCondition = 0;
 
@@ -50,7 +50,7 @@ namespace Genius.Services
             };
         }
 
-        private async Task<ISolverQuestion> BuildQuestion(SolverQuestion grpcQuestion)
+        private ISolverQuestion BuildQuestion(SolverQuestion grpcQuestion)
         {
             var internalQuestion = new Expert.SolverQuestion
             {

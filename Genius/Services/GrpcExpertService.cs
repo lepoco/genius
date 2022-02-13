@@ -4,6 +4,7 @@
 // All Rights Reserved.
 
 using Genius.Data.Contexts;
+using Genius.Data.Models.Expert;
 using GeniusProtocol;
 using Grpc.Core;
 using Microsoft.EntityFrameworkCore;
@@ -18,9 +19,9 @@ namespace Genius.Services
     {
         private readonly ILogger<GrpcExpertService> _logger;
 
-        private readonly ExpertContext _expertContext;
+        private readonly IExpertContext _expertContext;
 
-        public GrpcExpertService(ILogger<GrpcExpertService> logger, ExpertContext expertContext)
+        public GrpcExpertService(ILogger<GrpcExpertService> logger, IExpertContext expertContext)
         {
             _logger = logger;
             _expertContext = expertContext;
@@ -49,6 +50,7 @@ namespace Genius.Services
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
                 Version = "1.0.0",
+                Type = SystemType.Conditional,
                 Guid = Guid.NewGuid().ToString()
             };
 
@@ -122,6 +124,10 @@ namespace Genius.Services
                 return new ExpertResponseModel { Id = 0 };
 
             int systemId = expertSystem.Id;
+
+            _expertContext.Relations.RemoveRange(_expertContext.Relations.Where(relation => relation.SystemId == systemId));
+            _expertContext.Conditions.RemoveRange(_expertContext.Conditions.Where(condition => condition.SystemId == systemId));
+            _expertContext.Products.RemoveRange(_expertContext.Products.Where(product => product.SystemId == systemId));
 
             _expertContext.Systems.Remove(expertSystem);
 

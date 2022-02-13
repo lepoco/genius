@@ -30,6 +30,9 @@ namespace Genius.Data.Models.Expert
         [Required]
         public string Question { get; set; } = "";
 
+        [Required]
+        public SystemType Type { get; set; } = SystemType.Conditional;
+
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         public DateTime UpdatedAt { get; set; } = DateTime.Now;

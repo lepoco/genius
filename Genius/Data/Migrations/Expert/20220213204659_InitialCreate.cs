@@ -68,6 +68,7 @@ namespace Genius.Data.Migrations.Expert
                     Description = table.Column<string>(type: "TEXT", nullable: false),
                     Guid = table.Column<string>(type: "TEXT", nullable: false),
                     Question = table.Column<string>(type: "TEXT", nullable: false),
+                    Type = table.Column<int>(type: "INTEGER", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },

@@ -13,7 +13,7 @@ namespace Genius.Data.Contexts
     /// </summary>
     /// Add-Migration InitialCreate -OutputDir Data/Migrations/Expert -Context ExpertContext
     /// Update-Database -Context ExpertContext
-    public class ExpertContext : DbContext
+    public class ExpertContext : DbContext, IExpertContext
     {
         public DbSet<Models.Expert.System> Systems { get; set; }
 

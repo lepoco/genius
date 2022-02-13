@@ -4,24 +4,53 @@
 // All Rights Reserved.
 
 using Genius.Data.Contexts;
-using Genius.Expert;
 using Genius.Expert.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Genius.Services
 {
     public class GeniusService : IExpertService
     {
-        public IExpertContext ExpertContext { get; }
+        /// <summary>
+        /// Scoped list of used solvers.
+        /// </summary>
+        private readonly List<ISolver> _solvers = new();
 
-        public ISolver Solver { get; }
+        public IExpertContext ExpertContext { get; }
 
         public GeniusService(IExpertContext expertContext)
         {
             ExpertContext = expertContext;
+        }
 
-            // TODO: Set different solver
-            Solver = new ConditionalSolver();
-            Solver.SetContext(expertContext);
+        public async Task<ISolverResponse> Solve<T>(ISolverQuestion question)
+        {
+            return await (GetSolver<T>() as ISolver)!.Solve(question);
+        }
+
+        public T GetSolver<T>()
+        {
+            if (!typeof(ISolver).IsAssignableFrom(typeof(T)))
+                throw new InvalidCastException();
+
+            if (!_solvers.OfType<T>().Any())
+            {
+                var solverObject = (T)Activator.CreateInstance(typeof(T)) as ISolver;
+
+                if (solverObject == null)
+                    throw new ArgumentNullException($"Creating new solver of type {typeof(T)} failed.");
+
+                solverObject.SetContext(ExpertContext);
+
+                _solvers.Add(solverObject);
+            }
+
+            var solverInstance = _solvers.First(solver => solver.GetType() == typeof(T));
+
+            return (T)solverInstance;
         }
     }
 }

@@ -3,6 +3,7 @@
 // Copyright (C) 2022 Leszek Pomianowski.
 // All Rights Reserved.
 
+using Genius.Expert;
 using Genius.Expert.Interfaces;
 using GeniusProtocol;
 using Grpc.Core;
@@ -10,6 +11,8 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SolverQuestion = GeniusProtocol.SolverQuestion;
+using SolverResponse = GeniusProtocol.SolverResponse;
 
 namespace Genius.Services
 {
@@ -27,7 +30,8 @@ namespace Genius.Services
 
         public override async Task<SolverResponse> Ask(SolverQuestion request, ServerCallContext context)
         {
-            var response = await _genius.Solver.Solve(BuildQuestion(request));
+            // TODO: If ES types differ, change solver
+            var response = await _genius.Solve<ConditionalSolver>(BuildQuestion(request));
 
             int nextCondition = 0;
 

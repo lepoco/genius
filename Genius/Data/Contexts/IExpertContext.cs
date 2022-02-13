@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Genius.Data.Contexts
 {
     /// <summary>
-    /// Abstraction of the database context;
+    /// Abstraction of the database context.
     /// </summary>
     public interface IExpertContext : IDbContext
     {

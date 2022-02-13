@@ -15,12 +15,16 @@ namespace Genius.Data.Contexts
     /// Update-Database -Context ExpertContext
     public class ExpertContext : DbContext, IExpertContext
     {
+        /// <inheritdoc />
         public DbSet<Models.Expert.System> Systems { get; set; }
 
+        /// <inheritdoc />
         public DbSet<Product> Products { get; set; }
 
+        /// <inheritdoc />
         public DbSet<Condition> Conditions { get; set; }
 
+        /// <inheritdoc />
         public DbSet<Relation> Relations { get; set; }
 
         public ExpertContext(DbContextOptions<ExpertContext> options) : base(options)

@@ -5,10 +5,11 @@
  * All Rights Reserved.
  */
 
+import { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 import App from './App';
-import ServiceWorkerRegistrar from './common/ServiceWorkerRegistrar';
+import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
 import './styles/app.scss';
 
@@ -17,9 +18,11 @@ const baseUrl: string =
 
 ReactDOM.render(
   <Router basename={baseUrl}>
-    <App />
+    <Suspense fallback={<div>Loading...</div>}>
+      <App />
+    </Suspense>
   </Router>,
   document.getElementById('root'),
 );
 
-new ServiceWorkerRegistrar().unregister();
+serviceWorkerRegistration.register();

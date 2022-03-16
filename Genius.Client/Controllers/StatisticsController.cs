@@ -11,7 +11,7 @@ namespace Genius.Client.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class StatisticsController
+    public class StatisticsController : ControllerBase
     {
         private readonly ILogger<StatisticsController> _logger;
 

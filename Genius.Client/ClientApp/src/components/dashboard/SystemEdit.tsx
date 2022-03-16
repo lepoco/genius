@@ -251,9 +251,11 @@ class SystemEdit extends RoutedComponent<IExpertPageState> {
           </div>
 
           <div className="-mb-3 -reveal">
-            <button className="btn btn-dark btn-mobile -lg-mr-1 -btn-export">
+            <a
+              href={'/export/' + state.systemGuid ?? '#'}
+              className="btn btn-dark btn-mobile -lg-mr-1 -btn-export">
               Export
-            </button>
+            </a>
             <button className="btn btn-outline-dark btn-mobile -btn-import -lg-mr-1">
               Import
             </button>

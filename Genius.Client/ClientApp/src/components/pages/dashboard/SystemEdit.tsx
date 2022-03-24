@@ -443,7 +443,12 @@ class SystemEdit extends RoutedComponent<IExpertPageState> {
             this.importModal = element;
           }}>
           <div>
-            <p>123</p>
+            <div className="mb-3">
+              <label htmlFor="formFile" className="form-label">
+                Select <code>.genius</code> file.
+              </label>
+              <input accept=".genius" className="form-control" type="file" id="formFile" />
+            </div>
           </div>
         </Modal>
       </>

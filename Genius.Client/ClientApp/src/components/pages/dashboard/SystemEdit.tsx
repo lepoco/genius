@@ -17,6 +17,11 @@ import IExpertCondition from '../../../genius/IExpertCondition';
 import GeniusApi from '../../../genius/GeniusApi';
 import ExpertProduct from '../../../genius/ExpertProduct';
 import IExpertProduct from '../../../genius/IExpertProduct';
+import { Task } from '../../common/Task';
+
+interface ISystemEditState extends IExpertPageState {
+  importing?: boolean;
+}
 
 class ProductWithConditions {
   id: number = 0;
@@ -30,7 +35,7 @@ class ProductWithConditions {
   conditions: IExpertCondition[] = [];
 }
 
-class SystemEdit extends RoutedComponent<IExpertPageState> {
+class SystemEdit extends RoutedComponent<ISystemEditState> {
   public static displayName: string = SystemEdit.name;
 
   private newProduct: ProductWithConditions = new ProductWithConditions();
@@ -49,6 +54,7 @@ class SystemEdit extends RoutedComponent<IExpertPageState> {
     super(props);
 
     this.state = {
+      importing: false,
       systemLoaded: false,
       systemId: 0,
       systemGuid: '',
@@ -63,7 +69,8 @@ class SystemEdit extends RoutedComponent<IExpertPageState> {
       systemProducts: [],
     };
 
-    this.importOnClick = this.importOnClick.bind(this);
+    this.importButtonOnClick = this.importButtonOnClick.bind(this);
+    this.importInputOnChange = this.importInputOnChange.bind(this);
   }
 
   public componentDidMount(): void {
@@ -96,13 +103,36 @@ class SystemEdit extends RoutedComponent<IExpertPageState> {
     });
   }
 
-  private importOnClick(
+  private async importButtonOnClick(
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ): void {
+  ): Promise<boolean> {
     console.log(event);
-    if (this.importModal == null) return;
+    if (this.importModal == null) return false;
 
     this.importModal.show();
+
+    return true;
+  }
+
+  private async importInputOnChange(
+    event: React.ChangeEvent<HTMLInputElement>,
+  ): Promise<boolean> {
+    if (event.target.files == null) return false;
+
+    const fileList = event.target.files;
+
+    if (fileList.length < 1) return false;
+
+    const selectedFile = fileList[0];
+
+    this.setState({ importing: true });
+
+    await Task.delay(1000);
+
+    console.log(event);
+    console.log(selectedFile);
+
+    return true;
   }
 
   private handleInputChange(event): void {
@@ -273,7 +303,7 @@ class SystemEdit extends RoutedComponent<IExpertPageState> {
             </a>
             <button
               className="btn btn-outline-dark btn-mobile -btn-import -lg-mr-1"
-              onClick={e => this.importOnClick(e)}>
+              onClick={e => this.importButtonOnClick(e)}>
               Import
             </button>
             <Link to={'/dashboard/delete/' + state.systemGuid ?? '#'}>
@@ -447,7 +477,13 @@ class SystemEdit extends RoutedComponent<IExpertPageState> {
               <label htmlFor="formFile" className="form-label">
                 Select <code>.genius</code> file.
               </label>
-              <input accept=".genius" className="form-control" type="file" id="formFile" />
+              <input
+                accept=".genius"
+                className="form-control"
+                type="file"
+                id="formFile"
+                onChange={e => this.importInputOnChange(e)}
+              />
             </div>
           </div>
         </Modal>

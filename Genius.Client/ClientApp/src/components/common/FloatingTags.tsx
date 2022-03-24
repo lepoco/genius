@@ -6,7 +6,7 @@
  */
 
 import React, { Component } from 'react';
-import IExpertCondition from '../../genius/IExpertCondition';
+import IExpertCondition from '../../genius/interfaces/IExpertCondition';
 import ExpertCondition from '../../genius/ExpertCondition';
 import ExpertProduct from '../../genius/ExpertProduct';
 import GeniusApi from '../../genius/GeniusApi';

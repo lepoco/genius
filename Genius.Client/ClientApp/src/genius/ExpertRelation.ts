@@ -5,7 +5,7 @@
  * All Rights Reserved.
  */
 
-import IExpertRelation from './IExpertRelation';
+import IExpertRelation from './interfaces/IExpertRelation';
 
 export default class ExpertRelation implements IExpertRelation {
   id: number = 0;

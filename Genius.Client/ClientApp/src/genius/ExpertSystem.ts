@@ -5,10 +5,10 @@
  * All Rights Reserved.
  */
 
-import IExpertCondition from './IExpertCondition';
-import IExpertProduct from './IExpertProduct';
-import IExpertRelation from './IExpertRelation';
-import IExpertSystem from './IExpertSystem';
+import IExpertCondition from './interfaces/IExpertCondition';
+import IExpertProduct from './interfaces/IExpertProduct';
+import IExpertRelation from './interfaces/IExpertRelation';
+import IExpertSystem from './interfaces/IExpertSystem';
 
 export default class ExpertSystem implements IExpertSystem {
   systemId: number = 0;

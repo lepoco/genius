@@ -4,8 +4,8 @@
  * Copyright (C) 2022 Leszek Pomianowski.
  * All Rights Reserved.
  */
-import ISolverQuestion from './ISolverQuestion';
-import IExpertCondition from './IExpertCondition';
+import ISolverQuestion from './interfaces/ISolverQuestion';
+import IExpertCondition from './interfaces/IExpertCondition';
 
 export default class SolverQuestion implements ISolverQuestion {
   systemId: number = 0;

@@ -1,5 +1,5 @@
 import GeniusApi from '../genius/GeniusApi';
-import IExpertSystem from '../genius/IExpertSystem';
+import IExpertSystem from '../genius/interfaces/IExpertSystem';
 import ExpertSystem from '../genius/ExpertSystem';
 
 test('API correctly fetches the system based on the GUID', async () => {

@@ -8,7 +8,7 @@
 import { Component } from 'react';
 import { Link } from 'react-router-dom';
 import GeniusApi from '../../../genius/GeniusApi';
-import IExpertSystem from '../../../genius/IExpertSystem';
+import IExpertSystem from '../../../genius/interfaces/IExpertSystem';
 import Loader from '../../common/Loader';
 
 interface IMainState {

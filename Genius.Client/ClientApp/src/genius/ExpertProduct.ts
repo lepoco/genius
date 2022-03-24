@@ -5,7 +5,7 @@
  * All Rights Reserved.
  */
 
-import IExpertProduct from './IExpertProduct';
+import IExpertProduct from './interfaces/IExpertProduct';
 
 export default class ExpertProduct implements IExpertProduct {
   id: number = 0;

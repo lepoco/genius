@@ -10,13 +10,13 @@ import Loader from '../../common/Loader';
 import RoutedComponent from '../../../common/RoutedComponent';
 import withRouter from '../../../common/withRouter';
 import IRouterProps from '../../../interfaces/IRouterProps';
-import IExpertPageState from '../../../genius/IExpertPageState';
-import IExpertCondition from '../../../genius/IExpertCondition';
+import IExpertPageState from '../../../genius/interfaces/IExpertPageState';
+import IExpertCondition from '../../../genius/interfaces/IExpertCondition';
 import SolverQuestion from '../../../genius/SolverQuestion';
 import GeniusApi from '../../../genius/GeniusApi';
 import ExpertCondition from '../../../genius/ExpertCondition';
-import ISolverResponse from '../../../genius/ISolverResponse';
-import IExpertProduct from '../../../genius/IExpertProduct';
+import ISolverResponse from '../../../genius/interfaces/ISolverResponse';
+import IExpertProduct from '../../../genius/interfaces/IExpertProduct';
 
 enum ConditionType {
   Confirming,

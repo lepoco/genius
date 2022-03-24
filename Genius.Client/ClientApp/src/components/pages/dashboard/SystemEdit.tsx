@@ -12,11 +12,11 @@ import Modal from '../../common/Modal';
 import RoutedComponent from '../../../common/RoutedComponent';
 import IRouterProps from '../../../interfaces/IRouterProps';
 import withRouter from '../../../common/withRouter';
-import IExpertPageState from '../../../genius/IExpertPageState';
-import IExpertCondition from '../../../genius/IExpertCondition';
+import IExpertPageState from '../../../genius/interfaces/IExpertPageState';
+import IExpertCondition from '../../../genius/interfaces/IExpertCondition';
 import GeniusApi from '../../../genius/GeniusApi';
 import ExpertProduct from '../../../genius/ExpertProduct';
-import IExpertProduct from '../../../genius/IExpertProduct';
+import IExpertProduct from '../../../genius/interfaces/IExpertProduct';
 import { Task } from '../../common/Task';
 
 interface ISystemEditState extends IExpertPageState {

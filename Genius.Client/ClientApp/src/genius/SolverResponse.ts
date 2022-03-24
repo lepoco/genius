@@ -4,9 +4,9 @@
  * Copyright (C) 2022 Leszek Pomianowski.
  * All Rights Reserved.
  */
-import ISolverResponse from './ISolverResponse';
-import IExpertCondition from './IExpertCondition';
-import IExpertProduct from './IExpertProduct';
+import ISolverResponse from './interfaces/ISolverResponse';
+import IExpertCondition from './interfaces/IExpertCondition';
+import IExpertProduct from './interfaces/IExpertProduct';
 
 export default class SolverResponse implements ISolverResponse {
   systemId: number = 0;

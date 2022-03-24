@@ -5,10 +5,10 @@
  * All Rights Reserved.
  */
 
-import IExpertPageState from './IExpertPageState';
-import IExpertCondition from './IExpertCondition';
-import IExpertRelation from './IExpertRelation';
-import IExpertProduct from './IExpertProduct';
+import IExpertPageState from './interfaces/IExpertPageState';
+import IExpertCondition from './interfaces/IExpertCondition';
+import IExpertRelation from './interfaces/IExpertRelation';
+import IExpertProduct from './interfaces/IExpertProduct';
 
 export default class ExpertPageState implements IExpertPageState {
   systemLoaded: boolean = false;

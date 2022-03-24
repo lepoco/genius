@@ -5,7 +5,7 @@
  * All Rights Reserved.
  */
 
-import IExpertCondition from './IExpertCondition';
+import IExpertCondition from './interfaces/IExpertCondition';
 
 export default class ExpertCondition implements IExpertCondition {
   id: number = 0;

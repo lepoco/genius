@@ -114,10 +114,10 @@ class SystemAdd extends RoutedComponent<IAddExpertState> {
                   placeholder="Type"
                   value={this.state.systemQuestion}
                   onChange={this.handleInputChange.bind(this)}>
-                  <option value="relational">
-                    Relation based
+                  <option value="relational">Relation based</option>
+                  <option disabled value="fuzzy">
+                    Fuzzy set method (weight)
                   </option>
-                  <option disabled value="fuzzy">Fuzzy set method (weight)</option>
                 </select>
                 <label htmlFor="systemType">Type</label>
               </div>

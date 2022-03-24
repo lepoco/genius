@@ -10,7 +10,7 @@ import Loader from '../../common/Loader';
 import RoutedComponent from '../../../common/RoutedComponent';
 import withRouter from '../../../common/withRouter';
 import IRouterProps from '../../../interfaces/IRouterProps';
-import IExpertPageState from '../../../genius/IExpertPageState';
+import IExpertPageState from '../../../genius/interfaces/IExpertPageState';
 import GeniusApi from '../../../genius/GeniusApi';
 
 interface IDeleteExpertState extends IExpertPageState {

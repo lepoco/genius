@@ -5,8 +5,18 @@
  * All Rights Reserved.
  */
 
-export namespace Task {
-  export function delay(ms: number) {
+export interface TaskDelegate {
+  (): boolean;
+}
+
+export class Task {
+  public static delay(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  public static run(delegate: TaskDelegate): void {
+    new Promise(resolve => {
+      delegate();
+    }).then(e => {});
   }
 }

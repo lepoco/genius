@@ -5,16 +5,16 @@
  * All Rights Reserved.
  */
 
-import IExpertSystem from './IExpertSystem';
-import IExpertCondition from './IExpertCondition';
-import IExpertProduct from './IExpertProduct';
+import IExpertSystem from './interfaces/IExpertSystem';
+import IExpertCondition from './interfaces/IExpertCondition';
+import IExpertProduct from './interfaces/IExpertProduct';
 import ExpertSystem from './ExpertSystem';
-import IExpertRelation from './IExpertRelation';
+import IExpertRelation from './interfaces/IExpertRelation';
 import ExpertCondition from './ExpertCondition';
 import ExpertProduct from './ExpertProduct';
 import ExpertRelation from './ExpertRelation';
-import ISolverQuestion from './ISolverQuestion';
-import ISolverResponse from './ISolverResponse';
+import ISolverQuestion from './interfaces/ISolverQuestion';
+import ISolverResponse from './interfaces/ISolverResponse';
 import SolverResponse from './SolverResponse';
 
 /**

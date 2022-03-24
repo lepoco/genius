@@ -6,15 +6,15 @@
  */
 
 import { Link } from 'react-router-dom';
-import { FloatingTags } from '../FloatingTags';
-import RoutedComponent from '../../common/RoutedComponent';
-import IRouterProps from './../../interfaces/IRouterProps';
-import withRouter from './../../common/withRouter';
-import IExpertPageState from '../../genius/IExpertPageState';
-import IExpertCondition from './../../genius/IExpertCondition';
-import GeniusApi from '../../genius/GeniusApi';
-import ExpertProduct from '../../genius/ExpertProduct';
-import IExpertProduct from '../../genius/IExpertProduct';
+import { FloatingTags } from '../../common/FloatingTags';
+import RoutedComponent from '../../../common/RoutedComponent';
+import IRouterProps from '../../../interfaces/IRouterProps';
+import withRouter from '../../../common/withRouter';
+import IExpertPageState from '../../../genius/IExpertPageState';
+import IExpertCondition from '../../../genius/IExpertCondition';
+import GeniusApi from '../../../genius/GeniusApi';
+import ExpertProduct from '../../../genius/ExpertProduct';
+import IExpertProduct from '../../../genius/IExpertProduct';
 
 class ProductWithConditions {
   id: number = 0;

@@ -6,9 +6,9 @@
  */
 
 import { Component } from 'react';
-import withRouter from './../common/withRouter';
-import IRouterProps from './../interfaces/IRouterProps';
-import IRouter from './../interfaces/IRouter';
+import withRouter from '../../common/withRouter';
+import IRouterProps from '../../interfaces/IRouterProps';
+import IRouter from '../../interfaces/IRouter';
 import { Link } from 'react-router-dom';
 import { Dropdown as BootstrapDropdown } from 'bootstrap';
 

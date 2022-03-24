@@ -7,9 +7,9 @@
 
 import { Component } from 'react';
 import { Link } from 'react-router-dom';
-import withRouter from './../common/withRouter';
-import IRouterProps from './../interfaces/IRouterProps';
-import IRouter from './../interfaces/IRouter';
+import withRouter from '../../common/withRouter';
+import IRouterProps from '../../interfaces/IRouterProps';
+import IRouter from '../../interfaces/IRouter';
 
 class Footer extends Component<IRouterProps> {
   public static displayName: string = Footer.name;

@@ -6,16 +6,16 @@
  */
 
 import { Link } from 'react-router-dom';
-import RoutedComponent from '../../common/RoutedComponent';
-import withRouter from './../../common/withRouter';
-import IRouterProps from './../../interfaces/IRouterProps';
-import IExpertPageState from '../../genius/IExpertPageState';
-import IExpertCondition from '../../genius/IExpertCondition';
-import SolverQuestion from '../../genius/SolverQuestion';
-import GeniusApi from '../../genius/GeniusApi';
-import ExpertCondition from '../../genius/ExpertCondition';
-import ISolverResponse from '../../genius/ISolverResponse';
-import IExpertProduct from '../../genius/IExpertProduct';
+import RoutedComponent from '../../../common/RoutedComponent';
+import withRouter from '../../../common/withRouter';
+import IRouterProps from '../../../interfaces/IRouterProps';
+import IExpertPageState from '../../../genius/IExpertPageState';
+import IExpertCondition from '../../../genius/IExpertCondition';
+import SolverQuestion from '../../../genius/SolverQuestion';
+import GeniusApi from '../../../genius/GeniusApi';
+import ExpertCondition from '../../../genius/ExpertCondition';
+import ISolverResponse from '../../../genius/ISolverResponse';
+import IExpertProduct from '../../../genius/IExpertProduct';
 
 enum ConditionType {
   Confirming,

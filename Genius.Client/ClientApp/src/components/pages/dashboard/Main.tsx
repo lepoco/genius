@@ -7,9 +7,9 @@
 
 import { Component } from 'react';
 import { Link } from 'react-router-dom';
-import GeniusApi from './../../genius/GeniusApi';
-import IExpertSystem from './../../genius/IExpertSystem';
-import WaveLoader from './../WaveLoader';
+import GeniusApi from '../../../genius/GeniusApi';
+import IExpertSystem from '../../../genius/IExpertSystem';
+import WaveLoader from '../../common/WaveLoader';
 
 interface IMainState {
   isLoading: boolean;

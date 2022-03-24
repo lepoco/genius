@@ -6,11 +6,11 @@
  */
 
 import { Link } from 'react-router-dom';
-import RoutedComponent from '../../common/RoutedComponent';
-import IRouterProps from './../../interfaces/IRouterProps';
-import withRouter from './../../common/withRouter';
-import ExpertSystem from './../../genius/ExpertSystem';
-import GeniusApi from './../../genius/GeniusApi';
+import RoutedComponent from '../../../common/RoutedComponent';
+import IRouterProps from '../../../interfaces/IRouterProps';
+import withRouter from '../../../common/withRouter';
+import ExpertSystem from '../../../genius/ExpertSystem';
+import GeniusApi from '../../../genius/GeniusApi';
 
 interface IAddExpertState {
   systemName?: string;

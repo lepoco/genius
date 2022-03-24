@@ -6,11 +6,11 @@
  */
 
 import { Link } from 'react-router-dom';
-import RoutedComponent from '../../common/RoutedComponent';
-import withRouter from './../../common/withRouter';
-import IRouterProps from './../../interfaces/IRouterProps';
-import IExpertPageState from '../../genius/IExpertPageState';
-import GeniusApi from '../../genius/GeniusApi';
+import RoutedComponent from '../../../common/RoutedComponent';
+import withRouter from '../../../common/withRouter';
+import IRouterProps from '../../../interfaces/IRouterProps';
+import IExpertPageState from '../../../genius/IExpertPageState';
+import GeniusApi from '../../../genius/GeniusApi';
 
 interface IDeleteExpertState extends IExpertPageState {
   acceptDelete?: boolean;

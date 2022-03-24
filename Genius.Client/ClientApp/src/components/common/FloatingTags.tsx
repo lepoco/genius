@@ -6,10 +6,10 @@
  */
 
 import React, { Component } from 'react';
-import IExpertCondition from '../genius/IExpertCondition';
-import ExpertCondition from './../genius/ExpertCondition';
-import ExpertProduct from './../genius/ExpertProduct';
-import GeniusApi from './../genius/GeniusApi';
+import IExpertCondition from '../../genius/IExpertCondition';
+import ExpertCondition from '../../genius/ExpertCondition';
+import ExpertProduct from '../../genius/ExpertProduct';
+import GeniusApi from '../../genius/GeniusApi';
 
 interface TagsUpdated<T = any> {
   (options: T, selected: T): void;

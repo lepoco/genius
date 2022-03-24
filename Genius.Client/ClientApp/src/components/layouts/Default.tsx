@@ -6,11 +6,11 @@
  */
 
 import { Component } from 'react';
-import NavMenu from './NavMenu';
-import Footer from './Footer';
+import NavMenu from '../common/NavMenu';
+import Footer from '../common/Footer';
 
-export class Layout extends Component {
-  public static displayName: string = Layout.name;
+export class Default extends Component {
+  public static displayName: string = Default.name;
 
   public render(): JSX.Element {
     return (

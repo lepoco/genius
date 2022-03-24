@@ -8,6 +8,7 @@
 import { Link } from 'react-router-dom';
 import { FloatingTags } from '../../common/FloatingTags';
 import Loader from '../../common/Loader';
+import Modal from '../../common/Modal';
 import RoutedComponent from '../../../common/RoutedComponent';
 import IRouterProps from '../../../interfaces/IRouterProps';
 import withRouter from '../../../common/withRouter';
@@ -42,6 +43,8 @@ class SystemEdit extends RoutedComponent<IExpertPageState> {
 
   private productNotesInput: HTMLInputElement | null = null;
 
+  private importModal: Modal | null = null;
+
   public constructor(props: IRouterProps) {
     super(props);
 
@@ -59,6 +62,8 @@ class SystemEdit extends RoutedComponent<IExpertPageState> {
       systemConditions: [],
       systemProducts: [],
     };
+
+    this.importOnClick = this.importOnClick.bind(this);
   }
 
   public componentDidMount(): void {
@@ -89,6 +94,15 @@ class SystemEdit extends RoutedComponent<IExpertPageState> {
       systemProducts: system.systemProducts ?? [],
       systemRelations: system.systemRelations ?? [],
     });
+  }
+
+  private importOnClick(
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ): void {
+    console.log(event);
+    if (this.importModal == null) return;
+
+    this.importModal.show();
   }
 
   private handleInputChange(event): void {
@@ -203,7 +217,7 @@ class SystemEdit extends RoutedComponent<IExpertPageState> {
           console.debug('Product relations', productRelations);
 
           return (
-            <tr>
+            <tr key={singleProduct.id ?? 0}>
               <th scope="row">{singleProduct.id ?? '0'}</th>
               <td>{singleProduct.name ?? ''}</td>
               <td>
@@ -257,7 +271,9 @@ class SystemEdit extends RoutedComponent<IExpertPageState> {
               className="btn btn-dark btn-mobile -lg-mr-1 -btn-export">
               Export
             </a>
-            <button className="btn btn-outline-dark btn-mobile -btn-import -lg-mr-1">
+            <button
+              className="btn btn-outline-dark btn-mobile -btn-import -lg-mr-1"
+              onClick={e => this.importOnClick(e)}>
               Import
             </button>
             <Link to={'/dashboard/delete/' + state.systemGuid ?? '#'}>
@@ -410,15 +426,27 @@ class SystemEdit extends RoutedComponent<IExpertPageState> {
     );
 
     return (
-      <div className="dashboard container pt-5 pb-5">
-        <div className="row">
-          <div className="col-12">
-            <h4 className="-font-secondary -fw-700 -pb-3 -reveal">Edit</h4>
+      <>
+        <div className="dashboard container pt-5 pb-5">
+          <div className="row">
+            <div className="col-12">
+              <h4 className="-font-secondary -fw-700 -pb-3 -reveal">Edit</h4>
+            </div>
           </div>
-        </div>
 
-        {contents}
-      </div>
+          {contents}
+        </div>
+        <Modal
+          name="system-import"
+          title="Import Expert System"
+          ref={element => {
+            this.importModal = element;
+          }}>
+          <div>
+            <p>123</p>
+          </div>
+        </Modal>
+      </>
     );
   }
 }

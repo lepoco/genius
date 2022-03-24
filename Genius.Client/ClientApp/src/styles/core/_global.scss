@@ -1,16 +1,16 @@
 html {
   height: 100%;
-  box-sizing: border-box;
   font-size: $fs-html;
   line-height: 1.15;
+  box-sizing: border-box;
 }
 
 body {
   display: block;
-  padding: 0;
-  margin: 0;
   height: 100%;
   min-height: 100%;
+  margin: 0;
+  padding: 0;
   font-size: $fs-body;
   line-height: 1.625em;
   -webkit-font-smoothing: antialiased;
@@ -103,8 +103,8 @@ h4,
 }
 
 a {
-  text-decoration: none;
   color: $c-hyperlink;
+  text-decoration: none;
 
   &.faded {
     color: $c-hyperlink-faded;
@@ -140,13 +140,13 @@ form,
   display: inline-flex;
   height: 4.5rem;
   padding: 0 2rem;
-  line-height: 1.5rem;
-  font-size: 1.35rem;
-  align-items: center;
   border-radius: 1rem;
+  font-size: 1.35rem;
   font-size: $fs-body;
-  justify-content: center;
   font-weight: 500;
+  line-height: 1.5rem;
+  align-items: center;
+  justify-content: center;
 
   &-mobile {
     @include media-breakpoint-down(md) {
@@ -158,15 +158,15 @@ form,
 
 .btn-dark {
   &:hover {
-    color: $c-dark;
     background: transparent;
+    color: $c-dark;
   }
 }
 
 .btn-secondary {
   &:hover {
-    color: $c-light;
     background: $c-dark;
+    color: $c-light;
   }
 }
 
@@ -174,5 +174,19 @@ form,
   .modal-title {
     font-family: $f-secondary;
     font-weight: 700;
+  }
+
+  &.show {
+    background: #00000087;
+  }
+
+  .modal-dialog {
+    .modal-content {
+      border-radius: 1rem;
+
+      .modal-header, .modal-body {
+        padding: 2rem;
+      }
+    }
   }
 }

@@ -6,6 +6,7 @@
  */
 
 import { Link } from 'react-router-dom';
+import Loader from '../../common/Loader';
 import RoutedComponent from '../../../common/RoutedComponent';
 import withRouter from '../../../common/withRouter';
 import IRouterProps from '../../../interfaces/IRouterProps';
@@ -334,9 +335,7 @@ class System extends RoutedComponent<IExpertRunState> {
 
   public render(): JSX.Element {
     let contents = !this.state.systemLoaded ? (
-      <p>
-        <em>Loading...</em>
-      </p>
+      <Loader />
     ) : (
       this.renderSystemView()
     );

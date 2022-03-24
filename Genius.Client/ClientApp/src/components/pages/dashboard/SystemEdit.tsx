@@ -7,6 +7,7 @@
 
 import { Link } from 'react-router-dom';
 import { FloatingTags } from '../../common/FloatingTags';
+import Loader from '../../common/Loader';
 import RoutedComponent from '../../../common/RoutedComponent';
 import IRouterProps from '../../../interfaces/IRouterProps';
 import withRouter from '../../../common/withRouter';
@@ -403,9 +404,7 @@ class SystemEdit extends RoutedComponent<IExpertPageState> {
 
   public render(): JSX.Element {
     let contents = !this.state.systemLoaded ? (
-      <p>
-        <em>Loading...</em>
-      </p>
+      <Loader />
     ) : (
       this.renderSystemView(this.state)
     );

@@ -9,7 +9,7 @@ import { Component } from 'react';
 import { Link } from 'react-router-dom';
 import GeniusApi from '../../../genius/GeniusApi';
 import IExpertSystem from '../../../genius/IExpertSystem';
-import WaveLoader from '../../common/WaveLoader';
+import Loader from '../../common/Loader';
 
 interface IMainState {
   isLoading: boolean;
@@ -78,7 +78,7 @@ export class Main extends Component<{}, IMainState> {
 
   public render(): JSX.Element {
     let contents = this.state.isLoading ? (
-      <WaveLoader />
+      <Loader />
     ) : (
       Main.renderSystemsList(this.state.systemsList)
     );

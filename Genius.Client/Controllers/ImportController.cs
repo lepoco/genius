@@ -3,6 +3,8 @@
 // Copyright (C) 2022 Leszek Pomianowski.
 // All Rights Reserved.
 
+using Genius.Client.Export;
+using Genius.Client.Import;
 using Genius.Client.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Genius.Client.Controllers
@@ -33,19 +36,32 @@ namespace Genius.Client.Controllers
         public async Task<IActionResult> ImportSystem([FromForm] string systemId, [FromForm] IFormFile file)
         {
             if (String.IsNullOrEmpty(systemId))
-                return BadRequest("System not found");
+                return BadRequest("System not found.");
 
             Int32.TryParse(systemId, out int iSystemId);
 
             if (iSystemId < 1)
-                return BadRequest("System not found");
+                return BadRequest("System not found.");
 
             if (file == null)
-                return BadRequest("File not found");
+                return BadRequest("File not found.");
 
             var fileContent = await ReadFileContent(file);
 
-            return Ok("success");
+            if (String.IsNullOrEmpty(fileContent))
+                return BadRequest("File empty.");
+
+            var exportedData = TryToParseFile(fileContent);
+
+            if (exportedData?.System?.Id < 1)
+                return BadRequest("Serialization failed.");
+
+            var mergeStatus = await SystemImporter.MergeSystems(_expertClient, iSystemId, exportedData);
+
+            if (!mergeStatus)
+                return BadRequest("Merging failed.");
+
+            return Ok("Success");
         }
 
         private async Task<string> ReadFileContent(IFormFile file)
@@ -58,7 +74,21 @@ namespace Genius.Client.Controllers
 
             reader.Close();
 
-            return result.ToString();
+            return result.ToString().Trim();
+        }
+
+        private ExportExpertModel TryToParseFile(string rawData)
+        {
+            try
+            {
+                var data = JsonSerializer.Deserialize<ExportExpertModel>(rawData);
+
+                return data;
+            }
+            catch (Exception e)
+            {
+                return new ExportExpertModel { };
+            }
         }
     }
 }

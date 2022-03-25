@@ -439,9 +439,11 @@ export default class GeniusApi {
       body: formData,
     });
 
+    console.debug('\\GeniusApi\\importFromFile\\response', response);
+
     const responseText = await response.text();
 
-    console.debug('\\GeniusApi\\importFromFile\\responseText', +responseText);
+    console.debug('\\GeniusApi\\importFromFile\\responseText', responseText);
 
     let importResponse = new ImportResponse();
     importResponse.systemId = importData.systemId ?? 0;

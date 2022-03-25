@@ -136,6 +136,15 @@ form,
   width: 100%;
 }
 
+code {
+  margin: 0;
+  padding: 0.2em 0.4em;
+  background-color: var(--bs-body-color);
+  color: #fff;
+  border-radius: 6px;
+  font-size: 85%;
+}
+
 .btn {
   display: inline-flex;
   height: 4.5rem;
@@ -184,8 +193,17 @@ form,
     .modal-content {
       border-radius: 1rem;
 
-      .modal-header, .modal-body {
+      .modal-header,
+      .modal-body {
         padding: 2rem;
+      }
+
+      .modal-body {
+        .notice {
+          text-align: justify;
+          font-size: 1.5rem;
+          line-height: 1.9rem;
+        }
       }
     }
   }

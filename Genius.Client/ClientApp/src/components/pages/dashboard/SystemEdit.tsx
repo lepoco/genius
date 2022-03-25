@@ -143,7 +143,9 @@ class SystemEdit extends RoutedComponent<ISystemEditState> {
     //   return false;
     // }
 
-    const importResponse = await GeniusApi.importFromFile(new ImportRequest(this.state.systemId ?? 0, selectedFile));
+    const importResponse = await GeniusApi.importFromFile(
+      new ImportRequest(this.state.systemId ?? 0, selectedFile),
+    );
 
     console.log(importResponse);
 
@@ -497,18 +499,26 @@ class SystemEdit extends RoutedComponent<ISystemEditState> {
                 <Loader center={true} />
               </div>
             ) : (
-              <div className="mb-3">
-                <label htmlFor="formFile" className="form-label">
-                  Select <code>.genius</code> file.
-                </label>
-                <input
-                  accept=".genius"
-                  className="form-control"
-                  type="file"
-                  id="formFile"
-                  onChange={e => this.importInputOnChange(e)}
-                />
-              </div>
+              <>
+                <p className="notice">
+                  The content of the selected file will be imported to the
+                  currently edited expert system. The importer will try to skip
+                  duplicate entries automatically, however, it is recommended to
+                  import the file into a blank project.
+                </p>
+                <div className="mb-3">
+                  <label htmlFor="formFile" className="form-label">
+                    Select <code>.genius</code> file.
+                  </label>
+                  <input
+                    accept=".genius"
+                    className="form-control"
+                    type="file"
+                    id="formFile"
+                    onChange={e => this.importInputOnChange(e)}
+                  />
+                </div>
+              </>
             )}
           </div>
         </Modal>

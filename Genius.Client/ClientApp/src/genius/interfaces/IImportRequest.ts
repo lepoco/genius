@@ -6,7 +6,7 @@
  */
 
 export default interface IImportRequest {
-  systemId?: number;
+  systemId: number;
 
-  rawData?: string;
+  file: File;
 }

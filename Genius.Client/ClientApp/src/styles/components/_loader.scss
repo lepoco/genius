@@ -64,9 +64,14 @@ $c-singleBoxShadow: #dbe3f4;
   position: relative;
   width: calc(var(--size) * 3);
   height: calc(var(--size) * 2);
+  min-height: 15rem;
   transform: rotateX(60deg) rotateZ(45deg) rotateY(0deg) translateZ(0px);
   transform-style: preserve-3d;
   transform-origin: 50% 50%;
+
+  &.-w-20 {
+    width: 18rem;
+  }
 
   &__box {
     position: absolute;
@@ -75,6 +80,7 @@ $c-singleBoxShadow: #dbe3f4;
     width: var(--size);
     height: var(--size);
     transform-style: preserve-3d;
+
     &:nth-child(1) {
       transform: translate(100%, 0);
       animation: animateBox1 var(--duration) linear infinite;

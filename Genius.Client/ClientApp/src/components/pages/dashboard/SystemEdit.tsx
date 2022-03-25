@@ -18,6 +18,7 @@ import GeniusApi from '../../../genius/GeniusApi';
 import ExpertProduct from '../../../genius/ExpertProduct';
 import IExpertProduct from '../../../genius/interfaces/IExpertProduct';
 import { Task } from '../../common/Task';
+import ImportRequest from '../../../genius/ImportRequest';
 
 interface ISystemEditState extends IExpertPageState {
   importing?: boolean;
@@ -125,12 +126,30 @@ class SystemEdit extends RoutedComponent<ISystemEditState> {
 
     const selectedFile = fileList[0];
 
+    event.target.value = '';
+
+    if (!selectedFile) return false;
+
     this.setState({ importing: true });
+
+    // let selectedFileContent = await selectedFile.text();
+    // selectedFileContent = selectedFileContent.trim();
+
+    // if(selectedFileContent === ''){
+    //   // FAILED, EMPTY
+
+    //   this.setState({ importing: false });
+
+    //   return false;
+    // }
+
+    const importResponse = await GeniusApi.importFromFile(new ImportRequest(this.state.systemId ?? 0, selectedFile));
+
+    console.log(importResponse);
 
     await Task.delay(1000);
 
-    console.log(event);
-    console.log(selectedFile);
+    this.setState({ importing: false });
 
     return true;
   }
@@ -297,7 +316,7 @@ class SystemEdit extends RoutedComponent<ISystemEditState> {
 
           <div className="-mb-3 -reveal">
             <a
-              href={'/export/' + state.systemGuid ?? '#'}
+              href={'/api/export/' + state.systemGuid ?? '#'}
               className="btn btn-dark btn-mobile -lg-mr-1 -btn-export">
               Export
             </a>
@@ -450,7 +469,7 @@ class SystemEdit extends RoutedComponent<ISystemEditState> {
 
   public render(): JSX.Element {
     let contents = !this.state.systemLoaded ? (
-      <Loader />
+      <Loader center={false} />
     ) : (
       this.renderSystemView(this.state)
     );
@@ -473,18 +492,24 @@ class SystemEdit extends RoutedComponent<ISystemEditState> {
             this.importModal = element;
           }}>
           <div>
-            <div className="mb-3">
-              <label htmlFor="formFile" className="form-label">
-                Select <code>.genius</code> file.
-              </label>
-              <input
-                accept=".genius"
-                className="form-control"
-                type="file"
-                id="formFile"
-                onChange={e => this.importInputOnChange(e)}
-              />
-            </div>
+            {this.state.importing ? (
+              <div className="d-flex justify-content-center">
+                <Loader center={true} />
+              </div>
+            ) : (
+              <div className="mb-3">
+                <label htmlFor="formFile" className="form-label">
+                  Select <code>.genius</code> file.
+                </label>
+                <input
+                  accept=".genius"
+                  className="form-control"
+                  type="file"
+                  id="formFile"
+                  onChange={e => this.importInputOnChange(e)}
+                />
+              </div>
+            )}
           </div>
         </Modal>
       </>

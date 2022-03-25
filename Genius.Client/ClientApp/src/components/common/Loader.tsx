@@ -5,14 +5,29 @@
  * All Rights Reserved.
  */
 
-import { Component } from 'react';
+import { PureComponent } from 'react';
 
-export default class Loader extends Component {
+interface ILoaderProps {
+  center: boolean;
+}
+
+interface ILoaderState {
+  center: boolean;
+}
+
+export default class Loader extends PureComponent<ILoaderProps, ILoaderState> {
   static displayName: string = Loader.name;
+
+  public constructor(props: ILoaderProps) {
+    super(props);
+    this.state = {
+      center: props.center ?? false,
+    };
+  }
 
   public render(): JSX.Element {
     return (
-      <div className="loading-boxes">
+      <div className={'loading-boxes' + (this.state.center ? ' -w-20' : '')}>
         <div className="loading-boxes__box">
           <div></div>
           <div></div>

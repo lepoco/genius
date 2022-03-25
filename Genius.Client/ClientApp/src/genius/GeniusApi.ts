@@ -16,6 +16,9 @@ import ExpertRelation from './ExpertRelation';
 import ISolverQuestion from './interfaces/ISolverQuestion';
 import ISolverResponse from './interfaces/ISolverResponse';
 import SolverResponse from './SolverResponse';
+import IImportResponse from './interfaces/IImportResponse';
+import IImportRequest from './interfaces/IImportRequest';
+import ImportResponse from './ImportResponse';
 
 /**
  * Contains logic responsible for polling the internal API that connects via gRPC to the Genius microservice.
@@ -285,7 +288,7 @@ export default class GeniusApi {
   }
 
   public static async addProduct(product: IExpertProduct): Promise<number> {
-    let formData = GeniusApi.buildFormData({
+    const formData = GeniusApi.buildFormData({
       systemId: product.system_id ?? 0,
       name: product.name ?? '',
       description: product.description ?? '',
@@ -294,12 +297,12 @@ export default class GeniusApi {
 
     console.debug('\\GeniusApi\\addProduct\\product', product);
 
-    let response = await fetch('api/expert/product', {
+    const response = await fetch('api/expert/product', {
       method: 'POST',
       body: formData,
     });
 
-    let responseText = await response.text();
+    const responseText = await response.text();
 
     console.debug('\\GeniusApi\\addProduct\\responseText', +responseText);
 
@@ -310,7 +313,7 @@ export default class GeniusApi {
     product: IExpertProduct,
     conditions: IExpertCondition[],
   ): Promise<number> {
-    let systemId: number = product.system_id ?? 0;
+    const systemId: number = product.system_id ?? 0;
 
     if (systemId < 1) {
       return 0;
@@ -326,7 +329,7 @@ export default class GeniusApi {
       }
     }
 
-    let formData = GeniusApi.buildFormData({
+    const formData = GeniusApi.buildFormData({
       systemId: systemId,
       name: product.name ?? '',
       description: product.description ?? '',
@@ -340,12 +343,12 @@ export default class GeniusApi {
       formData: formData,
     });
 
-    let response = await fetch('api/expert/product', {
+    const response = await fetch('api/expert/product', {
       method: 'POST',
       body: formData,
     });
 
-    let responseText = await response.text();
+    const responseText = await response.text();
 
     console.debug(
       '\\GeniusApi\\addProductWithConditions\\responseText',
@@ -400,8 +403,8 @@ export default class GeniusApi {
   }
 
   public static async addRelation(relation: IExpertRelation): Promise<number> {
-    let formData = GeniusApi.buildFormData({
-      systemId: relation.systemId,
+    const formData = GeniusApi.buildFormData({
+      systemId: relation.systemId ?? 0,
       conditionId: relation.conditionId,
       productId: relation.productId,
       weight: relation.weight,
@@ -409,16 +412,42 @@ export default class GeniusApi {
 
     console.debug('\\GeniusApi\\addRelation\\relation', relation);
 
-    let response = await fetch('api/expert/relation', {
+    const response = await fetch('api/expert/relation', {
       method: 'POST',
       body: formData,
     });
 
-    let responseText = await response.text();
+    const responseText = await response.text();
 
     console.debug('\\GeniusApi\\addRelation\\responseText', +responseText);
 
     return +responseText; //unary operator
+  }
+
+  public static async importFromFile(
+    importData: IImportRequest,
+  ): Promise<IImportResponse> {
+    const formData = GeniusApi.buildFormData({
+      systemId: importData.systemId,
+      file: importData.file,
+    });
+
+    console.debug('\\GeniusApi\\importFromFile\\importData', importData);
+
+    const response = await fetch('api/import', {
+      method: 'POST',
+      body: formData,
+    });
+
+    const responseText = await response.text();
+
+    console.debug('\\GeniusApi\\importFromFile\\responseText', +responseText);
+
+    let importResponse = new ImportResponse();
+    importResponse.systemId = importData.systemId ?? 0;
+    importResponse.success = false;
+
+    return importResponse;
   }
 
   private static async fetchSystemObject(

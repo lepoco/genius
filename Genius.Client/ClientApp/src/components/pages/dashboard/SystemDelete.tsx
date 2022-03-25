@@ -160,7 +160,7 @@ class SystemDelete extends RoutedComponent<IDeleteExpertState> {
 
   public render(): JSX.Element {
     let contents = !this.state.systemLoaded ? (
-      <Loader />
+      <Loader center={false} />
     ) : (
       this.renderSystemView(this.state)
     );

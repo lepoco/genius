@@ -78,7 +78,7 @@ export class Main extends Component<{}, IMainState> {
 
   public render(): JSX.Element {
     let contents = this.state.isLoading ? (
-      <Loader />
+      <Loader center={false} />
     ) : (
       Main.renderSystemsList(this.state.systemsList)
     );

@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace Genius.Client.Controllers
 {
     [ApiController]
-    [Route("export")]
+    [Route("api/export")]
     public class ExportController : ControllerBase
     {
         private readonly ILogger<ExportController> _logger;

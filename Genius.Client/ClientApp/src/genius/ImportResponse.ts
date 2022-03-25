@@ -4,10 +4,13 @@
  * Copyright (C) 2022 Leszek Pomianowski.
  * All Rights Reserved.
  */
-export default interface IImportResponse {
-  systemId?: number;
 
-  success?: boolean;
+import IImportResponse from './interfaces/IImportResponse';
 
-  message?: string;
+export default class ImportResponse implements IImportResponse {
+  systemId?: number = 0;
+
+  success?: boolean = false;
+
+  message?: string = '';
 }

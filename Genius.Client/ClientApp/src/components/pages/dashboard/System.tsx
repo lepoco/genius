@@ -335,7 +335,7 @@ class System extends RoutedComponent<IExpertRunState> {
 
   public render(): JSX.Element {
     let contents = !this.state.systemLoaded ? (
-      <Loader />
+      <Loader center={false} />
     ) : (
       this.renderSystemView()
     );

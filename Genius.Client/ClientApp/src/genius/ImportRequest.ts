@@ -4,10 +4,16 @@
  * Copyright (C) 2022 Leszek Pomianowski.
  * All Rights Reserved.
  */
-export default interface IImportResponse {
-  systemId?: number;
 
-  success?: boolean;
+import IImportRequest from './interfaces/IImportRequest';
 
-  message?: string;
+export default class ImportRequest implements IImportRequest {
+  systemId: number;
+
+  file: File;
+
+  public constructor(systemId: number, file: File) {
+    this.systemId = systemId;
+    this.file = file;
+  }
 }

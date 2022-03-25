@@ -8,13 +8,13 @@ import ISolverQuestion from './interfaces/ISolverQuestion';
 import IExpertCondition from './interfaces/IExpertCondition';
 
 export default class SolverQuestion implements ISolverQuestion {
-  systemId: number = 0;
+  public systemId: number = 0;
 
-  multiple: boolean = false;
+  public multiple: boolean = false;
 
-  confirming: IExpertCondition[] = [];
+  public confirming: IExpertCondition[] = [];
 
-  negating: IExpertCondition[] = [];
+  public negating: IExpertCondition[] = [];
 
-  indifferent: IExpertCondition[] = [];
+  public indifferent: IExpertCondition[] = [];
 }

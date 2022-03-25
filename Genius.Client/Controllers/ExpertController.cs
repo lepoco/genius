@@ -136,6 +136,13 @@ namespace Genius.Client.Controllers
             return await _expertClient.GetProductAsync(id);
         }
 
+        [HttpGet]
+        [Route("product/{id}/relations")]
+        public async Task<ProductRelationsModel> GetProductRelations([FromRoute] int id)
+        {
+            return await _expertClient.GetProductRelations(id);
+        }
+
         [HttpPost]
         [Route("condition")]
         public async Task<IActionResult> InsertCondition()

@@ -11,19 +11,19 @@ import IExpertRelation from './interfaces/IExpertRelation';
 import IExpertSystem from './interfaces/IExpertSystem';
 
 export default class ExpertSystem implements IExpertSystem {
-  systemId: number = 0;
-  systemGuid: string = '';
-  systemVersion: string = '';
-  systemName: string = '';
-  systemDescription: string = '';
-  systemType: string = '';
-  systemQuestion: string = '';
-  systemCreatedAt: string = '';
-  systemUpdatedAt: string = '';
+  public systemId: number = 0;
+  public systemGuid: string = '';
+  public systemVersion: string = '';
+  public systemName: string = '';
+  public systemDescription: string = '';
+  public systemType: string = '';
+  public systemQuestion: string = '';
+  public systemCreatedAt: string = '';
+  public systemUpdatedAt: string = '';
 
-  systemConditions: IExpertCondition[] = [];
-  systemProducts: IExpertProduct[] = [];
-  systemRelations: IExpertRelation[] = [];
+  public systemConditions: IExpertCondition[] = [];
+  public systemProducts: IExpertProduct[] = [];
+  public systemRelations: IExpertRelation[] = [];
 
   public constructor(
     systemId: number = 0,

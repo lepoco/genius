@@ -19,6 +19,8 @@ import SolverResponse from './SolverResponse';
 import IImportResponse from './interfaces/IImportResponse';
 import IImportRequest from './interfaces/IImportRequest';
 import ImportResponse from './ImportResponse';
+import ExpertProductRelations from './ExpertProductRelations';
+import IExpertProductRelations from './interfaces/IExpertProductRelations';
 
 /**
  * Contains logic responsible for polling the internal API that connects via gRPC to the Genius microservice.
@@ -389,6 +391,24 @@ export default class GeniusApi {
     return relationsList;
   }
 
+  public static async getProductRelations(
+    productId: number,
+  ): Promise<ExpertProductRelations> {
+    const response = await fetch(
+      GeniusApi.BASE_EXPERT_GATEWAY + 'product/' + productId + '/relations',
+    );
+
+    const data = await response.json();
+
+    if (!(data instanceof Object)) {
+      return new ExpertProductRelations(productId, 0);
+    }
+
+    console.debug('\\GeniusApi\\getProductRelations\\data', data);
+
+    return GeniusApi.fetchProductRelationsObject(data);
+  }
+
   public static async getRelation(
     relationId: number,
   ): Promise<IExpertCondition> {
@@ -500,6 +520,18 @@ export default class GeniusApi {
       dataObject.name ?? '',
       dataObject.description ?? '',
       dataObject.notes ?? '',
+    );
+  }
+
+  private static fetchProductRelationsObject(
+    dataObject: any,
+  ): IExpertProductRelations {
+    return new ExpertProductRelations(
+      dataObject.id ?? 0,
+      dataObject.systemId ?? 0,
+      dataObject.confirming ?? [],
+      dataObject.negating ?? [],
+      dataObject.indifferent ?? [],
     );
   }
 

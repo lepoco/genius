@@ -8,11 +8,11 @@
 import IExpertProduct from './interfaces/IExpertProduct';
 
 export default class ExpertProduct implements IExpertProduct {
-  id: number = 0;
-  system_id: number = 0;
-  name: string = '';
-  description: string = '';
-  notes: string = '';
+  public id: number = 0;
+  public system_id: number = 0;
+  public name: string = '';
+  public description: string = '';
+  public notes: string = '';
 
   public constructor(
     id: number,

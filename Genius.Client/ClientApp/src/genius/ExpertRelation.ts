@@ -8,11 +8,11 @@
 import IExpertRelation from './interfaces/IExpertRelation';
 
 export default class ExpertRelation implements IExpertRelation {
-  id: number = 0;
-  systemId: number = 0;
-  conditionId: number = 0;
-  productId: number = 0;
-  weight: number = 100;
+  public id: number = 0;
+  public systemId: number = 0;
+  public conditionId: number = 0;
+  public productId: number = 0;
+  public weight: number = 100;
 
   public constructor(
     id: number,

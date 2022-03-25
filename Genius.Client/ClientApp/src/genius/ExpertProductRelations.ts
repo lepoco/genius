@@ -5,23 +5,26 @@
  * All Rights Reserved.
  */
 
-import IExpertCondition from './interfaces/IExpertCondition';
+import IExpertProductRelations from './interfaces/IExpertProductRelations';
 
-export default class ExpertCondition implements IExpertCondition {
+export default class ExpertProductRelations implements IExpertProductRelations {
   public id: number = 0;
   public system_id: number = 0;
-  public name: string = '';
-  public description: string = '';
+  public confirming: number[];
+  public negating: number[];
+  public indifferent: number[];
 
   public constructor(
     id: number,
     system_id: number = 0,
-    name: string = '',
-    description: string = '',
+    confirming: number[] = [],
+    negating: number[] = [],
+    indifferent: number[] = [],
   ) {
     this.id = id;
     this.system_id = system_id;
-    this.name = name;
-    this.description = description;
+    this.confirming = confirming;
+    this.negating = negating;
+    this.indifferent = indifferent;
   }
 }

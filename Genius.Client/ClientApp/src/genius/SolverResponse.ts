@@ -9,15 +9,15 @@ import IExpertCondition from './interfaces/IExpertCondition';
 import IExpertProduct from './interfaces/IExpertProduct';
 
 export default class SolverResponse implements ISolverResponse {
-  systemId: number = 0;
+  public systemId: number = 0;
 
-  isSolved: boolean = false;
+  public isSolved: boolean = false;
 
-  status: number = 0;
+  public status: number = 0;
 
-  nextCondition?: IExpertCondition;
+  public nextCondition?: IExpertCondition;
 
-  products: IExpertProduct[] = [];
+  public products: IExpertProduct[] = [];
 
   public constructor(
     systemId: number,

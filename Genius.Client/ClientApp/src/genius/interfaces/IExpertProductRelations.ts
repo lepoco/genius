@@ -5,12 +5,10 @@
  * All Rights Reserved.
  */
 
-import IImportResponse from './interfaces/IImportResponse';
-
-export default class ImportResponse implements IImportResponse {
-  public systemId?: number = 0;
-
-  public success?: boolean = false;
-
-  public message?: string = '';
+export default interface IExpertProductRelations {
+  id: number;
+  system_id: number;
+  confirming: number[];
+  negating: number[];
+  indifferent: number[];
 }

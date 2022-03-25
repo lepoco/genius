@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using RelationType = Genius.Data.Models.Expert.RelationType;
 
 namespace Genius.Services
 {
@@ -394,6 +395,36 @@ namespace Genius.Services
                     Weight = singleRelation.Weight
                 });
             }
+        }
+
+        #endregion
+
+        #region Products
+
+        public override async Task<ProductRelationsModel> GetProductRelations(ProductLookupModel request, ServerCallContext context)
+        {
+            if (request == null || request.Id < 1)
+                return new ProductRelationsModel { Id = 0, SystemId = 0, Confirming = { }, Indifferent = { }, Negating = { } };
+
+            var databaseProduct =
+                await _expertService.Context.Products.Where(prod => prod.Id == request.Id).FirstOrDefaultAsync() ??
+                new Data.Models.Expert.Product { Id = 0, SystemId = 0 };
+
+            if (databaseProduct.Id < 1 || databaseProduct.SystemId < 1)
+                return new ProductRelationsModel { Id = 0, SystemId = 0, Confirming = { }, Indifferent = { }, Negating = { } };
+
+            var confirming = await _expertService.Context.Relations.Where(rel => rel.ProductId == request.Id && rel.Type == RelationType.Compliance).Select(rel => rel.Id).ToArrayAsync();
+            var negating = await _expertService.Context.Relations.Where(rel => rel.ProductId == request.Id && rel.Type == RelationType.Contradiction).Select(rel => rel.Id).ToArrayAsync();
+            var indifferent = await _expertService.Context.Relations.Where(rel => rel.ProductId == request.Id && rel.Type == RelationType.Disregard).Select(rel => rel.Id).ToArrayAsync();
+
+            return new ProductRelationsModel
+            {
+                Id = databaseProduct.Id,
+                SystemId = databaseProduct.SystemId,
+                Confirming = { confirming },
+                Indifferent = { negating },
+                Negating = { indifferent },
+            };
         }
 
         #endregion

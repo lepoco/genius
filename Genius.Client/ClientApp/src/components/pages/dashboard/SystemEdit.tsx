@@ -19,6 +19,7 @@ import ExpertProduct from '../../../genius/ExpertProduct';
 import IExpertProduct from '../../../genius/interfaces/IExpertProduct';
 import { Task } from '../../common/Task';
 import ImportRequest from '../../../genius/ImportRequest';
+import { Edit24Regular } from '@fluentui/react-icons';
 
 interface ISystemEditState extends IExpertPageState {
   importing?: boolean;
@@ -41,7 +42,10 @@ class SystemEdit extends RoutedComponent<ISystemEditState> {
 
   private newProduct: ProductWithConditions = new ProductWithConditions();
 
+  private editedProduct: ProductWithConditions = new ProductWithConditions();
+
   private conditionsCloud: FloatingTags | null = null;
+  private productEditConditionsCloud: FloatingTags | null = null;
 
   private productNameInput: HTMLInputElement | null = null;
 
@@ -50,6 +54,8 @@ class SystemEdit extends RoutedComponent<ISystemEditState> {
   private productNotesInput: HTMLInputElement | null = null;
 
   private importModal: Modal | null = null;
+
+  private productModal: Modal | null = null;
 
   public constructor(props: IRouterProps) {
     super(props);
@@ -72,6 +78,7 @@ class SystemEdit extends RoutedComponent<ISystemEditState> {
 
     this.importButtonOnClick = this.importButtonOnClick.bind(this);
     this.importInputOnChange = this.importInputOnChange.bind(this);
+    this.editProductButtonOnClick = this.editProductButtonOnClick.bind(this);
   }
 
   public componentDidMount(): void {
@@ -156,6 +163,50 @@ class SystemEdit extends RoutedComponent<ISystemEditState> {
     return true;
   }
 
+  private async editProductButtonOnClick(
+    productId: number,
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ): Promise<boolean> {
+    if (
+      productId < 1 ||
+      this.productModal === null ||
+      this.state.systemProducts === undefined
+    )
+      return false;
+    if (this.state.systemProducts.length < 1) return false;
+
+    let selectedProduct = this.state.systemProducts.find(
+      prod => prod.id === productId,
+    );
+
+    if (selectedProduct === undefined) return false;
+
+    console.debug('\\SystemEdit\\editProductButtonOnClick\\event', event);
+    console.debug(
+      '\\SystemEdit\\editProductButtonOnClick\\selectedProduct',
+      selectedProduct,
+    );
+
+    this.editedProduct.name = selectedProduct.name ?? '';
+    this.editedProduct.description = selectedProduct.description ?? '';
+    this.editedProduct.notes = selectedProduct.notes ?? '';
+
+    const productRelations = await GeniusApi.getProductRelations(
+      selectedProduct.id ?? 0,
+    );
+
+    console.debug(
+      '\\SystemEdit\\editProductButtonOnClick\\productRelations',
+      productRelations,
+    );
+
+    //this.editedProduct.conditions =
+
+    this.productModal.show();
+
+    return true;
+  }
+
   private handleInputChange(event): void {
     const target = event.target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -166,19 +217,23 @@ class SystemEdit extends RoutedComponent<ISystemEditState> {
     });
   }
 
-  private async handleSubmit(event): Promise<void> {
+  private async handleUpdateProductSubmit(event): Promise<boolean> {
+    return false;
+  }
+
+  private async handleSubmit(event): Promise<boolean> {
     event.preventDefault();
 
     if (this.state.systemId === undefined) {
-      return;
+      return false;
     }
 
     if (this.newProduct.name === '' || this.state.systemId < 1) {
-      return;
+      return false;
     }
 
     if (this.newProduct.conditions.length < 1) {
-      return;
+      return false;
     }
 
     let productToAdd = new ExpertProduct(
@@ -195,7 +250,7 @@ class SystemEdit extends RoutedComponent<ISystemEditState> {
     );
 
     if (apiResult < 1) {
-      return;
+      return false;
     }
 
     productToAdd.id = apiResult;
@@ -218,6 +273,8 @@ class SystemEdit extends RoutedComponent<ISystemEditState> {
     );
 
     this.resetForm();
+
+    return true;
   }
 
   private resetForm(): void {
@@ -286,6 +343,15 @@ class SystemEdit extends RoutedComponent<ISystemEditState> {
                 )}
               </td>
               <td>---</td>
+              <td>
+                <button
+                  className="btn btn-outline-dark"
+                  onClick={e =>
+                    this.editProductButtonOnClick(singleProduct.id ?? 0, e)
+                  }>
+                  <Edit24Regular />
+                </button>
+              </td>
             </tr>
           );
         })}
@@ -461,6 +527,7 @@ class SystemEdit extends RoutedComponent<ISystemEditState> {
               <th scope="col">Description</th>
               <th scope="col">Notes</th>
               <th scope="col">Conditions</th>
+              <th scope="col"></th> {/* Actions */}
             </tr>
           </thead>
           {productsTable}
@@ -520,6 +587,91 @@ class SystemEdit extends RoutedComponent<ISystemEditState> {
                 </div>
               </>
             )}
+          </div>
+        </Modal>
+        <Modal
+          name="product-edit"
+          title="Edit product"
+          ref={element => {
+            this.productModal = element;
+          }}>
+          <div>
+            <form
+              id="updateProduct"
+              method="POST"
+              onSubmit={this.handleUpdateProductSubmit.bind(this)}>
+              <div className="floating-input -reveal">
+                <input
+                  className="floating-input__field"
+                  type="text"
+                  placeholder="Name"
+                  name="product_name"
+                  defaultValue={this.editedProduct.name}
+                  onChange={event => {
+                    this.editedProduct.name = event.target.value;
+                  }}
+                />
+                <label htmlFor="product_name">Name</label>
+              </div>
+
+              <div className="floating-input -reveal">
+                <input
+                  className="floating-input__field"
+                  type="text"
+                  placeholder="Description"
+                  defaultValue={this.editedProduct.description}
+                  onChange={event => {
+                    this.editedProduct.description = event.target.value;
+                  }}
+                  name="product_description"
+                />
+                <label htmlFor="product_description">Description</label>
+              </div>
+
+              <div className="floating-input -reveal">
+                <input
+                  className="floating-input__field"
+                  type="text"
+                  placeholder="Notes"
+                  defaultValue={this.editedProduct.notes}
+                  onChange={event => {
+                    this.editedProduct.notes = event.target.value;
+                  }}
+                  name="product_notes"
+                />
+                <label htmlFor="product_notes">Notes</label>
+              </div>
+
+              <p>
+                <small>
+                  <i>
+                    Tip: At the bottom you can see all conditions already
+                    available in the database, you can add a new condition by
+                    typing its name and pressing enter.
+                  </i>
+                </small>
+              </p>
+
+              <FloatingTags
+                name="product_conditions_confirming"
+                header="Conditions (confirming)"
+                ref={element => {
+                  this.productEditConditionsCloud = element;
+                }}
+                systemId={this.state.systemId ?? 0}
+                options={this.state.systemConditions ?? []}
+                selected={this.editedProduct.conditions}
+                onUpdate={this.conditionsUpdated.bind(this)}
+              />
+
+              <div className="-reveal -pb-2">
+                <button
+                  type="submit"
+                  className="btn btn-dark btn-mobile -lg-mr-1">
+                  Add
+                </button>
+              </div>
+            </form>
           </div>
         </Modal>
       </>

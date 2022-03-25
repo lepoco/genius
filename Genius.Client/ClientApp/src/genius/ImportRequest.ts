@@ -8,9 +8,9 @@
 import IImportRequest from './interfaces/IImportRequest';
 
 export default class ImportRequest implements IImportRequest {
-  systemId: number;
+  public systemId: number;
 
-  file: File;
+  public file: File;
 
   public constructor(systemId: number, file: File) {
     this.systemId = systemId;

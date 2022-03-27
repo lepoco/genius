@@ -5,9 +5,9 @@
  * All Rights Reserved.
  */
 
-import { Component } from 'react';
+import { PureComponent } from 'react';
 
-export class NotFound extends Component {
+export default class NotFound extends PureComponent {
   public static displayName: string = NotFound.name;
 
   public render(): JSX.Element {

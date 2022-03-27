@@ -5,9 +5,9 @@
  * All Rights Reserved.
  */
 
-import { Component } from 'react';
+import { PureComponent } from 'react';
 
-export class Privacy extends Component {
+export default class Privacy extends PureComponent {
   public static displayName: string = Privacy.name;
 
   public render(): JSX.Element {

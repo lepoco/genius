@@ -5,9 +5,9 @@
  * All Rights Reserved.
  */
 
-import { Component } from 'react';
+import { PureComponent } from 'react';
 
-export class Legal extends Component {
+export default class Legal extends PureComponent {
   static displayName: string = Legal.name;
 
   public render(): JSX.Element {

@@ -5,9 +5,9 @@
  * All Rights Reserved.
  */
 
-import { Component } from 'react';
+import { PureComponent } from 'react';
 
-export class Home extends Component {
+export default class Home extends PureComponent {
   public static displayName: string = Home.name;
 
   public render(): JSX.Element {

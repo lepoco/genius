@@ -5,18 +5,19 @@
  * All Rights Reserved.
  */
 
-import { Suspense } from 'react';
 import ReactDOM from 'react-dom';
+import { Suspense } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Default } from './components/layouts/Default';
-import { Home } from './components/pages/Home';
-import { Licenses } from './components/pages/Licenses';
-import { Legal } from './components/pages/Legal';
-import { Terms } from './components/pages/Terms';
-import { Privacy } from './components/pages/Privacy';
-import { SignIn } from './components/pages/SignIn';
 
-import { Main as Dashboard } from './components/pages/dashboard/Main';
+import Home from './components/pages/Home';
+import Licenses from './components/pages/Licenses';
+import Legal from './components/pages/Legal';
+import Terms from './components/pages/Terms';
+import Privacy from './components/pages/Privacy';
+import SignIn from './components/pages/SignIn';
+
+import Dashboard from './components/pages/dashboard/Main';
 import Product from './components/pages/dashboard/Product';
 import Account from './components/pages/dashboard/Account';
 import Statistics from './components/pages/dashboard/Statistics';
@@ -27,8 +28,8 @@ import System from './components/pages/dashboard/System';
 import SystemAdd from './components/pages/dashboard/SystemAdd';
 import SystemDelete from './components/pages/dashboard/SystemDelete';
 import SystemEdit from './components/pages/dashboard/SystemEdit';
+import NotFound from './components/pages/NotFound';
 
-import { NotFound } from './components/pages/NotFound';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
 import './styles/app.scss';

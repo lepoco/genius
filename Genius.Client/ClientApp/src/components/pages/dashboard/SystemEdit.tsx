@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 import { FloatingTags } from '../../common/FloatingTags';
 import Loader from '../../common/Loader';
 import Modal from '../../common/Modal';
-import RoutedComponent from '../../../common/RoutedComponent';
+import RoutedPureComponent from '../../../common/RoutedPureComponent';
 import IRouterProps from '../../../interfaces/IRouterProps';
 import withRouter from '../../../common/withRouter';
 import IExpertPageState from '../../../genius/interfaces/IExpertPageState';
@@ -17,7 +17,7 @@ import IExpertCondition from '../../../genius/interfaces/IExpertCondition';
 import GeniusApi from '../../../genius/GeniusApi';
 import ExpertProduct from '../../../genius/ExpertProduct';
 import IExpertProduct from '../../../genius/interfaces/IExpertProduct';
-import { Task } from '../../common/Task';
+import Task from '../../common/Task';
 import ImportRequest from '../../../genius/ImportRequest';
 import { Edit16Regular } from '@fluentui/react-icons';
 
@@ -37,7 +37,7 @@ class ProductWithConditions {
   conditions: IExpertCondition[] = [];
 }
 
-class SystemEdit extends RoutedComponent<ISystemEditState> {
+class SystemEdit extends RoutedPureComponent<ISystemEditState> {
   public static displayName: string = SystemEdit.name;
 
   private newProduct: ProductWithConditions = new ProductWithConditions();

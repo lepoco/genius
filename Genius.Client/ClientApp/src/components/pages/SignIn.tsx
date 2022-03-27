@@ -5,9 +5,9 @@
  * All Rights Reserved.
  */
 
-import { Component } from 'react';
+import { PureComponent } from 'react';
 
-export class SignIn extends Component {
+export default class SignIn extends PureComponent {
   public static displayName: string = SignIn.name;
 
   public render(): JSX.Element {

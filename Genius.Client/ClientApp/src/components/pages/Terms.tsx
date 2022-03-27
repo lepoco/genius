@@ -5,9 +5,9 @@
  * All Rights Reserved.
  */
 
-import { Component } from 'react';
+import { PureComponent } from 'react';
 
-export class Terms extends Component {
+export default class Terms extends PureComponent {
   public static displayName: string = Terms.name;
 
   public render(): JSX.Element {

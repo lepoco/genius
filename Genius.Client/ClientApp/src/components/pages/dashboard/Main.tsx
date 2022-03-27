@@ -5,21 +5,23 @@
  * All Rights Reserved.
  */
 
-import { Component } from 'react';
+import RoutedPureComponent from '../../../common/RoutedPureComponent';
+import IRouterProps from '../../../interfaces/IRouterProps';
 import { Link } from 'react-router-dom';
 import GeniusApi from '../../../genius/GeniusApi';
 import IExpertSystem from '../../../genius/interfaces/IExpertSystem';
 import Loader from '../../common/Loader';
+import withRouter from '../../../common/withRouter';
 
 interface IMainState {
   isLoading: boolean;
   systemsList: IExpertSystem[];
 }
 
-export class Main extends Component<{}, IMainState> {
+export class Main extends RoutedPureComponent<IMainState> {
   public static displayName: string = Main.name;
 
-  public constructor(props) {
+  public constructor(props: IRouterProps) {
     super(props);
 
     this.state = {
@@ -96,3 +98,5 @@ export class Main extends Component<{}, IMainState> {
     );
   }
 }
+
+export default withRouter(Main);

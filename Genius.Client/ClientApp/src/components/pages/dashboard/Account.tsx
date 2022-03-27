@@ -5,10 +5,20 @@
  * All Rights Reserved.
  */
 
-import { Component } from 'react';
+import RoutedPureComponent from '../../../common/RoutedPureComponent';
+import IRouterProps from '../../../interfaces/IRouterProps';
+import withRouter from '../../../common/withRouter';
 
-export class Account extends Component {
+interface IAccountState {}
+
+export class Account extends RoutedPureComponent<IAccountState> {
   public static displayName: string = Account.name;
+
+  public constructor(props: IRouterProps) {
+    super(props);
+
+    this.state = {};
+  }
 
   public render(): JSX.Element {
     return (
@@ -105,3 +115,5 @@ export class Account extends Component {
     );
   }
 }
+
+export default withRouter(Account);

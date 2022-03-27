@@ -9,15 +9,16 @@ import RoutedPureComponent from '../../../common/RoutedPureComponent';
 import IRouterProps from '../../../interfaces/IRouterProps';
 import withRouter from '../../../common/withRouter';
 
-interface IPasswordState {}
+interface IProductState {}
 
-export class Password extends RoutedPureComponent<IPasswordState> {
-  public static displayName: string = Password.name;
-
+export class Product extends RoutedPureComponent<IProductState> {
+  public static displayName: string = Product.name;
   public constructor(props: IRouterProps) {
     super(props);
 
     this.state = {};
+
+    console.debug('Props', props);
   }
 
   public render(): JSX.Element {
@@ -26,7 +27,7 @@ export class Password extends RoutedPureComponent<IPasswordState> {
         <div className="row">
           <div className="col-12 col-lg-6 -pb-3 -mh-70 -flex-center -reveal">
             <div>
-              <h2 className="-font-secondary -fw-700">Password</h2>
+              <h2 className="-font-secondary -fw-700">Product</h2>
               <p>Genius is a tool for creating expert systems.</p>
             </div>
           </div>
@@ -43,4 +44,4 @@ export class Password extends RoutedPureComponent<IPasswordState> {
   }
 }
 
-export default withRouter(Password);
+export default withRouter(Product);

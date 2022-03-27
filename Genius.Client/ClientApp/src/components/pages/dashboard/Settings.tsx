@@ -5,10 +5,20 @@
  * All Rights Reserved.
  */
 
-import { Component } from 'react';
+import RoutedPureComponent from '../../../common/RoutedPureComponent';
+import IRouterProps from '../../../interfaces/IRouterProps';
+import withRouter from '../../../common/withRouter';
 
-export class Settings extends Component {
+interface ISettingsState {}
+
+export class Settings extends RoutedPureComponent<ISettingsState> {
   public static displayName: string = Settings.name;
+
+  public constructor(props: IRouterProps) {
+    super(props);
+
+    this.state = {};
+  }
 
   public render(): JSX.Element {
     return (
@@ -32,3 +42,5 @@ export class Settings extends Component {
     );
   }
 }
+
+export default withRouter(Settings);

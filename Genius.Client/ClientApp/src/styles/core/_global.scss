@@ -165,17 +165,24 @@ code {
   }
 }
 
-.btn-dark {
-  &:hover {
-    background: transparent;
-    color: $c-dark;
+.btn {
+  &.btn-icon {
+    height: 3rem;
+    padding: 0 0.6rem;
   }
-}
 
-.btn-secondary {
-  &:hover {
-    background: $c-dark;
-    color: $c-light;
+  &.btn-dark {
+    &:hover {
+      background: transparent;
+      color: $c-dark;
+    }
+  }
+
+  &.btn-secondary {
+    &:hover {
+      background: $c-dark;
+      color: $c-light;
+    }
   }
 }
 

@@ -17,11 +17,12 @@ import { Privacy } from './components/pages/Privacy';
 import { SignIn } from './components/pages/SignIn';
 
 import { Main as Dashboard } from './components/pages/dashboard/Main';
-import { Account } from './components/pages/dashboard/Account';
-import { Statistics } from './components/pages/dashboard/Statistics';
-import { Users } from './components/pages/dashboard/Users';
-import { Password } from './components/pages/dashboard/Password';
-import { Settings } from './components/pages/dashboard/Settings';
+import Product from './components/pages/dashboard/Product';
+import Account from './components/pages/dashboard/Account';
+import Statistics from './components/pages/dashboard/Statistics';
+import Users from './components/pages/dashboard/Users';
+import Password from './components/pages/dashboard/Password';
+import Settings from './components/pages/dashboard/Settings';
 import System from './components/pages/dashboard/System';
 import SystemAdd from './components/pages/dashboard/SystemAdd';
 import SystemDelete from './components/pages/dashboard/SystemDelete';
@@ -37,7 +38,7 @@ const baseUrl: string =
 
 ReactDOM.render(
   <BrowserRouter basename={baseUrl}>
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div className="container">Loading...</div>}>
       <Default>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -55,6 +56,7 @@ ReactDOM.render(
           <Route path="/dashboard/settings" element={<Settings />} />
 
           <Route path="/dashboard/sys/:guid" element={<System />} />
+          <Route path="/dashboard/product/:guid/:id" element={<Product />} />
           <Route path="/dashboard/add" element={<SystemAdd />} />
           <Route path="/dashboard/edit/:guid" element={<SystemEdit />} />
           <Route path="/dashboard/delete/:guid" element={<SystemDelete />} />

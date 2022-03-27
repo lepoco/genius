@@ -9,7 +9,7 @@ import { Component } from 'react';
 import withRouter from '../../common/withRouter';
 import IRouterProps from '../../interfaces/IRouterProps';
 import IRouter from '../../interfaces/IRouter';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { Dropdown as BootstrapDropdown } from 'bootstrap';
 
 class NavMenu extends Component<IRouterProps> {
@@ -69,15 +69,15 @@ class NavMenu extends Component<IRouterProps> {
             <div className="d-flex -lg-mr-2">
               <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                 <li className="nav-item">
-                  <Link className="nav-link" to={'/dashboard'}>
+                  <NavLink className="nav-link" to={'/dashboard'} end={true}>
                     Dashboard
-                  </Link>
+                  </NavLink>
                 </li>
 
                 <li className="nav-item">
-                  <Link className="nav-link" to={'/dashboard/add'}>
+                  <NavLink className="nav-link" to={'/dashboard/add'}>
                     Add new
-                  </Link>
+                  </NavLink>
                 </li>
 
                 {/* <li className="nav-item">

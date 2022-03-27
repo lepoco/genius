@@ -6,20 +6,20 @@
  */
 
 import { Link } from 'react-router-dom';
-import RoutedComponent from '../../../common/RoutedComponent';
+import RoutedPureComponent from '../../../common/RoutedPureComponent';
 import IRouterProps from '../../../interfaces/IRouterProps';
 import withRouter from '../../../common/withRouter';
 import ExpertSystem from '../../../genius/ExpertSystem';
 import GeniusApi from '../../../genius/GeniusApi';
 
-interface IAddExpertState {
+interface ISystemAddState {
   systemName?: string;
   systemDescription?: string;
   systemType?: string;
   systemQuestion?: string;
 }
 
-class SystemAdd extends RoutedComponent<IAddExpertState> {
+export class SystemAdd extends RoutedPureComponent<ISystemAddState> {
   public static displayName: string = SystemAdd.name;
 
   public constructor(props: IRouterProps) {

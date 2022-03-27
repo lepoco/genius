@@ -7,17 +7,17 @@
 
 import { Link } from 'react-router-dom';
 import Loader from '../../common/Loader';
-import RoutedComponent from '../../../common/RoutedComponent';
+import RoutedPureComponent from '../../../common/RoutedPureComponent';
 import withRouter from '../../../common/withRouter';
 import IRouterProps from '../../../interfaces/IRouterProps';
 import IExpertPageState from '../../../genius/interfaces/IExpertPageState';
 import GeniusApi from '../../../genius/GeniusApi';
 
-interface IDeleteExpertState extends IExpertPageState {
+interface ISystemDeleteState extends IExpertPageState {
   acceptDelete?: boolean;
 }
 
-class SystemDelete extends RoutedComponent<IDeleteExpertState> {
+export class SystemDelete extends RoutedPureComponent<ISystemDeleteState> {
   public static displayName: string = SystemDelete.name;
 
   public constructor(props: IRouterProps) {
@@ -94,7 +94,7 @@ class SystemDelete extends RoutedComponent<IDeleteExpertState> {
     }
   }
 
-  private renderSystemView(state: IDeleteExpertState): JSX.Element {
+  private renderSystemView(state: ISystemDeleteState): JSX.Element {
     if ((state.systemId ?? 0) < 1) {
       return <p>No systems found</p>;
     }

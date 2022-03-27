@@ -19,7 +19,7 @@ import ExpertProduct from '../../../genius/ExpertProduct';
 import IExpertProduct from '../../../genius/interfaces/IExpertProduct';
 import { Task } from '../../common/Task';
 import ImportRequest from '../../../genius/ImportRequest';
-import { Edit24Regular } from '@fluentui/react-icons';
+import { Edit16Regular } from '@fluentui/react-icons';
 
 interface ISystemEditState extends IExpertPageState {
   importing?: boolean;
@@ -345,11 +345,11 @@ class SystemEdit extends RoutedComponent<ISystemEditState> {
               <td>---</td>
               <td>
                 <button
-                  className="btn btn-outline-dark"
+                  className="btn btn-icon btn-outline-dark"
                   onClick={e =>
                     this.editProductButtonOnClick(singleProduct.id ?? 0, e)
                   }>
-                  <Edit24Regular />
+                  <Edit16Regular />
                 </button>
               </td>
             </tr>

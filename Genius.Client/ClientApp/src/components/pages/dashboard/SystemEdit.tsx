@@ -6,7 +6,7 @@
  */
 
 import { Link } from 'react-router-dom';
-import { FloatingTags } from '../../common/FloatingTags';
+import { ConditionsInput } from '../../common/ConditionsInput';
 import Loader from '../../common/Loader';
 import Modal from '../../common/Modal';
 import RoutedPureComponent from '../../../common/RoutedPureComponent';
@@ -21,6 +21,9 @@ import Task from '../../common/Task';
 import ImportRequest from '../../../genius/ImportRequest';
 import { Edit16Regular } from '@fluentui/react-icons';
 
+/**
+ * Represents the variables contained in the component state.
+ */
 interface ISystemEditState extends IExpertPageState {
   importing?: boolean;
 }
@@ -37,6 +40,9 @@ class ProductWithConditions {
   conditions: IExpertCondition[] = [];
 }
 
+/**
+ * It allows for editing the expert system.
+ */
 class SystemEdit extends RoutedPureComponent<ISystemEditState> {
   public static displayName: string = SystemEdit.name;
 
@@ -44,8 +50,9 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
 
   private editedProduct: ProductWithConditions = new ProductWithConditions();
 
-  private conditionsCloud: FloatingTags | null = null;
-  private productEditConditionsCloud: FloatingTags | null = null;
+  private conditionsCloud: ConditionsInput | null = null;
+
+  private productEditConditionsCloud: ConditionsInput | null = null;
 
   private productNameInput: HTMLInputElement | null = null;
 
@@ -57,6 +64,10 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
 
   private productModal: Modal | null = null;
 
+  /**
+   * Binds local methods, assigns properties, and defines the initial state.
+   * @param props Properties passed by the router.
+   */
   public constructor(props: IRouterProps) {
     super(props);
 
@@ -79,13 +90,20 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
     this.importButtonOnClick = this.importButtonOnClick.bind(this);
     this.importInputOnChange = this.importInputOnChange.bind(this);
     this.editProductButtonOnClick = this.editProductButtonOnClick.bind(this);
+    this.conditionsInputOnUpdate = this.conditionsInputOnUpdate.bind(this);
   }
 
-  public componentDidMount(): void {
-    this.populateExpertSystemData();
+  /**
+   * Called immediately after a component is mounted. Setting state here will trigger re-rendering.
+   */
+  public async componentDidMount(): Promise<boolean> {
+    return await this.populateData();
   }
 
-  private async populateExpertSystemData(): Promise<void> {
+  /**
+   * Asynchronously gets data from the server.
+   */
+  private async populateData(): Promise<boolean> {
     const system = await GeniusApi.getSystemByGuid(
       this.router.params.guid ?? '',
       true,
@@ -109,6 +127,8 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
       systemProducts: system.systemProducts ?? [],
       systemRelations: system.systemRelations ?? [],
     });
+
+    return true;
   }
 
   private async importButtonOnClick(
@@ -175,9 +195,7 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
       return false;
     if (this.state.systemProducts.length < 1) return false;
 
-    let selectedProduct = this.state.systemProducts.find(
-      prod => prod.id === productId,
-    );
+    let selectedProduct = this.state.systemProducts.find(prod => prod.id === productId);
 
     if (selectedProduct === undefined) return false;
 
@@ -191,9 +209,7 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
     this.editedProduct.description = selectedProduct.description ?? '';
     this.editedProduct.notes = selectedProduct.notes ?? '';
 
-    const productRelations = await GeniusApi.getProductRelations(
-      selectedProduct.id ?? 0,
-    );
+    const productRelations = await GeniusApi.getProductRelations(selectedProduct.id ?? 0);
 
     console.debug(
       '\\SystemEdit\\editProductButtonOnClick\\productRelations',
@@ -221,7 +237,7 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
     return false;
   }
 
-  private async handleSubmit(event): Promise<boolean> {
+  private async formOnSubmit(event): Promise<boolean> {
     event.preventDefault();
 
     if (this.state.systemId === undefined) {
@@ -258,19 +274,14 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
     let currentProducts = this.state.systemProducts;
     currentProducts?.push(productToAdd);
 
-    let updatedRelations = await GeniusApi.getSystemRelations(
-      this.state.systemId,
-    );
+    let updatedRelations = await GeniusApi.getSystemRelations(this.state.systemId);
 
     this.setState({
       systemRelations: updatedRelations,
       systemProducts: currentProducts,
     });
 
-    console.debug(
-      '\\SystemEdit\\handleSubmit\\relations',
-      this.state.systemRelations,
-    );
+    console.debug('\\SystemEdit\\formOnSubmit\\relations', this.state.systemRelations);
 
     this.resetForm();
 
@@ -297,15 +308,16 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
     }
   }
 
-  private conditionsUpdated(
-    options: IExpertCondition[],
+  private conditionsInputOnUpdate(
     selected: IExpertCondition[],
+    available: IExpertCondition[],
   ): void {
+    console.debug('\\SystemEdit\\conditionsInputOnUpdate\\selected', selected);
     this.newProduct.conditions = selected;
   }
 
-  private renderProductsTable(state: IExpertPageState): JSX.Element {
-    let products: IExpertProduct[] = state.systemProducts ?? [];
+  private renderProductsTable(): JSX.Element {
+    let products: IExpertProduct[] = this.state.systemProducts ?? [];
 
     if (products.length < 1) {
       return (
@@ -318,11 +330,11 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
     return (
       <tbody>
         {products.map((singleProduct, i) => {
-          let productRelations = (state.systemRelations ?? []).filter(
-            element => element.productId === singleProduct.id,
-          );
+          // let productRelations = (this.state.systemRelations ?? []).filter(
+          //   element => element.productId === singleProduct.id,
+          // );
 
-          console.debug('Product relations', productRelations);
+          // console.debug('Product relations', productRelations);
 
           return (
             <tr key={singleProduct.id ?? 0}>
@@ -342,15 +354,18 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
                   <i>{singleProduct.notes}</i>
                 )}
               </td>
-              <td>---</td>
+              {/* <td>---</td> */}
               <td>
-                <button
-                  className="btn btn-icon btn-outline-dark"
-                  onClick={e =>
-                    this.editProductButtonOnClick(singleProduct.id ?? 0, e)
-                  }>
+                <Link
+                  to={
+                    '/dashboard/product/' +
+                    (this.state.systemGuid ?? '0') +
+                    '/' +
+                    (singleProduct.id ?? '0')
+                  }
+                  className="btn btn-icon btn-outline-dark">
                   <Edit16Regular />
-                </button>
+                </Link>
               </td>
             </tr>
           );
@@ -359,21 +374,20 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
     );
   }
 
-  private renderSystemView(state: IExpertPageState): JSX.Element {
+  /**
+   * Renders the content containing data downloaded from the server.
+   */
+  private renderContent(state: IExpertPageState): JSX.Element {
     if ((state.systemId ?? 0) < 1) {
       return <p>No systems found</p>;
     }
-
-    let productsTable = this.renderProductsTable(this.state);
 
     return (
       <div className="row">
         <div className="col-12">
           <div className="-reveal">
             <span>System name</span>
-            <h5 className="-font-secondary -fw-700">
-              {state.systemName ?? ''}
-            </h5>
+            <h5 className="-font-secondary -fw-700">{state.systemName ?? ''}</h5>
           </div>
           <div className="-reveal">
             <span>Creation date:</span>
@@ -404,19 +418,14 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
         </div>
 
         <div className="col-12">
-          <form
-            id="addProduct"
-            method="POST"
-            onSubmit={this.handleSubmit.bind(this)}>
-            <h5 className="-font-secondary -fw-700 -pb-1 -reveal">
-              New product
-            </h5>
+          <form id="addProduct" method="POST" onSubmit={this.formOnSubmit.bind(this)}>
+            <h5 className="-font-secondary -fw-700 -pb-1 -reveal">New product</h5>
 
             <div className="-reveal">
               <p>
-                Product is the final result of the application's operation. If
-                the purpose of the system is to select the best garden gnomes,
-                the product can be - <i>"Red Gnome by iGnome INC"</i>.
+                Product is the final result of the application's operation. If the purpose
+                of the system is to select the best garden gnomes, the product can be -{' '}
+                <i>"Red Gnome by iGnome INC"</i>.
               </p>
             </div>
 
@@ -474,37 +483,31 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
             <p>
               <small>
                 <i>
-                  Tip: At the bottom you can see all conditions already
-                  available in the database, you can add a new condition by
-                  typing its name and pressing enter.
+                  Tip: At the bottom you can see all conditions already available in the
+                  database, you can add a new condition by typing its name and pressing
+                  enter.
                 </i>
               </small>
             </p>
 
-            <FloatingTags
-              name="product_conditions_confirming"
-              header="Conditions (confirming)"
+            <ConditionsInput
+              inputName="Conditions (confirming)"
               ref={element => {
                 this.conditionsCloud = element;
               }}
               systemId={this.state.systemId ?? 0}
-              options={this.state.systemConditions ?? []}
-              selected={[]}
-              onUpdate={this.conditionsUpdated.bind(this)}
+              conditionsSelected={[]}
+              onUpdate={this.conditionsInputOnUpdate}
             />
 
-            {/* <FloatingTags
-              name="product_conditions_negating"
-              header="Conditions (negating)"
+            {/* <ConditionsInput
+              inputName="Conditions (negating)"
               systemId={this.state.systemId ?? 0}
-              options={this.state.systemConditions ?? []}
-              selected={[]}
+              conditionsSelected={[]}
             /> */}
 
             <div className="-reveal -pb-2">
-              <button
-                type="submit"
-                className="btn btn-dark btn-mobile -lg-mr-1">
+              <button type="submit" className="btn btn-dark btn-mobile -lg-mr-1">
                 Add
               </button>
             </div>
@@ -528,11 +531,10 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
                   <th scope="col">Name</th>
                   <th scope="col">Description</th>
                   <th scope="col">Notes</th>
-                  <th scope="col">Conditions</th>
                   <th scope="col"></th> {/* Actions */}
                 </tr>
               </thead>
-              {productsTable}
+              {this.renderProductsTable()}
             </table>
           </div>
         </div>
@@ -540,11 +542,14 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
     );
   }
 
+  /**
+   * The main method responsible for refreshing the view.
+   */
   public render(): JSX.Element {
-    let contents = !this.state.systemLoaded ? (
+    const contents = !this.state.systemLoaded ? (
       <Loader center={false} />
     ) : (
-      this.renderSystemView(this.state)
+      this.renderContent(this.state)
     );
 
     return (
@@ -572,10 +577,10 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
             ) : (
               <>
                 <p className="notice">
-                  The content of the selected file will be imported to the
-                  currently edited expert system. The importer will try to skip
-                  duplicate entries automatically, however, it is recommended to
-                  import the file into a blank project.
+                  The content of the selected file will be imported to the currently
+                  edited expert system. The importer will try to skip duplicate entries
+                  automatically, however, it is recommended to import the file into a
+                  blank project.
                 </p>
                 <div className="mb-3">
                   <label htmlFor="formFile" className="form-label">
@@ -591,91 +596,6 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
                 </div>
               </>
             )}
-          </div>
-        </Modal>
-        <Modal
-          name="product-edit"
-          title="Edit product"
-          ref={element => {
-            this.productModal = element;
-          }}>
-          <div>
-            <form
-              id="updateProduct"
-              method="POST"
-              onSubmit={this.handleUpdateProductSubmit.bind(this)}>
-              <div className="floating-input -reveal">
-                <input
-                  className="floating-input__field"
-                  type="text"
-                  placeholder="Name"
-                  name="product_name"
-                  defaultValue={this.editedProduct.name}
-                  onChange={event => {
-                    this.editedProduct.name = event.target.value;
-                  }}
-                />
-                <label htmlFor="product_name">Name</label>
-              </div>
-
-              <div className="floating-input -reveal">
-                <input
-                  className="floating-input__field"
-                  type="text"
-                  placeholder="Description"
-                  defaultValue={this.editedProduct.description}
-                  onChange={event => {
-                    this.editedProduct.description = event.target.value;
-                  }}
-                  name="product_description"
-                />
-                <label htmlFor="product_description">Description</label>
-              </div>
-
-              <div className="floating-input -reveal">
-                <input
-                  className="floating-input__field"
-                  type="text"
-                  placeholder="Notes"
-                  defaultValue={this.editedProduct.notes}
-                  onChange={event => {
-                    this.editedProduct.notes = event.target.value;
-                  }}
-                  name="product_notes"
-                />
-                <label htmlFor="product_notes">Notes</label>
-              </div>
-
-              <p>
-                <small>
-                  <i>
-                    Tip: At the bottom you can see all conditions already
-                    available in the database, you can add a new condition by
-                    typing its name and pressing enter.
-                  </i>
-                </small>
-              </p>
-
-              <FloatingTags
-                name="product_conditions_confirming"
-                header="Conditions (confirming)"
-                ref={element => {
-                  this.productEditConditionsCloud = element;
-                }}
-                systemId={this.state.systemId ?? 0}
-                options={this.state.systemConditions ?? []}
-                selected={this.editedProduct.conditions}
-                onUpdate={this.conditionsUpdated.bind(this)}
-              />
-
-              <div className="-reveal -pb-2">
-                <button
-                  type="submit"
-                  className="btn btn-dark btn-mobile -lg-mr-1">
-                  Add
-                </button>
-              </div>
-            </form>
           </div>
         </Modal>
       </>

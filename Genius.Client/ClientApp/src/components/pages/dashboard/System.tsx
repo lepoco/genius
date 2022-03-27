@@ -17,13 +17,11 @@ import GeniusApi from '../../../genius/GeniusApi';
 import ExpertCondition from '../../../genius/ExpertCondition';
 import ISolverResponse from '../../../genius/interfaces/ISolverResponse';
 import IExpertProduct from '../../../genius/interfaces/IExpertProduct';
+import { ConditionType } from '../../../genius/ConditionType';
 
-enum ConditionType {
-  Confirming,
-  Negating,
-  Indifferent,
-}
-
+/**
+ * Contains information about the current state of the expert system's solution.
+ */
 class SolverState {
   currentCondition: IExpertCondition = new ExpertCondition(0, 0);
 
@@ -36,6 +34,9 @@ class SolverState {
   indifferent: IExpertCondition[] = [];
 }
 
+/**
+ * Represents the variables contained in the component state.
+ */
 interface IExpertRunState extends IExpertPageState {
   currentQuestion?: string;
 
@@ -49,6 +50,10 @@ class System extends RoutedComponent<IExpertRunState> {
 
   private solverState: SolverState = new SolverState();
 
+  /**
+   * Binds local methods, assigns properties, and defines the initial state.
+   * @param props Properties passed by the router.
+   */
   public constructor(props: IRouterProps) {
     super(props);
 
@@ -72,33 +77,17 @@ class System extends RoutedComponent<IExpertRunState> {
     };
   }
 
-  public componentDidMount(): void {
-    this.populateExpertSystemData();
+  /**
+   * Called immediately after a component is mounted. Setting state here will trigger re-rendering.
+   */
+  public async componentDidMount(): Promise<boolean> {
+    return await this.populateData();
   }
 
-  private validateQuestion(): void {
-    this.setState({
-      isConditional:
-        this.state.systemQuestion?.includes('{condition}') ?? false,
-    });
-  }
-
-  private async getFirstCondition(): Promise<void> {
-    let systemId: number = this.state.systemId ?? 0;
-
-    // ERROR, something went wrong
-    if (systemId < 1) {
-      return;
-    }
-
-    this.solverState.confirming = [];
-    this.solverState.negating = [];
-    this.solverState.indifferent = [];
-
-    await this.askQuestion();
-  }
-
-  private async populateExpertSystemData(): Promise<void> {
+  /**
+   * Asynchronously gets data from the server.
+   */
+  private async populateData(): Promise<boolean> {
     const system = await GeniusApi.getSystemByGuid(
       this.router.params.guid ?? '',
       false,
@@ -125,6 +114,30 @@ class System extends RoutedComponent<IExpertRunState> {
     this.validateQuestion();
 
     await this.getFirstCondition();
+
+    return true;
+  }
+
+  private validateQuestion(): void {
+    this.setState({
+      isConditional:
+        this.state.systemQuestion?.includes('{condition}') ?? false,
+    });
+  }
+
+  private async getFirstCondition(): Promise<void> {
+    let systemId: number = this.state.systemId ?? 0;
+
+    // ERROR, something went wrong
+    if (systemId < 1) {
+      return;
+    }
+
+    this.solverState.confirming = [];
+    this.solverState.negating = [];
+    this.solverState.indifferent = [];
+
+    await this.askQuestion();
   }
 
   private async askQuestion(): Promise<ISolverResponse> {
@@ -305,7 +318,10 @@ class System extends RoutedComponent<IExpertRunState> {
     );
   }
 
-  private renderSystemView(): JSX.Element {
+  /**
+   * Renders the content containing data downloaded from the server.
+   */
+  private renderContent(): JSX.Element {
     if ((this.state.systemId ?? 0) < 1) {
       return (
         <div>
@@ -333,11 +349,17 @@ class System extends RoutedComponent<IExpertRunState> {
     );
   }
 
+  /**
+   * The main method responsible for refreshing the view.
+   */
   public render(): JSX.Element {
-    let contents = !this.state.systemLoaded ? (
+    const contents = !this.state.systemLoaded ? (
       <Loader center={false} />
     ) : (
-      this.renderSystemView()
+      /**
+       * Renders the content containing data downloaded from the server.
+       */
+      this.renderContent()
     );
 
     return <div className="dashboard container pt-5 pb-5">{contents}</div>;

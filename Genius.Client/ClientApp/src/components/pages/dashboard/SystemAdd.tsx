@@ -12,6 +12,9 @@ import withRouter from '../../../common/withRouter';
 import ExpertSystem from '../../../genius/ExpertSystem';
 import GeniusApi from '../../../genius/GeniusApi';
 
+/**
+ * Represents the variables contained in the component state.
+ */
 interface ISystemAddState {
   systemName?: string;
   systemDescription?: string;
@@ -22,6 +25,10 @@ interface ISystemAddState {
 export class SystemAdd extends RoutedPureComponent<ISystemAddState> {
   public static displayName: string = SystemAdd.name;
 
+  /**
+   * Binds local methods, assigns properties, and defines the initial state.
+   * @param props Properties passed by the router.
+   */
   public constructor(props: IRouterProps) {
     super(props);
 
@@ -63,6 +70,9 @@ export class SystemAdd extends RoutedPureComponent<ISystemAddState> {
     }
   }
 
+  /**
+   * The main method responsible for refreshing the view.
+   */
   public render(): JSX.Element {
     return (
       <div className="dashboard container pt-5 pb-5">

@@ -13,13 +13,26 @@ import IRouterProps from '../../../interfaces/IRouterProps';
 import IExpertPageState from '../../../genius/interfaces/IExpertPageState';
 import GeniusApi from '../../../genius/GeniusApi';
 
+/**
+ * Represents the variables contained in the component state.
+ */
 interface ISystemDeleteState extends IExpertPageState {
   acceptDelete?: boolean;
 }
 
+/**
+ * It allows you to remove an expert system.
+ */
 export class SystemDelete extends RoutedPureComponent<ISystemDeleteState> {
+  /**
+   * The display name of the component.
+   */
   public static displayName: string = SystemDelete.name;
 
+  /**
+   * Binds local methods, assigns properties, and defines the initial state.
+   * @param props Properties passed by the router.
+   */
   public constructor(props: IRouterProps) {
     super(props);
 
@@ -38,13 +51,22 @@ export class SystemDelete extends RoutedPureComponent<ISystemDeleteState> {
       systemConditions: [],
       systemProducts: [],
     };
+
+    this.formOnSubmit = this.formOnSubmit.bind(this);
+    this.inputOnChange = this.inputOnChange.bind(this);
   }
 
-  public componentDidMount(): void {
-    this.populateExpertSystemData();
+  /**
+   * Called immediately after a component is mounted. Setting state here will trigger re-rendering.
+   */
+  public async componentDidMount(): Promise<boolean> {
+    return await this.populateData();
   }
 
-  private async populateExpertSystemData(): Promise<void> {
+  /**
+   * Asynchronously gets data from the server.
+   */
+  private async populateData(): Promise<boolean> {
     let guid = this.router.params.guid;
     const response = await fetch('api/expert/system/' + guid);
     const data = await response.json();
@@ -61,9 +83,13 @@ export class SystemDelete extends RoutedPureComponent<ISystemDeleteState> {
       systemUpdatedAt: data.updatedAt ?? '',
       systemLoaded: true,
     });
+
+    return true;
   }
 
-  private handleInputChange(event): void {
+  private async inputOnChange(
+    event: React.ChangeEvent<HTMLInputElement>,
+  ): Promise<boolean> {
     const target = event.target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
     const name = target.name;
@@ -71,30 +97,39 @@ export class SystemDelete extends RoutedPureComponent<ISystemDeleteState> {
     this.setState({
       [name]: value,
     });
+
+    return true;
   }
 
-  private async handleSubmit(event): Promise<void> {
+  private async formOnSubmit(
+    event: React.FormEvent<HTMLFormElement>,
+  ): Promise<boolean> {
     event.preventDefault();
 
     if (this.state.acceptDelete !== true) {
       console.debug(
-        '\\SystemDelete\\handleSubmit',
+        '\\SystemDelete\\formOnSubmit',
         'Checkbox has not been checked',
       );
 
-      return;
+      return false;
     }
 
     let apiResult = await GeniusApi.deleteSystem(this.state.systemId ?? 0);
 
-    console.debug('\\SystemDelete\\handleSubmit', apiResult);
+    console.debug('\\SystemDelete\\formOnSubmit', apiResult);
 
     if (apiResult) {
       this.router.navigate('/dashboard');
     }
+
+    return true;
   }
 
-  private renderSystemView(state: ISystemDeleteState): JSX.Element {
+  /**
+   * Renders the content containing data downloaded from the server.
+   */
+  private renderContent(state: ISystemDeleteState): JSX.Element {
     if ((state.systemId ?? 0) < 1) {
       return <p>No systems found</p>;
     }
@@ -103,7 +138,7 @@ export class SystemDelete extends RoutedPureComponent<ISystemDeleteState> {
       <form
         id="deleteSystem"
         method="POST"
-        onSubmit={this.handleSubmit.bind(this)}>
+        onSubmit={e => this.formOnSubmit(e)}>
         <input type="hidden" name="action" value="DeleteSystem" />
         <input type="hidden" name="nonce" value="@nonce('deletesystem')" />
         <input
@@ -136,7 +171,7 @@ export class SystemDelete extends RoutedPureComponent<ISystemDeleteState> {
             id="accept_delete"
             name="acceptDelete"
             value="acceptDelete"
-            onChange={this.handleInputChange.bind(this)}
+            onChange={e => this.inputOnChange(e)}
           />
           <label htmlFor="acceptDelete">
             Aware of the irreversibility of the changes, I want to delete the
@@ -158,11 +193,14 @@ export class SystemDelete extends RoutedPureComponent<ISystemDeleteState> {
     );
   }
 
+  /**
+   * The main method responsible for refreshing the view.
+   */
   public render(): JSX.Element {
-    let contents = !this.state.systemLoaded ? (
+    const contents = !this.state.systemLoaded ? (
       <Loader center={false} />
     ) : (
-      this.renderSystemView(this.state)
+      this.renderContent(this.state)
     );
 
     return (

@@ -519,19 +519,23 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
           <h5 className="-font-secondary -fw-700 -pb-1 -reveal">Products</h5>
         </div>
 
-        <table className="table">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Name</th>
-              <th scope="col">Description</th>
-              <th scope="col">Notes</th>
-              <th scope="col">Conditions</th>
-              <th scope="col"></th> {/* Actions */}
-            </tr>
-          </thead>
-          {productsTable}
-        </table>
+        <div className="col-12">
+          <div className="table-responsive">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Description</th>
+                  <th scope="col">Notes</th>
+                  <th scope="col">Conditions</th>
+                  <th scope="col"></th> {/* Actions */}
+                </tr>
+              </thead>
+              {productsTable}
+            </table>
+          </div>
+        </div>
       </div>
     );
   }

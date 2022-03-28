@@ -112,6 +112,34 @@ namespace Genius.Services
             };
         }
 
+        public override async Task<ExpertAboutModel> GetAbout(ExpertLookupModel request, ServerCallContext context)
+        {
+            Data.Models.Expert.System expertSystem = new Data.Models.Expert.System { Id = 0 };
+
+            if (!String.IsNullOrEmpty(request?.Guid))
+                expertSystem =
+                    await _expertService.Context.Systems.Where(sys => sys.Guid == request.Guid.Trim()).FirstOrDefaultAsync() ??
+                    new Data.Models.Expert.System { Id = 0 };
+
+            if ((request?.Id ?? 0) > 0)
+                expertSystem = await _expertService.Context.Systems.Where(sys => sys.Id == request.Id).FirstOrDefaultAsync() ??
+                               new Data.Models.Expert.System { Id = 0 };
+
+            if (expertSystem.Id < 1)
+                return new ExpertAboutModel();
+
+            return new ExpertAboutModel
+            {
+                Id = expertSystem.Id,
+                Conditions = await _expertService.Context.Conditions.Where(condition => condition.SystemId == expertSystem.Id)
+                    .CountAsync(),
+                Products = await _expertService.Context.Products.Where(product => product.SystemId == expertSystem.Id)
+                    .CountAsync(),
+                Relations = await _expertService.Context.Relations.Where(relation => relation.SystemId == expertSystem.Id)
+                    .CountAsync(),
+            };
+        }
+
         public override async Task<ExpertResponseModel> Delete(ExpertLookupModel request, ServerCallContext context)
         {
             if (request?.Id < 1)

@@ -66,6 +66,13 @@ namespace Genius.Client.Controllers
             return await _expertClient.GetSystemByGuidAsync(guid);
         }
 
+        [HttpGet]
+        [Route("system/{id}/about")]
+        public async Task<ExpertAboutModel> GetSingleSystem([FromRoute] int id)
+        {
+            return await _expertClient.GetSystemAboutAsync(id);
+        }
+
         [HttpDelete]
         [Route("system/{id}")]
         public async Task<IActionResult> DeleteSingleSystem([FromRoute] int id)

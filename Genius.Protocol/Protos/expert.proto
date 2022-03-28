@@ -16,6 +16,8 @@ service Expert {
 
 	rpc Get(ExpertLookupModel) returns (ExpertModel);
 
+	rpc GetAbout(ExpertLookupModel) returns (ExpertAboutModel);
+
 	rpc GetAll(ExpertEmptyModel) returns (stream ExpertModel);
 
 	rpc Delete(ExpertLookupModel) returns (ExpertResponseModel);
@@ -64,6 +66,13 @@ message ExpertModel {
 	string updated_at = 8;
 }
 
+message ExpertAboutModel {
+	int32 id = 1;
+	int32 products = 2;
+	int32 conditions = 3;
+	int32 relations = 4;
+}
+
 message ProductModel {
 	int32 id = 1;
 	int32 system_id = 2;
@@ -96,8 +105,7 @@ message RelationModel {
 	RelationType type = 6;
 }
 
-message ExpertEmptyModel {
-}
+message ExpertEmptyModel {}
 
 message ExpertLookupModel {
 	int32 id = 1;

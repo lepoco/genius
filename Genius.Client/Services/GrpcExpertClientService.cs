@@ -45,6 +45,14 @@ namespace Genius.Client.Services
         }
 
         /// <summary>
+        /// Wraps <see cref="Expert.ExpertClient.GetAboutAsync"/>.
+        /// </summary>
+        public async Task<ExpertAboutModel> GetSystemAboutAsync(int id)
+        {
+            return await _grpcClient.GetAboutAsync(new ExpertLookupModel { Id = id });
+        }
+
+        /// <summary>
         /// Wraps <see cref="Expert.ExpertClient.GetAll"/>.
         /// </summary>
         public async Task<IEnumerable<ExpertModel>> GetAllSystems()

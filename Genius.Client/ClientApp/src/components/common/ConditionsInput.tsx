@@ -104,6 +104,60 @@ export class ConditionsInput extends Component<
     return true;
   }
 
+  private async addCondition(conditionName: string): Promise<boolean> {
+    let existingCondition: IExpertCondition | null = null;
+
+    // If condition already exist and have same name
+    this.state.conditionsAvailable.forEach(con => {
+      if (con.name === undefined) {
+        return;
+      }
+
+      if (con.name.toLowerCase() === conditionName.toLowerCase()) {
+        existingCondition = con;
+      }
+    });
+
+    if (existingCondition !== null) {
+      let updatedList = this.state.conditionsSelected;
+      updatedList.push(existingCondition);
+
+      this.setState({ conditionsSelected: updatedList });
+      this.invokeOnUpdate();
+
+      console.debug('\\ConditionsInput\\addCondition', 'This condition already exists.');
+
+      return true;
+    }
+
+    let newCondition = new ExpertCondition(0, this.state.systemId, conditionName, '');
+
+    const newConditionId = await GeniusApi.addCondition(newCondition);
+
+    // console.debug('\\FloatingTags\\inputOnKeyPress\\newConditionId', newConditionId);
+
+    if (newConditionId < 1) {
+      return false;
+    }
+
+    newCondition.id = newConditionId;
+
+    let updatedOptionsList = this.state.conditionsAvailable;
+    updatedOptionsList.push(newCondition);
+
+    let updatedSelectedList = this.state.conditionsSelected;
+    updatedSelectedList.push(newCondition);
+
+    this.setState({
+      conditionsAvailable: updatedOptionsList,
+      conditionsSelected: updatedSelectedList,
+    });
+
+    this.invokeOnUpdate();
+
+    return true;
+  }
+
   private async buttonAddOnClick(
     event: React.MouseEvent<HTMLSpanElement>,
     condition: IExpertCondition,
@@ -160,66 +214,14 @@ export class ConditionsInput extends Component<
       return false;
     }
 
-    const conditionName = event.target.value.trim();
+    const inputValue = event.target.value.trim();
+    const conditions = inputValue.split(',');
 
-    let existingCondition: IExpertCondition | null = null;
-
-    // If condition already exist and have same name
-    this.state.conditionsAvailable.forEach(con => {
-      if (con.name === undefined) {
-        return;
-      }
-
-      if (con.name.toLowerCase() === conditionName.toLowerCase()) {
-        existingCondition = con;
-      }
+    conditions.forEach(con => {
+      this.addCondition(con.trim());
     });
-
-    if (existingCondition !== null) {
-      let updatedList = this.state.conditionsSelected;
-      updatedList.push(existingCondition);
-
-      this.setState({ conditionsSelected: updatedList });
-      this.invokeOnUpdate();
-
-      event.target.value = '';
-
-      console.debug(
-        '\\ConditionsInput\\inputOnKeyPress',
-        'This condition already exists.',
-      );
-
-      return true;
-    }
-
-    let newCondition = new ExpertCondition(0, this.state.systemId, conditionName, '');
-
-    const newConditionId = await GeniusApi.addCondition(newCondition);
-
-    // console.debug('\\FloatingTags\\inputOnKeyPress\\newConditionId', newConditionId);
-
-    if (newConditionId < 1) {
-      return false;
-    }
-
-    newCondition.id = newConditionId;
-
-    // TODO: if exists cancel
 
     event.target.value = '';
-
-    let updatedOptionsList = this.state.conditionsAvailable;
-    updatedOptionsList.push(newCondition);
-
-    let updatedSelectedList = this.state.conditionsSelected;
-    updatedSelectedList.push(newCondition);
-
-    this.setState({
-      conditionsAvailable: updatedOptionsList,
-      conditionsSelected: updatedSelectedList,
-    });
-
-    this.invokeOnUpdate();
 
     return true;
   }
@@ -229,19 +231,16 @@ export class ConditionsInput extends Component<
   ): Promise<boolean> {
     event.preventDefault();
 
-    const target = event.target;
-    const value = target.value;
-    const name = target.name;
-
-    if (!(target instanceof HTMLInputElement)) {
+    if (!(event.target instanceof HTMLInputElement)) {
       return false;
     }
 
-    if (target.pattern != null) {
-      if (!target.value.match('/^' + target.pattern + '$/')) {
-        // TODO: Negate html pattern
-        target.value = target.value.replace(/[^a-zA-Z0-9-_ ]/g, '');
-      }
+    const pattern = /^([\s\.]?[a-zA-Z]+)+$/;
+    const inputValue = event.target.value;
+
+    if (!inputValue.match('/^' + pattern + '$/')) {
+      // TODO: Negate html pattern
+      event.target.value = inputValue.replace(/[^a-zA-Z0-9-_, ]/g, '');
     }
 
     return true;
@@ -319,7 +318,6 @@ export class ConditionsInput extends Component<
                 <input
                   type="text"
                   onKeyPress={e => this.inputOnKeyPress(e)}
-                  pattern="[a-zA-Z0-9-_ ]+"
                   name={this.state.inputName.toLowerCase()}
                   defaultValue={''}
                   onChange={e => this.inputOnChange(e)}

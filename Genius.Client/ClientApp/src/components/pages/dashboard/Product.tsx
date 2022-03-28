@@ -21,7 +21,7 @@ import Loader from '../../common/Loader';
 import withRouter from '../../../common/withRouter';
 
 /**
- * Represents the variables contained in the component state.
+ * Represents the variables contained in the Component state.
  */
 interface IProductState {
   contentLoaded: boolean;
@@ -92,7 +92,7 @@ export class Product extends RoutedPureComponent<IProductState> {
     const product = await GeniusApi.getProduct(this.state.productId);
     const productRelations = await GeniusApi.getProductRelations(this.state.productId);
 
-    if ((system?.id as number) < 1 || (product?.id as number) < 1) {
+    if (system.id < 1 || product.id < 1) {
       return false;
     }
 
@@ -239,7 +239,7 @@ export class Product extends RoutedPureComponent<IProductState> {
   }
 
   /**
-   * The main method responsible for refreshing the view.
+   * The main method responsible for refreshing and rendering the view.
    */
   public render(): JSX.Element {
     const contents = !this.state.contentLoaded ? (

@@ -7,9 +7,18 @@
 
 import { PureComponent } from 'react';
 
+/**
+ * Home page Component.
+ */
 export default class Home extends PureComponent {
+  /**
+   * The display name of the component.
+   */
   public static displayName: string = Home.name;
 
+  /**
+   * The main method responsible for refreshing and rendering the view.
+   */
   public render(): JSX.Element {
     return (
       <div className="container -pt-5">

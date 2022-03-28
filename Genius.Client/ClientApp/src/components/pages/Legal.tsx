@@ -7,23 +7,29 @@
 
 import { PureComponent } from 'react';
 
+/**
+ * Legal page Component.
+ */
 export default class Legal extends PureComponent {
+  /**
+   * The display name of the component.
+   */
   static displayName: string = Legal.name;
 
+  /**
+   * The main method responsible for refreshing and rendering the view.
+   */
   public render(): JSX.Element {
     return (
       <div className="container -pt-5">
         <div className="row">
           <div className="col-12">
-            <h4 className="-font-secondary -fw-700 -pb-3 -reveal">
-              Legal Agreements
-            </h4>
+            <h4 className="-font-secondary -fw-700 -pb-3 -reveal">Legal Agreements</h4>
           </div>
 
           <div className="col-12 -mb-5">
             <p className="-reveal">
-              Genius is not a real website. It's just a college project. Don't
-              use it.
+              Genius is not a real website. It's just a college project. Don't use it.
             </p>
           </div>
         </div>

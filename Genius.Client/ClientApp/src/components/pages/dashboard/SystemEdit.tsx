@@ -493,7 +493,7 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
   }
 
   /**
-   * The main method responsible for refreshing the view.
+   * The main method responsible for refreshing and rendering the view.
    */
   public render(): JSX.Element {
     const contents = !this.state.systemLoaded ? (

@@ -102,6 +102,9 @@ export class Main extends RoutedPureComponent<IMainState> {
     );
   }
 
+  /**
+   * The main method responsible for refreshing and rendering the view.
+   */
   public render(): JSX.Element {
     let contents = this.state.isLoading ? (
       <Loader center={false} />

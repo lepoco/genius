@@ -7,9 +7,18 @@
 
 import { PureComponent } from 'react';
 
+/**
+ * Sign in page Component.
+ */
 export default class SignIn extends PureComponent {
+  /**
+   * The display name of the component.
+   */
   public static displayName: string = SignIn.name;
 
+  /**
+   * The main method responsible for refreshing and rendering the view.
+   */
   public render(): JSX.Element {
     return (
       <div className="container -pt-5">

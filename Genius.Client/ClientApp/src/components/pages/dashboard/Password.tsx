@@ -9,17 +9,33 @@ import RoutedPureComponent from '../../../common/RoutedPureComponent';
 import IRouterProps from '../../../interfaces/IRouterProps';
 import withRouter from '../../../common/withRouter';
 
+/**
+ * Represents the variables contained in the Component state.
+ */
 interface IPasswordState {}
 
+/**
+ * Dashboard - Password page Component.
+ */
 export class Password extends RoutedPureComponent<IPasswordState> {
+  /**
+   * The display name of the component.
+   */
   public static displayName: string = Password.name;
 
+  /**
+   * Binds local methods, assigns properties, and defines the initial state.
+   * @param props Properties passed by the router.
+   */
   public constructor(props: IRouterProps) {
     super(props);
 
     this.state = {};
   }
 
+  /**
+   * The main method responsible for refreshing and rendering the view.
+   */
   public render(): JSX.Element {
     return (
       <div className="container -pt-5">

@@ -9,17 +9,33 @@ import RoutedPureComponent from '../../../common/RoutedPureComponent';
 import IRouterProps from '../../../interfaces/IRouterProps';
 import withRouter from '../../../common/withRouter';
 
+/**
+ * Represents the variables contained in the Component state.
+ */
 interface IAccountState {}
 
+/**
+ * Dashboard - Account page Component.
+ */
 export class Account extends RoutedPureComponent<IAccountState> {
+  /**
+   * The display name of the Component.
+   */
   public static displayName: string = Account.name;
 
+  /**
+   * Binds local methods, assigns properties, and defines the initial state.
+   * @param props Properties passed by the router.
+   */
   public constructor(props: IRouterProps) {
     super(props);
 
     this.state = {};
   }
 
+  /**
+   * The main method responsible for refreshing and rendering the view.
+   */
   public render(): JSX.Element {
     return (
       <div className="dashboard container -mt-5 -mb-5">
@@ -97,14 +113,10 @@ export class Account extends RoutedPureComponent<IAccountState> {
               </div>
 
               <div className="-pb-1 -reveal">
-                <button
-                  type="submit"
-                  className="btn btn-dark btn-mobile -lg-mr-1">
+                <button type="submit" className="btn btn-dark btn-mobile -lg-mr-1">
                   Update
                 </button>
-                <a
-                  href="dashboard/password"
-                  className="btn btn-outline-dark btn-mobile">
+                <a href="dashboard/password" className="btn btn-outline-dark btn-mobile">
                   Change your password
                 </a>
               </div>

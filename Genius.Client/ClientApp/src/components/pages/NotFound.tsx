@@ -7,9 +7,18 @@
 
 import { PureComponent } from 'react';
 
+/**
+ * Error 404 page Component.
+ */
 export default class NotFound extends PureComponent {
+  /**
+   * The display name of the component.
+   */
   public static displayName: string = NotFound.name;
 
+  /**
+   * The main method responsible for refreshing and rendering the view.
+   */
   public render(): JSX.Element {
     return (
       <div className="container -pt-5">

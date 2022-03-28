@@ -7,9 +7,18 @@
 
 import { PureComponent } from 'react';
 
+/**
+ * Licenses page Component.
+ */
 export default class Licenses extends PureComponent {
+  /**
+   * The display name of the component.
+   */
   public static displayName: string = Licenses.name;
 
+  /**
+   * The main method responsible for refreshing and rendering the view.
+   */
   public render(): JSX.Element {
     return (
       <div className="container -pt-5">
@@ -21,8 +30,8 @@ export default class Licenses extends PureComponent {
           <div className="col-12 -mb-5">
             <div>
               <p className="-reveal">
-                Genius - Implementation of an expert system for diagnosing
-                diseases as part of the diploma thesis
+                Genius - Implementation of an expert system for diagnosing diseases as
+                part of the diploma thesis
                 <br />
                 <small>GNU General Public License v3.0 -</small>{' '}
                 <a

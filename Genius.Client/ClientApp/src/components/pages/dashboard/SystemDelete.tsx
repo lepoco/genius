@@ -10,15 +10,17 @@ import Loader from '../../common/Loader';
 import RoutedPureComponent from '../../../common/RoutedPureComponent';
 import withRouter from '../../../common/withRouter';
 import IRouterProps from '../../../interfaces/IRouterProps';
-import IExpertPageState from '../../../genius/interfaces/IExpertPageState';
 import GeniusApi from '../../../genius/GeniusApi';
-import { isBooleanObject } from 'util/types';
+import IExpertSystem from '../../../genius/interfaces/IExpertSystem';
+import ExpertSystem from '../../../genius/ExpertSystem';
 
 /**
  * Represents the variables contained in the component state.
  */
-interface ISystemDeleteState extends IExpertPageState {
-  acceptDelete?: boolean;
+interface ISystemDeleteState {
+  contentLoaded: boolean;
+  acceptDelete: boolean;
+  selectedSystem: IExpertSystem;
 }
 
 /**
@@ -38,23 +40,9 @@ export class SystemDelete extends RoutedPureComponent<ISystemDeleteState> {
     super(props);
 
     this.state = {
+      contentLoaded: false,
       acceptDelete: false,
-      systemLoaded: false,
-      id: 0,
-      guid: '',
-      version: '',
-      name: '',
-      description: '',
-      type: '',
-      question: '',
-      createdAt: '',
-      updatedAt: '',
-      conditions: [],
-      products: [],
-      relations: [],
-      productsCount: 0,
-      conditionsCount: 0,
-      relationsCount: 0,
+      selectedSystem: new ExpertSystem(),
     };
 
     this.formOnSubmit = this.formOnSubmit.bind(this);
@@ -72,21 +60,12 @@ export class SystemDelete extends RoutedPureComponent<ISystemDeleteState> {
    * Asynchronously gets data from the server.
    */
   private async populateData(): Promise<boolean> {
-    let guid = this.router.params.guid;
-    const response = await fetch('api/expert/system/' + guid);
-    const data = await response.json();
+    const guid: string = this.router.params.guid ?? '';
+    const selectedSystem: IExpertSystem = await GeniusApi.getSystemByGuid(guid);
 
     this.setState({
-      id: data.id ?? 0,
-      version: data.version ?? '',
-      name: data.name ?? '',
-      description: data.description ?? '',
-      guid: data.guid ?? '',
-      question: data.question ?? '',
-      type: data.type ?? '',
-      createdAt: data.createdAt ?? '',
-      updatedAt: data.updatedAt ?? '',
-      systemLoaded: true,
+      selectedSystem: selectedSystem,
+      contentLoaded: true,
     });
 
     return true;
@@ -107,21 +86,16 @@ export class SystemDelete extends RoutedPureComponent<ISystemDeleteState> {
     return true;
   }
 
-  private async formOnSubmit(
-    event: React.FormEvent<HTMLFormElement>,
-  ): Promise<boolean> {
+  private async formOnSubmit(event: React.FormEvent<HTMLFormElement>): Promise<boolean> {
     event.preventDefault();
 
     if (this.state.acceptDelete !== true) {
-      console.debug(
-        '\\SystemDelete\\formOnSubmit',
-        'Checkbox has not been checked',
-      );
+      console.debug('\\SystemDelete\\formOnSubmit', 'Checkbox has not been checked');
 
       return false;
     }
 
-    let apiResult = await GeniusApi.deleteSystem(this.state.id ?? 0);
+    const apiResult = await GeniusApi.deleteSystem(this.state.selectedSystem.id ?? 0);
 
     console.debug('\\SystemDelete\\formOnSubmit', apiResult);
 
@@ -136,37 +110,26 @@ export class SystemDelete extends RoutedPureComponent<ISystemDeleteState> {
    * Renders the content containing data downloaded from the server.
    */
   private renderContent(state: ISystemDeleteState): JSX.Element {
-    if ((state.id ?? 0) < 1) {
+    if ((state.selectedSystem.id ?? 0) < 1) {
       return <p>No systems found</p>;
     }
 
     return (
-      <form
-        id="deleteSystem"
-        method="POST"
-        onSubmit={e => this.formOnSubmit(e)}>
+      <form id="deleteSystem" method="POST" onSubmit={e => this.formOnSubmit(e)}>
         <input type="hidden" name="action" value="DeleteSystem" />
         <input type="hidden" name="nonce" value="@nonce('deletesystem')" />
-        <input
-          type="hidden"
-          name="system_id"
-          value="{{ $system->getId() ?? '0' }}"
-        />
-        <input
-          type="hidden"
-          name="system_uuid"
-          value="{{ $system->getUUID() ?? '0' }}"
-        />
+        <input type="hidden" name="system_id" value="{{ $system->getId() ?? '0' }}" />
+        <input type="hidden" name="system_uuid" value="{{ $system->getUUID() ?? '0' }}" />
 
         <div className="-reveal">
           <span>System name</span>
-          <h5 className="-font-secondary -fw-700">{state.name ?? ''}</h5>
+          <h5 className="-font-secondary -fw-700">{state.selectedSystem.name ?? ''}</h5>
         </div>
 
         <div className="-reveal">
           <span>Creation date:</span>
           <h5 className="-font-secondary -fw-700 -pb-3">
-            {state.createdAt ?? '__unknown'}
+            {state.selectedSystem.createdAt ?? '__unknown'}
           </h5>
         </div>
 
@@ -180,8 +143,7 @@ export class SystemDelete extends RoutedPureComponent<ISystemDeleteState> {
             onChange={e => this.inputOnChange(e)}
           />
           <label htmlFor="acceptDelete">
-            Aware of the irreversibility of the changes, I want to delete the
-            saved data.
+            Aware of the irreversibility of the changes, I want to delete the saved data.
           </label>
         </div>
 
@@ -190,7 +152,7 @@ export class SystemDelete extends RoutedPureComponent<ISystemDeleteState> {
             Delete
           </button>
           <Link
-            to={'/dashboard/edit/' + state.guid ?? '#'}
+            to={'/dashboard/edit/' + state.selectedSystem.guid ?? '#'}
             className="btn btn-outline-dark btn-mobile">
             Cancel
           </Link>
@@ -200,10 +162,10 @@ export class SystemDelete extends RoutedPureComponent<ISystemDeleteState> {
   }
 
   /**
-   * The main method responsible for refreshing the view.
+   * The main method responsible for refreshing and rendering the view.
    */
   public render(): JSX.Element {
-    const contents = !this.state.systemLoaded ? (
+    const contents = !this.state.contentLoaded ? (
       <Loader center={false} />
     ) : (
       this.renderContent(this.state)
@@ -219,8 +181,8 @@ export class SystemDelete extends RoutedPureComponent<ISystemDeleteState> {
 
         <div className="col-12 -mb-3 -reveal">
           <strong>
-            Deleting the database records is irreversible, make sure you delete
-            the correct system.
+            Deleting the database records is irreversible, make sure you delete the
+            correct system.
           </strong>
         </div>
         <div className="col-12">{contents}</div>

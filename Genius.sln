@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Genius.Client", "Genius.Cli
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Genius.Protocol", "Genius.Protocol\Genius.Protocol.csproj", "{B53383EF-C2E8-4E6C-AA9A-0429881D6ADF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Genius.OAuth", "Genius.OAuth\Genius.OAuth.csproj", "{65BA37E6-AACC-4559-A18B-23A420282B37}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Genius.OAuth", "Genius.OAuth\Genius.OAuth.csproj", "{65BA37E6-AACC-4559-A18B-23A420282B37}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

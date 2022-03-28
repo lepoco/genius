@@ -75,6 +75,22 @@ export class ConditionsInput extends Component<
   }
 
   /**
+   * Sends a notification to the parent object.
+   */
+  public invokeOnUpdate(): boolean {
+    if (this.onUpdate === undefined) {
+      return false;
+    }
+
+    this.onUpdate(
+      this.state.conditionsSelected ?? [],
+      this.state.conditionsAvailable ?? [],
+    );
+
+    return true;
+  }
+
+  /**
    * Asynchronously gets data from the server.
    */
   private async populateData(): Promise<boolean> {
@@ -100,13 +116,7 @@ export class ConditionsInput extends Component<
     updatedList.push(condition);
 
     this.setState({ conditionsSelected: updatedList });
-
-    if (this.onUpdate !== undefined) {
-      this.onUpdate(
-        this.state.conditionsSelected ?? [],
-        this.state.conditionsAvailable ?? [],
-      );
-    }
+    this.invokeOnUpdate();
 
     return true;
   }
@@ -124,49 +134,72 @@ export class ConditionsInput extends Component<
     );
 
     this.setState({ conditionsSelected: updatedList });
-
-    if (this.onUpdate !== undefined) {
-      this.onUpdate(
-        this.state.conditionsSelected ?? [],
-        this.state.conditionsAvailable ?? [],
-      );
-    }
+    this.invokeOnUpdate();
 
     return true;
   }
 
   private async inputOnKeyPress(
     event: React.KeyboardEvent<HTMLInputElement>,
-  ): Promise<void> {
+  ): Promise<boolean> {
     if (event.key !== 'Enter') {
-      return;
+      return false;
     }
 
     event.preventDefault();
 
     if (this.state === undefined) {
-      return;
+      return false;
     }
 
     if (!(event.target instanceof HTMLInputElement)) {
-      return;
+      return false;
     }
 
     if (event.target.value.trim() === '') {
-      return;
+      return false;
     }
 
-    console.log(this.state);
+    const conditionName = event.target.value.trim();
 
-    let conditionName = event.target.value.trim();
+    let existingCondition: IExpertCondition | null = null;
+
+    // If condition already exist and have same name
+    this.state.conditionsAvailable.forEach(con => {
+      if (con.name === undefined) {
+        return;
+      }
+
+      if (con.name.toLowerCase() === conditionName.toLowerCase()) {
+        existingCondition = con;
+      }
+    });
+
+    if (existingCondition !== null) {
+      let updatedList = this.state.conditionsSelected;
+      updatedList.push(existingCondition);
+
+      this.setState({ conditionsSelected: updatedList });
+      this.invokeOnUpdate();
+
+      event.target.value = '';
+
+      console.debug(
+        '\\ConditionsInput\\inputOnKeyPress',
+        'This condition already exists.',
+      );
+
+      return true;
+    }
+
     let newCondition = new ExpertCondition(0, this.state.systemId, conditionName, '');
 
-    let newConditionId = await GeniusApi.addCondition(newCondition);
+    const newConditionId = await GeniusApi.addCondition(newCondition);
 
     // console.debug('\\FloatingTags\\inputOnKeyPress\\newConditionId', newConditionId);
 
     if (newConditionId < 1) {
-      return;
+      return false;
     }
 
     newCondition.id = newConditionId;
@@ -186,12 +219,9 @@ export class ConditionsInput extends Component<
       conditionsSelected: updatedSelectedList,
     });
 
-    if (this.onUpdate !== undefined) {
-      this.onUpdate(
-        this.state.conditionsSelected ?? [],
-        this.state.conditionsAvailable ?? [],
-      );
-    }
+    this.invokeOnUpdate();
+
+    return true;
   }
 
   private async inputOnChange(
@@ -239,7 +269,7 @@ export class ConditionsInput extends Component<
 
   private renderAvailableConditions(): JSX.Element {
     return (
-      <div className="floating-tags__list">
+      <div className="floating-tags__list -add">
         {this.state.conditionsAvailable.map((singleOption, i) => {
           let isSelected = false;
 
@@ -297,9 +327,7 @@ export class ConditionsInput extends Component<
               </div>
             </div>
 
-            <div className="floating-tags -add">
-              <div>{this.renderAvailableConditions()}</div>
-            </div>
+            <>{this.renderAvailableConditions()}</>
           </>
         )}
       </div>

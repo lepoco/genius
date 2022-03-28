@@ -122,7 +122,7 @@
 .floating-tags {
   position: relative;
   width: 100%;
-  height: 5rem;
+  min-height: 5rem;
   margin-bottom: 2rem;
 
   label {
@@ -142,8 +142,6 @@
 
   input {
     margin: 0;
-    // width: 100%;
-    padding: 1rem 0.5rem;
     background: transparent;
     border: 0;
     border: 0;
@@ -161,13 +159,10 @@
   }
 
   &__container {
-    position: absolute;
-    top: 0;
-    left: 0;
     z-index: 1;
     width: 100%;
     height: auto;
-    padding: 0 1rem;
+    padding: 1rem;
     background: transparent;
     color: #121212;
     border: 0.2rem solid #dadce0;
@@ -187,6 +182,10 @@
     display: inline-block;
     top: 1rem;
     left: 1.1rem;
+
+    &.-add {
+      margin-bottom: 2rem;
+    }
 
     .tag {
       display: inline-block;

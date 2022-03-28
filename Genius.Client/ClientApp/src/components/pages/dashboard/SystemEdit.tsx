@@ -41,7 +41,7 @@ class ProductWithConditions {
 }
 
 /**
- * It allows for editing the expert system.
+ * Allows for editing the expert system.
  */
 class SystemEdit extends RoutedPureComponent<ISystemEditState> {
   public static displayName: string = SystemEdit.name;
@@ -51,8 +51,6 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
   private editedProduct: ProductWithConditions = new ProductWithConditions();
 
   private conditionsCloud: ConditionsInput | null = null;
-
-  private productEditConditionsCloud: ConditionsInput | null = null;
 
   private productNameInput: HTMLInputElement | null = null;
 
@@ -339,8 +337,8 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
           return (
             <tr key={singleProduct.id ?? 0}>
               <th scope="row">{singleProduct.id ?? '0'}</th>
-              <td>{singleProduct.name ?? ''}</td>
-              <td>
+              <td className="-title">{singleProduct.name ?? ''}</td>
+              <td className="-ellipsis">
                 {(singleProduct.description ?? '') === '' ? (
                   '---'
                 ) : (

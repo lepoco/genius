@@ -85,9 +85,9 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
       systemProducts: [],
     };
 
+    this.formOnSubmit = this.formOnSubmit.bind(this);
     this.importButtonOnClick = this.importButtonOnClick.bind(this);
     this.importInputOnChange = this.importInputOnChange.bind(this);
-    this.editProductButtonOnClick = this.editProductButtonOnClick.bind(this);
     this.conditionsInputOnUpdate = this.conditionsInputOnUpdate.bind(this);
   }
 
@@ -181,61 +181,7 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
     return true;
   }
 
-  private async editProductButtonOnClick(
-    productId: number,
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ): Promise<boolean> {
-    if (
-      productId < 1 ||
-      this.productModal === null ||
-      this.state.systemProducts === undefined
-    )
-      return false;
-    if (this.state.systemProducts.length < 1) return false;
-
-    let selectedProduct = this.state.systemProducts.find(prod => prod.id === productId);
-
-    if (selectedProduct === undefined) return false;
-
-    console.debug('\\SystemEdit\\editProductButtonOnClick\\event', event);
-    console.debug(
-      '\\SystemEdit\\editProductButtonOnClick\\selectedProduct',
-      selectedProduct,
-    );
-
-    this.editedProduct.name = selectedProduct.name ?? '';
-    this.editedProduct.description = selectedProduct.description ?? '';
-    this.editedProduct.notes = selectedProduct.notes ?? '';
-
-    const productRelations = await GeniusApi.getProductRelations(selectedProduct.id ?? 0);
-
-    console.debug(
-      '\\SystemEdit\\editProductButtonOnClick\\productRelations',
-      productRelations,
-    );
-
-    //this.editedProduct.conditions =
-
-    this.productModal.show();
-
-    return true;
-  }
-
-  private handleInputChange(event): void {
-    const target = event.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
-    const name = target.name;
-
-    this.setState({
-      [name]: value,
-    });
-  }
-
-  private async handleUpdateProductSubmit(event): Promise<boolean> {
-    return false;
-  }
-
-  private async formOnSubmit(event): Promise<boolean> {
+  private async formOnSubmit(event: React.FormEvent<HTMLFormElement>): Promise<boolean> {
     event.preventDefault();
 
     if (this.state.systemId === undefined) {
@@ -257,6 +203,8 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
       this.newProduct.description,
       this.newProduct.notes,
     );
+
+    console.debug('\\SystemEdit\\formOnSubmit\\productToAdd', productToAdd);
 
     let apiResult = await GeniusApi.addProductWithConditions(
       productToAdd,
@@ -416,7 +364,7 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
         </div>
 
         <div className="col-12">
-          <form id="addProduct" method="POST" onSubmit={this.formOnSubmit.bind(this)}>
+          <form method="POST" onSubmit={e => this.formOnSubmit(e)}>
             <h5 className="-font-secondary -fw-700 -pb-1 -reveal">New product</h5>
 
             <div className="-reveal">

@@ -101,14 +101,25 @@ export class Product extends RoutedPureComponent<IProductState> {
     console.debug('\\Product\\populateData\\productRelations', productRelations);
 
     let selectedProductConfirmingRelations: number[] = productRelations.confirming;
+    let selectedConditionsFromRelations: number[] = [];
     let selectedProductConditions: IExpertCondition[] = [];
+
+    system.systemRelations?.forEach(rel => {
+      if (rel.id === undefined || rel.id < 1) {
+        return;
+      }
+
+      if (selectedProductConfirmingRelations.includes(rel.id) && rel.conditionId !== undefined && rel.conditionId > 0) {
+        selectedConditionsFromRelations.push(rel.conditionId);
+      }
+    });
 
     system.systemConditions?.forEach(con => {
       if (con.id === undefined || con.id < 1) {
         return;
       }
 
-      if (selectedProductConfirmingRelations.includes(con.id)) {
+      if (selectedConditionsFromRelations.includes(con.id)) {
         selectedProductConditions.push(con);
       }
     });

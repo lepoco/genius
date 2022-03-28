@@ -120,8 +120,7 @@ class System extends RoutedComponent<IExpertRunState> {
 
   private validateQuestion(): void {
     this.setState({
-      isConditional:
-        this.state.systemQuestion?.includes('{condition}') ?? false,
+      isConditional: this.state.systemQuestion?.includes('{condition}') ?? false,
     });
   }
 
@@ -207,10 +206,7 @@ class System extends RoutedComponent<IExpertRunState> {
 
     console.debug('\\System\\handleSubmitClick\\conditionType', conditionType);
     console.debug('\\System\\handleSubmitClick\\event', event);
-    console.debug(
-      '\\System\\handleSubmitClick\\solverResponse',
-      solverResponse,
-    );
+    console.debug('\\System\\handleSubmitClick\\solverResponse', solverResponse);
   }
 
   private replaceQuestionCondition(question: string): string {
@@ -233,9 +229,7 @@ class System extends RoutedComponent<IExpertRunState> {
                 <strong>{this.state.systemQuestion ?? ''}</strong>
               </p>
               <h4 className="-font-secondary -fw-700 -pb-3">
-                <span className="--current_condition">
-                  {this.state.currentQuestion}
-                </span>
+                <span className="--current_condition">{this.state.currentQuestion}</span>
               </h4>
             </div>
           )}
@@ -273,10 +267,7 @@ class System extends RoutedComponent<IExpertRunState> {
             <strong>
               <i>
                 Found {this.solverState.solvedProducts.length}{' '}
-                {this.solverState.solvedProducts.length > 1
-                  ? 'results'
-                  : 'result'}
-                .
+                {this.solverState.solvedProducts.length > 1 ? 'results' : 'result'}.
               </i>
             </strong>
           </p>
@@ -299,7 +290,12 @@ class System extends RoutedComponent<IExpertRunState> {
                 {(singleProduct.notes ?? '') === '' ? (
                   false
                 ) : (
-                  <p>{singleProduct.notes}</p>
+                  <div>
+                    <span>
+                      <strong className="-font-secondary -fw-700">Notes:</strong>
+                    </span>
+                    <p>{singleProduct.notes}</p>
+                  </div>
                 )}
 
                 {i > 0 ? <hr /> : false}
@@ -308,11 +304,12 @@ class System extends RoutedComponent<IExpertRunState> {
           })}
         </div>
         <div className="-pt-3">
-          <Link
-            to={'/dashboard/sys/' + this.state.systemGuid ?? '#'}
+          <button
+            type="button"
+            onClick={e => this.reload()}
             className="btn btn-outline-dark btn-mobile">
             Restart
-          </Link>
+          </button>
         </div>
       </div>
     );
@@ -331,9 +328,7 @@ class System extends RoutedComponent<IExpertRunState> {
       );
     }
 
-    let contents = this.state.isSolved
-      ? this.renderResults()
-      : this.renderQuestionForm();
+    let contents = this.state.isSolved ? this.renderResults() : this.renderQuestionForm();
 
     return (
       <div className="row">

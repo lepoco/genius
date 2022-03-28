@@ -105,6 +105,8 @@ export class ConditionsInput extends Component<
   }
 
   private async addCondition(conditionName: string): Promise<boolean> {
+    console.debug('\\ConditionsInput\\addCondition', conditionName);
+
     let existingCondition: IExpertCondition | null = null;
 
     // If condition already exist and have same name
@@ -123,8 +125,6 @@ export class ConditionsInput extends Component<
       updatedList.push(existingCondition);
 
       this.setState({ conditionsSelected: updatedList });
-      this.invokeOnUpdate();
-
       console.debug('\\ConditionsInput\\addCondition', 'This condition already exists.');
 
       return true;
@@ -152,8 +152,6 @@ export class ConditionsInput extends Component<
       conditionsAvailable: updatedOptionsList,
       conditionsSelected: updatedSelectedList,
     });
-
-    this.invokeOnUpdate();
 
     return true;
   }
@@ -210,18 +208,20 @@ export class ConditionsInput extends Component<
       return false;
     }
 
-    if (event.target.value.trim() === '') {
-      return false;
-    }
-
     const inputValue = event.target.value.trim();
     const conditions = inputValue.split(',');
 
-    conditions.forEach(con => {
-      this.addCondition(con.trim());
-    });
+    if (inputValue === '') {
+      return false;
+    }
+
+    for (const condition of conditions) {
+      await this.addCondition(condition.trim());
+    }
 
     event.target.value = '';
+
+    this.invokeOnUpdate();
 
     return true;
   }

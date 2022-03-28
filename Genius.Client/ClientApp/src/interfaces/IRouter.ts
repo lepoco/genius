@@ -5,10 +5,11 @@
  * All Rights Reserved.
  */
 
-import { NavigateFunction, Params, Location } from 'react-router-dom';
+import { Navigator, NavigateFunction, Params, Location } from 'react-router-dom';
 
 export default interface IRouter {
   location: Location;
   navigate: NavigateFunction;
   params: Params<any>;
+  navigator: Navigator;
 }

@@ -24,10 +24,10 @@ export default class Privacy extends PureComponent {
       <div className="container -pt-5">
         <div className="row">
           <div className="col-12">
-            <h4 className="-font-secondary -fw-700 -pb-3 -reveal">Privacy</h4>
+            <h4 className="-font-secondary -fw-700 -pb-3">Privacy</h4>
           </div>
 
-          <div className="col-12 -mb-5 -reveal">
+          <div className="col-12 -mb-5">
             <p>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
               tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,

@@ -308,7 +308,7 @@ export class ConditionsInput extends Component<
           <p>Loading...</p>
         ) : (
           <>
-            <div className="floating-tags -reveal">
+            <div className="floating-tags">
               <label htmlFor={this.state.inputName.toLowerCase()}>
                 {this.state.inputName}
               </label>

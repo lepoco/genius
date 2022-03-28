@@ -41,10 +41,10 @@ export class Account extends RoutedPureComponent<IAccountState> {
       <div className="dashboard container -mt-5 -mb-5">
         <div className="row">
           <div className="col-12">
-            <h4 className="-font-secondary -fw-700 -pb-3 -reveal">Account</h4>
+            <h4 className="-font-secondary -fw-700 -pb-3">Account</h4>
           </div>
           <div className="col-12 dashboard__section">
-            <div className="dashboard__banner h-100 p-5 bg-light -rounded-2 -reveal">
+            <div className="dashboard__banner h-100 p-5 bg-light -rounded-2">
               <div className="dashboard__banner__picture">
                 <img
                   className="editable__picture"
@@ -66,7 +66,7 @@ export class Account extends RoutedPureComponent<IAccountState> {
               <input type="hidden" name="nonce" value="account_nonce" />
               <input type="hidden" name="id" value="user_id" />
 
-              <div className="floating-input -reveal">
+              <div className="floating-input">
                 <input
                   disabled={true}
                   className="floating-input__field -keep-disabled"
@@ -78,7 +78,7 @@ export class Account extends RoutedPureComponent<IAccountState> {
                 <label htmlFor="email">Email</label>
               </div>
 
-              <div className="floating-input -reveal">
+              <div className="floating-input">
                 <input
                   className="floating-input__field"
                   type="text"
@@ -89,7 +89,7 @@ export class Account extends RoutedPureComponent<IAccountState> {
                 <label htmlFor="displayname">Display name</label>
               </div>
 
-              <div className="floating-input -reveal">
+              <div className="floating-input">
                 <select
                   className="floating-input__field"
                   placeholder="Language"
@@ -101,7 +101,7 @@ export class Account extends RoutedPureComponent<IAccountState> {
                 <label htmlFor="language">Language</label>
               </div>
 
-              <div className="floating-input -reveal">
+              <div className="floating-input">
                 <input
                   className="floating-input__field"
                   type="file"
@@ -112,7 +112,7 @@ export class Account extends RoutedPureComponent<IAccountState> {
                 <label htmlFor="picture">Profile picture</label>
               </div>
 
-              <div className="-pb-1 -reveal">
+              <div className="-pb-1">
                 <button type="submit" className="btn btn-dark btn-mobile -lg-mr-1">
                   Update
                 </button>

@@ -78,7 +78,7 @@ export class SystemAdd extends RoutedPureComponent<ISystemAddState> {
       <div className="dashboard container pt-5 pb-5">
         <div className="row">
           <div className="col-12">
-            <h4 className="-font-secondary -fw-700 -pb-3 -reveal">Add</h4>
+            <h4 className="-font-secondary -fw-700 -pb-3">Add</h4>
           </div>
           <div className="col-12">
             <form
@@ -87,11 +87,11 @@ export class SystemAdd extends RoutedPureComponent<ISystemAddState> {
               onSubmit={this.handleSubmit.bind(this)}>
               <input type="hidden" name="nonce" readOnly value="addsystem" />
 
-              <h5 className="-font-secondary -fw-700 -pb-1 -reveal">
+              <h5 className="-font-secondary -fw-700 -pb-1">
                 New expert system
               </h5>
 
-              <div className="floating-input -reveal">
+              <div className="floating-input">
                 <input
                   className="floating-input__field"
                   type="text"
@@ -103,7 +103,7 @@ export class SystemAdd extends RoutedPureComponent<ISystemAddState> {
                 <label htmlFor="systemName">Name</label>
               </div>
 
-              <div className="floating-input -reveal">
+              <div className="floating-input">
                 <input
                   className="floating-input__field"
                   type="text"
@@ -115,7 +115,7 @@ export class SystemAdd extends RoutedPureComponent<ISystemAddState> {
                 <label htmlFor="systemDescription">Description</label>
               </div>
 
-              <div className="floating-input -reveal">
+              <div className="floating-input">
                 <select
                   id="systemType"
                   data-selected="fuzzy"
@@ -136,7 +136,7 @@ export class SystemAdd extends RoutedPureComponent<ISystemAddState> {
                 <hr />
               </div>
 
-              <div className="floating-input -reveal">
+              <div className="floating-input">
                 <input
                   className="floating-input__field"
                   type="text"
@@ -148,7 +148,7 @@ export class SystemAdd extends RoutedPureComponent<ISystemAddState> {
                 <label htmlFor="systemQuestion">Primary question</label>
               </div>
 
-              <div className="-mb-3 -reveal">
+              <div className="-mb-3">
                 <i>
                   Main question is displayed during system running. Presents the
                   name of the condition inside the bracket

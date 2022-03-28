@@ -24,7 +24,7 @@ export default class Terms extends PureComponent {
       <div className="container -pt-5">
         <div className="row">
           <div className="col-12">
-            <h4 className="-font-secondary -fw-700 -pb-3 -reveal">
+            <h4 className="-font-secondary -fw-700 -pb-3">
               Terms and Conditions
             </h4>
           </div>

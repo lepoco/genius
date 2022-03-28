@@ -346,7 +346,7 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
             </h5>
           </div>
 
-          <div className="-mb-3 -reveal">
+          <div className="-mb-3">
             <a
               href={'/api/export/' + state.guid ?? '#'}
               className="btn btn-dark btn-mobile -lg-mr-1 -btn-export">
@@ -369,7 +369,7 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
 
         <div className="col-12">
           <form method="POST" onSubmit={e => this.formOnSubmit(e)}>
-            <h5 className="-font-secondary -fw-700 -pb-1 -reveal">New product</h5>
+            <h5 className="-font-secondary -fw-700 -pb-1">New product</h5>
 
             <div className="-reveal">
               <p>
@@ -379,7 +379,7 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
               </p>
             </div>
 
-            <div className="floating-input -reveal">
+            <div className="floating-input">
               <input
                 className="floating-input__field"
                 type="text"
@@ -396,7 +396,7 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
               <label htmlFor="product_name">Name</label>
             </div>
 
-            <div className="floating-input -reveal">
+            <div className="floating-input">
               <input
                 className="floating-input__field"
                 type="text"
@@ -413,7 +413,7 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
               <label htmlFor="product_description">Description</label>
             </div>
 
-            <div className="floating-input -reveal">
+            <div className="floating-input">
               <input
                 className="floating-input__field"
                 type="text"
@@ -469,7 +469,7 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
         </div>
 
         <div className="col-12">
-          <h5 className="-font-secondary -fw-700 -pb-1 -reveal">Products</h5>
+          <h5 className="-font-secondary -fw-700 -pb-1">Products</h5>
         </div>
 
         <div className="col-12">
@@ -507,7 +507,7 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
         <div className="dashboard container pt-5 pb-5">
           <div className="row">
             <div className="col-12">
-              <h4 className="-font-secondary -fw-700 -pb-3 -reveal">Edit</h4>
+              <h4 className="-font-secondary -fw-700 -pb-3">Edit</h4>
             </div>
           </div>
 

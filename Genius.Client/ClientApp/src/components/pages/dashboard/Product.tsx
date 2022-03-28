@@ -173,7 +173,7 @@ export class Product extends RoutedPureComponent<IProductState> {
         </div>
         <div className="col-12">
           <form onSubmit={e => this.formOnSubmit(e)}>
-            <div className="floating-input -reveal">
+            <div className="floating-input">
               <input
                 className="floating-input__field"
                 type="text"
@@ -187,7 +187,7 @@ export class Product extends RoutedPureComponent<IProductState> {
               <label htmlFor="product_name">Name</label>
             </div>
 
-            <div className="floating-input -reveal">
+            <div className="floating-input">
               <input
                 className="floating-input__field"
                 type="text"
@@ -201,7 +201,7 @@ export class Product extends RoutedPureComponent<IProductState> {
               <label htmlFor="product_description">Description</label>
             </div>
 
-            <div className="floating-input -reveal">
+            <div className="floating-input">
               <input
                 className="floating-input__field"
                 type="text"
@@ -253,7 +253,7 @@ export class Product extends RoutedPureComponent<IProductState> {
         <div className="dashboard container pt-5 pb-5">
           <div className="row">
             <div className="col-12">
-              <h4 className="-font-secondary -fw-700 -pb-3 -reveal">Edit product</h4>
+              <h4 className="-font-secondary -fw-700 -pb-3">Edit product</h4>
             </div>
           </div>
 

@@ -133,7 +133,7 @@ export class SystemDelete extends RoutedPureComponent<ISystemDeleteState> {
           </h5>
         </div>
 
-        <div className="form-check -reveal -mb-2">
+        <div className="form-check -mb-2">
           <input
             type="checkbox"
             className="form-check-input"
@@ -174,12 +174,12 @@ export class SystemDelete extends RoutedPureComponent<ISystemDeleteState> {
     return (
       <div className="row">
         <div className="col-12">
-          <h4 className="-font-secondary -fw-700 -pb-3 -reveal">
+          <h4 className="-font-secondary -fw-700 -pb-3">
             Remove the expert system
           </h4>
         </div>
 
-        <div className="col-12 -mb-3 -reveal">
+        <div className="col-12 -mb-3">
           <strong>
             Deleting the database records is irreversible, make sure you delete the
             correct system.

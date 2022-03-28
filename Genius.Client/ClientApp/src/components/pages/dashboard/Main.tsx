@@ -63,7 +63,7 @@ export class Main extends RoutedPureComponent<IMainState> {
         {systems.map(system => (
           <div
             key={system.id ?? 0}
-            className="col-12 dashboard__section -mb-3 -reveal">
+            className="col-12 dashboard__section -mb-3">
             <div className="dashboard__banner h-100 p-5 bg-light -rounded-2">
               <div style={{ width: '100%' }}>
                 <h4>{system.name ?? ''}</h4>
@@ -116,7 +116,7 @@ export class Main extends RoutedPureComponent<IMainState> {
       <div className="dashboard container pt-5 pb-5">
         <div className="row">
           <div className="col-12">
-            <h4 className="-font-secondary -fw-700 -pb-3 -reveal">Dashboard</h4>
+            <h4 className="-font-secondary -fw-700 -pb-3">Dashboard</h4>
           </div>
         </div>
 

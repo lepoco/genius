@@ -24,7 +24,7 @@ export default class Licenses extends PureComponent {
       <div className="container -pt-5">
         <div className="row">
           <div className="col-12">
-            <h4 className="-font-secondary -fw-700 -pb-3 -reveal">Licenses</h4>
+            <h4 className="-font-secondary -fw-700 -pb-3">Licenses</h4>
           </div>
 
           <div className="col-12 -mb-5">

@@ -336,7 +336,7 @@ class System extends RoutedComponent<IExpertRunState> {
     return (
       <div className="row">
         <div className="col-12 -mb-3">
-          <h4 className="-font-secondary -fw-700 -reveal">
+          <h4 className="-font-secondary -fw-700">
             {this.state.name ?? ''}
           </h4>
           <p className="-reveal">{this.state.description ?? ''}</p>

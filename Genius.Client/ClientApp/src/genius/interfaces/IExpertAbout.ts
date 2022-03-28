@@ -6,31 +6,26 @@
  */
 
 /**
- * Represents an expert system product.
+ * Represents additional information about the expert system.
  */
-export default interface IExpertProduct {
+export default interface IExpertAbout {
   /**
-   * Product identifier.
+   * Expert system identifier.
    */
   id: number;
 
   /**
-   * Expert system identifier.
+   * Number of products in a given system.
    */
-  systemId: number;
+  products: number;
 
   /**
-   * Product name.
+   * Number of conditions in a given system.
    */
-  name: string;
+  conditions: number;
 
   /**
-   * Product description.
+   * Number of relations in a given system.
    */
-  description: string;
-
-  /**
-   * Product notes.
-   */
-  notes: string;
+  relations: number;
 }

@@ -8,13 +8,13 @@ import IExpertCondition from './IExpertCondition';
 import IExpertProduct from './IExpertProduct';
 
 export default interface ISolverResponse {
-  systemId?: number;
+  systemId: number;
 
-  isSolved?: boolean;
+  isSolved: boolean;
 
-  status?: number;
+  status: number;
 
-  nextCondition?: IExpertCondition;
+  nextCondition: IExpertCondition;
 
-  products?: IExpertProduct[];
+  products: IExpertProduct[];
 }

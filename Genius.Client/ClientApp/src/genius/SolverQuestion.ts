@@ -8,13 +8,27 @@ import ISolverQuestion from './interfaces/ISolverQuestion';
 import IExpertCondition from './interfaces/IExpertCondition';
 
 export default class SolverQuestion implements ISolverQuestion {
-  public systemId: number = 0;
+  public systemId: number;
 
-  public multiple: boolean = false;
+  public multiple: boolean;
 
-  public confirming: IExpertCondition[] = [];
+  public confirming: IExpertCondition[];
 
-  public negating: IExpertCondition[] = [];
+  public negating: IExpertCondition[];
 
-  public indifferent: IExpertCondition[] = [];
+  public indifferent: IExpertCondition[];
+
+  public constructor(
+    systemId: number = 0,
+    multiple: boolean = false,
+    confirming: IExpertCondition[] = [],
+    negating: IExpertCondition[] = [],
+    indifferent: IExpertCondition[] = [],
+  ) {
+    this.systemId = systemId;
+    this.multiple = multiple;
+    this.confirming = confirming;
+    this.negating = negating;
+    this.indifferent = indifferent;
+  }
 }

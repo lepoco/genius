@@ -12,16 +12,19 @@ import IExpertProduct from './interfaces/IExpertProduct';
 
 export default class ExpertPageState implements IExpertPageState {
   public systemLoaded: boolean = false;
-  public systemId: number = 0;
-  public systemGuid: string = '';
-  public systemVersion: string = '';
-  public systemName: string = '';
-  public systemDescription: string = '';
-  public systemType: string = '';
-  public systemQuestion: string = '';
-  public systemCreatedAt: string = '';
-  public systemUpdatedAt: string = '';
-  public systemConditions: IExpertCondition[] = [];
-  public systemProducts: IExpertProduct[] = [];
-  public systemRelations: IExpertRelation[] = [];
+  public id: number = 0;
+  public guid: string = '';
+  public version: string = '';
+  public name: string = '';
+  public description: string = '';
+  public type: string = '';
+  public question: string = '';
+  public createdAt: string = '';
+  public updatedAt: string = '';
+  public conditions: IExpertCondition[] = [];
+  public products: IExpertProduct[] = [];
+  public relations: IExpertRelation[] = [];
+  public productsCount: number = 0;
+  public conditionsCount: number = 0;
+  public relationsCount: number = 0;
 }

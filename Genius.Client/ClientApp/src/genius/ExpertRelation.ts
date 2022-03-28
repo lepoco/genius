@@ -7,15 +7,22 @@
 
 import IExpertRelation from './interfaces/IExpertRelation';
 
+/**
+ * Represents an expert system relation between Product and Condition.
+ */
 export default class ExpertRelation implements IExpertRelation {
-  public id: number = 0;
-  public systemId: number = 0;
-  public conditionId: number = 0;
-  public productId: number = 0;
-  public weight: number = 100;
+  public id: number;
+
+  public systemId: number;
+
+  public conditionId: number;
+
+  public productId: number;
+
+  public weight: number;
 
   public constructor(
-    id: number,
+    id: number = 0,
     systemId: number = 0,
     conditionId: number = 0,
     productId: number = 0,

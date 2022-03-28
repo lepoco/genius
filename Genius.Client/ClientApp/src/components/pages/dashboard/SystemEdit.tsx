@@ -72,17 +72,21 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
     this.state = {
       importing: false,
       systemLoaded: false,
-      systemId: 0,
-      systemGuid: '',
-      systemVersion: '',
-      systemName: '',
-      systemDescription: '',
-      systemType: '',
-      systemQuestion: '',
-      systemCreatedAt: '',
-      systemUpdatedAt: '',
-      systemConditions: [],
-      systemProducts: [],
+      id: 0,
+      guid: '',
+      version: '',
+      name: '',
+      description: '',
+      type: '',
+      question: '',
+      createdAt: '',
+      updatedAt: '',
+      conditions: [],
+      products: [],
+      relations: [],
+      productsCount: 0,
+      conditionsCount: 0,
+      relationsCount: 0,
     };
 
     this.formOnSubmit = this.formOnSubmit.bind(this);
@@ -112,18 +116,18 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
     this.setState({
       systemLoaded: true,
 
-      systemId: system.systemId ?? 0,
-      systemVersion: system.systemVersion ?? '',
-      systemName: system.systemName ?? '',
-      systemDescription: system.systemDescription ?? '',
-      systemGuid: system.systemGuid ?? '',
-      systemQuestion: system.systemQuestion ?? '',
-      systemType: system.systemType ?? '',
-      systemCreatedAt: system.systemCreatedAt ?? '',
-      systemUpdatedAt: system.systemUpdatedAt ?? '',
-      systemConditions: system.systemConditions ?? [],
-      systemProducts: system.systemProducts ?? [],
-      systemRelations: system.systemRelations ?? [],
+      id: system.id ?? 0,
+      version: system.version ?? '',
+      name: system.name ?? '',
+      description: system.description ?? '',
+      guid: system.guid ?? '',
+      question: system.question ?? '',
+      type: system.type ?? '',
+      createdAt: system.createdAt ?? '',
+      updatedAt: system.updatedAt ?? '',
+      conditions: system.conditions ?? [],
+      products: system.products ?? [],
+      relations: system.relations ?? [],
     });
 
     return true;
@@ -169,7 +173,7 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
     // }
 
     const importResponse = await GeniusApi.importFromFile(
-      new ImportRequest(this.state.systemId ?? 0, selectedFile),
+      new ImportRequest(this.state.id ?? 0, selectedFile),
     );
 
     console.log(importResponse);
@@ -184,11 +188,11 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
   private async formOnSubmit(event: React.FormEvent<HTMLFormElement>): Promise<boolean> {
     event.preventDefault();
 
-    if (this.state.systemId === undefined) {
+    if (this.state.id === undefined) {
       return false;
     }
 
-    if (this.newProduct.name === '' || this.state.systemId < 1) {
+    if (this.newProduct.name === '' || this.state.id < 1) {
       return false;
     }
 
@@ -198,7 +202,7 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
 
     let productToAdd = new ExpertProduct(
       0,
-      this.state.systemId,
+      this.state.id,
       this.newProduct.name,
       this.newProduct.description,
       this.newProduct.notes,
@@ -217,17 +221,17 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
 
     productToAdd.id = apiResult;
 
-    let currentProducts = this.state.systemProducts;
+    let currentProducts = this.state.products;
     currentProducts?.push(productToAdd);
 
-    let updatedRelations = await GeniusApi.getSystemRelations(this.state.systemId);
+    let updatedRelations = await GeniusApi.getSystemRelations(this.state.id);
 
     this.setState({
-      systemRelations: updatedRelations,
-      systemProducts: currentProducts,
+      relations: updatedRelations,
+      products: currentProducts,
     });
 
-    console.debug('\\SystemEdit\\formOnSubmit\\relations', this.state.systemRelations);
+    console.debug('\\SystemEdit\\formOnSubmit\\relations', this.state.relations);
 
     this.resetForm();
 
@@ -263,7 +267,7 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
   }
 
   private renderProductsTable(): JSX.Element {
-    let products: IExpertProduct[] = this.state.systemProducts ?? [];
+    let products: IExpertProduct[] = this.state.products ?? [];
 
     if (products.length < 1) {
       return (
@@ -305,7 +309,7 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
                 <Link
                   to={
                     '/dashboard/product/' +
-                    (this.state.systemGuid ?? '0') +
+                    (this.state.guid ?? '0') +
                     '/' +
                     (singleProduct.id ?? '0')
                   }
@@ -324,7 +328,7 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
    * Renders the content containing data downloaded from the server.
    */
   private renderContent(state: IExpertPageState): JSX.Element {
-    if ((state.systemId ?? 0) < 1) {
+    if ((state.id ?? 0) < 1) {
       return <p>No systems found</p>;
     }
 
@@ -333,18 +337,18 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
         <div className="col-12">
           <div className="-reveal">
             <span>System name</span>
-            <h5 className="-font-secondary -fw-700">{state.systemName ?? ''}</h5>
+            <h5 className="-font-secondary -fw-700">{state.name ?? ''}</h5>
           </div>
           <div className="-reveal">
             <span>Creation date:</span>
             <h5 className="-font-secondary -fw-700 -pb-3">
-              {state.systemCreatedAt ?? '__unknown'}
+              {state.createdAt ?? '__unknown'}
             </h5>
           </div>
 
           <div className="-mb-3 -reveal">
             <a
-              href={'/api/export/' + state.systemGuid ?? '#'}
+              href={'/api/export/' + state.guid ?? '#'}
               className="btn btn-dark btn-mobile -lg-mr-1 -btn-export">
               Export
             </a>
@@ -353,7 +357,7 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
               onClick={e => this.importButtonOnClick(e)}>
               Import
             </button>
-            <Link to={'/dashboard/delete/' + state.systemGuid ?? '#'}>
+            <Link to={'/dashboard/delete/' + state.guid ?? '#'}>
               Remove the expert system
             </Link>
           </div>
@@ -441,7 +445,7 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
               ref={element => {
                 this.conditionsCloud = element;
               }}
-              systemId={this.state.systemId ?? 0}
+              systemId={this.state.id ?? 0}
               conditionsSelected={[]}
               onUpdate={this.conditionsInputOnUpdate}
             />

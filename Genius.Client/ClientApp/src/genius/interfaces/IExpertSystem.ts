@@ -8,18 +8,23 @@ import IExpertCondition from './IExpertCondition';
 import IExpertProduct from './IExpertProduct';
 import IExpertRelation from './IExpertRelation';
 
+/**
+ * Represents the expert system.
+ */
 export default interface IExpertSystem {
-  systemId?: number;
-  systemGuid?: string;
-  systemVersion?: string;
-  systemName?: string;
-  systemDescription?: string;
-  systemType?: string;
-  systemQuestion?: string;
-  systemCreatedAt?: string;
-  systemUpdatedAt?: string;
-
-  systemConditions?: IExpertCondition[];
-  systemProducts?: IExpertProduct[];
-  systemRelations?: IExpertRelation[];
+  id: number;
+  guid: string;
+  version: string;
+  name: string;
+  description: string;
+  type: string;
+  question: string;
+  createdAt: string;
+  updatedAt: string;
+  products: IExpertProduct[];
+  conditions: IExpertCondition[];
+  relations: IExpertRelation[];
+  productsCount: number;
+  conditionsCount: number;
+  relationsCount: number;
 }

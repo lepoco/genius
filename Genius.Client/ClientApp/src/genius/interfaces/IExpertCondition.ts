@@ -5,9 +5,27 @@
  * All Rights Reserved.
  */
 
+/**
+ * Represents an expert system condition.
+ */
 export default interface IExpertCondition {
-  id?: number;
-  system_id?: number;
-  name?: string;
-  description?: string;
+  /**
+   * Condition identifier.
+   */
+  id: number;
+
+  /**
+   * Expert system identifier.
+   */
+  systemId: number;
+
+  /**
+   * Condition name.
+   */
+  name: string;
+
+  /**
+   * Condition description.
+   */
+  description: string;
 }

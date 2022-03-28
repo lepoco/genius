@@ -7,20 +7,26 @@
 
 import IExpertCondition from './interfaces/IExpertCondition';
 
+/**
+ * Represents an expert system condition.
+ */
 export default class ExpertCondition implements IExpertCondition {
   public id: number = 0;
-  public system_id: number = 0;
+
+  public systemId: number = 0;
+
   public name: string = '';
+
   public description: string = '';
 
   public constructor(
-    id: number,
-    system_id: number = 0,
+    id: number = 0,
+    systemId: number = 0,
     name: string = '',
     description: string = '',
   ) {
     this.id = id;
-    this.system_id = system_id;
+    this.systemId = systemId;
     this.name = name;
     this.description = description;
   }

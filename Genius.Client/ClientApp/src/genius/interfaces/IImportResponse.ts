@@ -5,9 +5,9 @@
  * All Rights Reserved.
  */
 export default interface IImportResponse {
-  systemId?: number;
+  systemId: number;
 
-  success?: boolean;
+  success: boolean;
 
-  message?: string;
+  message: string;
 }

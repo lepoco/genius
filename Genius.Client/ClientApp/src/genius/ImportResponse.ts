@@ -8,9 +8,19 @@
 import IImportResponse from './interfaces/IImportResponse';
 
 export default class ImportResponse implements IImportResponse {
-  public systemId?: number = 0;
+  public systemId: number;
 
-  public success?: boolean = false;
+  public success: boolean;
 
-  public message?: string = '';
+  public message: string;
+
+  public constructor(
+    systemId: number = 0,
+    success: boolean = false,
+    message: string = '',
+  ) {
+    this.systemId = systemId;
+    this.success = success;
+    this.message = message;
+  }
 }

@@ -12,6 +12,7 @@ import withRouter from '../../../common/withRouter';
 import IRouterProps from '../../../interfaces/IRouterProps';
 import IExpertPageState from '../../../genius/interfaces/IExpertPageState';
 import GeniusApi from '../../../genius/GeniusApi';
+import { isBooleanObject } from 'util/types';
 
 /**
  * Represents the variables contained in the component state.
@@ -39,17 +40,21 @@ export class SystemDelete extends RoutedPureComponent<ISystemDeleteState> {
     this.state = {
       acceptDelete: false,
       systemLoaded: false,
-      systemId: 0,
-      systemGuid: '',
-      systemVersion: '',
-      systemName: '',
-      systemDescription: '',
-      systemType: '',
-      systemQuestion: '',
-      systemCreatedAt: '',
-      systemUpdatedAt: '',
-      systemConditions: [],
-      systemProducts: [],
+      id: 0,
+      guid: '',
+      version: '',
+      name: '',
+      description: '',
+      type: '',
+      question: '',
+      createdAt: '',
+      updatedAt: '',
+      conditions: [],
+      products: [],
+      relations: [],
+      productsCount: 0,
+      conditionsCount: 0,
+      relationsCount: 0,
     };
 
     this.formOnSubmit = this.formOnSubmit.bind(this);
@@ -72,15 +77,15 @@ export class SystemDelete extends RoutedPureComponent<ISystemDeleteState> {
     const data = await response.json();
 
     this.setState({
-      systemId: data.id ?? 0,
-      systemVersion: data.version ?? '',
-      systemName: data.name ?? '',
-      systemDescription: data.description ?? '',
-      systemGuid: data.guid ?? '',
-      systemQuestion: data.question ?? '',
-      systemType: data.type ?? '',
-      systemCreatedAt: data.createdAt ?? '',
-      systemUpdatedAt: data.updatedAt ?? '',
+      id: data.id ?? 0,
+      version: data.version ?? '',
+      name: data.name ?? '',
+      description: data.description ?? '',
+      guid: data.guid ?? '',
+      question: data.question ?? '',
+      type: data.type ?? '',
+      createdAt: data.createdAt ?? '',
+      updatedAt: data.updatedAt ?? '',
       systemLoaded: true,
     });
 
@@ -94,6 +99,7 @@ export class SystemDelete extends RoutedPureComponent<ISystemDeleteState> {
     const value = target.type === 'checkbox' ? target.checked : target.value;
     const name = target.name;
 
+    // @ts-ignore
     this.setState({
       [name]: value,
     });
@@ -115,7 +121,7 @@ export class SystemDelete extends RoutedPureComponent<ISystemDeleteState> {
       return false;
     }
 
-    let apiResult = await GeniusApi.deleteSystem(this.state.systemId ?? 0);
+    let apiResult = await GeniusApi.deleteSystem(this.state.id ?? 0);
 
     console.debug('\\SystemDelete\\formOnSubmit', apiResult);
 
@@ -130,7 +136,7 @@ export class SystemDelete extends RoutedPureComponent<ISystemDeleteState> {
    * Renders the content containing data downloaded from the server.
    */
   private renderContent(state: ISystemDeleteState): JSX.Element {
-    if ((state.systemId ?? 0) < 1) {
+    if ((state.id ?? 0) < 1) {
       return <p>No systems found</p>;
     }
 
@@ -154,13 +160,13 @@ export class SystemDelete extends RoutedPureComponent<ISystemDeleteState> {
 
         <div className="-reveal">
           <span>System name</span>
-          <h5 className="-font-secondary -fw-700">{state.systemName ?? ''}</h5>
+          <h5 className="-font-secondary -fw-700">{state.name ?? ''}</h5>
         </div>
 
         <div className="-reveal">
           <span>Creation date:</span>
           <h5 className="-font-secondary -fw-700 -pb-3">
-            {state.systemCreatedAt ?? '__unknown'}
+            {state.createdAt ?? '__unknown'}
           </h5>
         </div>
 
@@ -184,7 +190,7 @@ export class SystemDelete extends RoutedPureComponent<ISystemDeleteState> {
             Delete
           </button>
           <Link
-            to={'/dashboard/edit/' + state.systemGuid ?? '#'}
+            to={'/dashboard/edit/' + state.guid ?? '#'}
             className="btn btn-outline-dark btn-mobile">
             Cancel
           </Link>

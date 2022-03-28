@@ -21,6 +21,8 @@ import IImportRequest from './interfaces/IImportRequest';
 import ImportResponse from './ImportResponse';
 import ExpertProductRelations from './ExpertProductRelations';
 import IExpertProductRelations from './interfaces/IExpertProductRelations';
+import ExpertAbout from './ExpertAbout';
+import IExpertAbout from './interfaces/IExpertAbout';
 
 /**
  * Contains logic responsible for polling the internal API that connects via gRPC to the Genius microservice.
@@ -36,12 +38,8 @@ export default class GeniusApi {
    * @returns Response from solver.
    */
   public static async ask(question: ISolverQuestion): Promise<ISolverResponse> {
-    const confirmingIds: number[] = (question.confirming ?? []).map(
-      ({ id }) => id ?? 0,
-    );
-    const negatingIds: number[] = (question.negating ?? []).map(
-      ({ id }) => id ?? 0,
-    );
+    const confirmingIds: number[] = (question.confirming ?? []).map(({ id }) => id ?? 0);
+    const negatingIds: number[] = (question.negating ?? []).map(({ id }) => id ?? 0);
     const indifferentIds: number[] = (question.indifferent ?? []).map(
       ({ id }) => id ?? 0,
     );
@@ -80,9 +78,7 @@ export default class GeniusApi {
     fetchConditions: boolean = false,
     fetchRelations: boolean = false,
   ): Promise<IExpertSystem> {
-    const response = await fetch(
-      GeniusApi.BASE_EXPERT_GATEWAY + 'system/' + guid,
-    );
+    const response = await fetch(GeniusApi.BASE_EXPERT_GATEWAY + 'system/' + guid);
     const data = await response.json();
 
     console.debug('\\GeniusApi\\getSystemByGuid\\data', data);
@@ -93,6 +89,17 @@ export default class GeniusApi {
       fetchConditions,
       fetchRelations,
     );
+  }
+
+  public static async getSystemAbout(systemId: number): Promise<ExpertAbout> {
+    const response = await fetch(
+      GeniusApi.BASE_EXPERT_GATEWAY + 'system/' + systemId + '/about',
+    );
+    const data = await response.json();
+
+    console.debug('\\GeniusApi\\getSystemAbout\\data', data);
+
+    return GeniusApi.fetchSystemAboutObject(data);
   }
 
   /**
@@ -138,17 +145,17 @@ export default class GeniusApi {
    * @returns true if the operation was successful.
    */
   public static async addSystem(system: IExpertSystem): Promise<boolean> {
-    if (system.systemName === '' || system.systemType === '') {
+    if (system.name === '' || system.type === '') {
       console.debug('\\GeniusApi\\addSystem', false);
 
       return false;
     }
 
     let formData = GeniusApi.buildFormData({
-      name: system.systemName ?? '',
-      description: system.systemDescription ?? '',
-      question: system.systemQuestion ?? '',
-      type: system.systemType ?? '',
+      name: system.name ?? '',
+      description: system.description ?? '',
+      question: system.question ?? '',
+      type: system.type ?? '',
     });
 
     let response = await fetch('api/expert/system', {
@@ -169,12 +176,9 @@ export default class GeniusApi {
    * @returns true if the operation was successful.
    */
   public static async deleteSystem(id: number): Promise<boolean> {
-    const response = await fetch(
-      GeniusApi.BASE_EXPERT_GATEWAY + 'system/' + id,
-      {
-        method: 'DELETE',
-      },
-    );
+    const response = await fetch(GeniusApi.BASE_EXPERT_GATEWAY + 'system/' + id, {
+      method: 'DELETE',
+    });
 
     console.debug('\\GeniusApi\\deleteSystem\\id', id);
 
@@ -190,9 +194,7 @@ export default class GeniusApi {
    * @param id Expert system identifier.
    * @returns List of conditions assigned to the system.
    */
-  public static async getSystemConditions(
-    id: number,
-  ): Promise<IExpertCondition[]> {
+  public static async getSystemConditions(id: number): Promise<IExpertCondition[]> {
     const response = await fetch(
       GeniusApi.BASE_EXPERT_GATEWAY + 'system/' + id + '/conditions',
     );
@@ -208,17 +210,12 @@ export default class GeniusApi {
       conditionsList.push(GeniusApi.fetchConditionObject(data[key]));
     }
 
-    console.debug(
-      '\\GeniusApi\\getSystemConditions\\conditionsList',
-      conditionsList,
-    );
+    console.debug('\\GeniusApi\\getSystemConditions\\conditionsList', conditionsList);
 
     return conditionsList;
   }
 
-  public static async getCondition(
-    conditionId: number,
-  ): Promise<IExpertCondition> {
+  public static async getCondition(conditionId: number): Promise<IExpertCondition> {
     const response = await fetch(
       GeniusApi.BASE_EXPERT_GATEWAY + 'condition/' + conditionId,
     );
@@ -229,11 +226,9 @@ export default class GeniusApi {
     return await GeniusApi.fetchConditionObject(data);
   }
 
-  public static async addCondition(
-    condition: IExpertCondition,
-  ): Promise<number> {
+  public static async addCondition(condition: IExpertCondition): Promise<number> {
     let formData = GeniusApi.buildFormData({
-      systemId: condition.system_id ?? 0,
+      systemId: condition.systemId ?? 0,
       name: condition.name ?? '',
       description: condition.description ?? '',
     });
@@ -279,9 +274,7 @@ export default class GeniusApi {
   }
 
   public static async getProduct(productId: number): Promise<IExpertProduct> {
-    const response = await fetch(
-      GeniusApi.BASE_EXPERT_GATEWAY + 'product/' + productId,
-    );
+    const response = await fetch(GeniusApi.BASE_EXPERT_GATEWAY + 'product/' + productId);
     const data = await response.json();
 
     console.debug('\\GeniusApi\\getProduct\\data', data);
@@ -291,7 +284,7 @@ export default class GeniusApi {
 
   public static async addProduct(product: IExpertProduct): Promise<number> {
     const formData = GeniusApi.buildFormData({
-      systemId: product.system_id ?? 0,
+      systemId: product.systemId ?? 0,
       name: product.name ?? '',
       description: product.description ?? '',
       notes: product.notes ?? '',
@@ -315,7 +308,7 @@ export default class GeniusApi {
     product: IExpertProduct,
     conditions: IExpertCondition[],
   ): Promise<number> {
-    const systemId: number = product.system_id ?? 0;
+    const systemId: number = product.systemId ?? 0;
 
     if (systemId < 1) {
       return 0;
@@ -352,10 +345,7 @@ export default class GeniusApi {
 
     const responseText = await response.text();
 
-    console.debug(
-      '\\GeniusApi\\addProductWithConditions\\responseText',
-      +responseText,
-    );
+    console.debug('\\GeniusApi\\addProductWithConditions\\responseText', +responseText);
 
     return +responseText;
   }
@@ -365,9 +355,7 @@ export default class GeniusApi {
    * @param id Expert system identifier.
    * @returns List of relations assigned to the system.
    */
-  public static async getSystemRelations(
-    id: number,
-  ): Promise<IExpertProduct[]> {
+  public static async getSystemRelations(id: number): Promise<IExpertRelation[]> {
     const response = await fetch(
       GeniusApi.BASE_EXPERT_GATEWAY + 'system/' + id + '/relations',
     );
@@ -383,10 +371,7 @@ export default class GeniusApi {
       relationsList.push(GeniusApi.fetchRelationObject(data[key]));
     }
 
-    console.debug(
-      '\\GeniusApi\\getSystemRelations\\relationsList',
-      relationsList,
-    );
+    console.debug('\\GeniusApi\\getSystemRelations\\relationsList', relationsList);
 
     return relationsList;
   }
@@ -409,9 +394,7 @@ export default class GeniusApi {
     return GeniusApi.fetchProductRelationsObject(data);
   }
 
-  public static async getRelation(
-    relationId: number,
-  ): Promise<IExpertCondition> {
+  public static async getRelation(relationId: number): Promise<IExpertRelation> {
     const response = await fetch(
       GeniusApi.BASE_EXPERT_GATEWAY + 'relation/' + relationId,
     );
@@ -419,7 +402,7 @@ export default class GeniusApi {
 
     console.debug('\\GeniusApi\\getRelation\\data', data);
 
-    return await GeniusApi.fetchProductObject(data);
+    return await GeniusApi.fetchRelationObject(data);
   }
 
   public static async addRelation(relation: IExpertRelation): Promise<number> {
@@ -465,11 +448,7 @@ export default class GeniusApi {
 
     console.debug('\\GeniusApi\\importFromFile\\responseText', responseText);
 
-    let importResponse = new ImportResponse();
-    importResponse.systemId = importData.systemId ?? 0;
-    importResponse.success = false;
-
-    return importResponse;
+    return new ImportResponse(importData.systemId ?? 0, false, 'Unknown');
   }
 
   private static async fetchSystemObject(
@@ -479,29 +458,38 @@ export default class GeniusApi {
     fetchRelations: boolean,
   ): Promise<IExpertSystem> {
     const expertState = new ExpertSystem();
-    expertState.systemId = dataObject.id ?? 0;
-    expertState.systemGuid = dataObject.guid ?? '';
-    expertState.systemVersion = dataObject.version ?? '';
-    expertState.systemName = dataObject.name ?? '';
-    expertState.systemDescription = dataObject.description ?? '';
-    expertState.systemType = dataObject.type ?? '';
-    expertState.systemQuestion = dataObject.question ?? '';
-    expertState.systemCreatedAt = dataObject.createdAt ?? '';
-    expertState.systemUpdatedAt = dataObject.updatedAt ?? '';
+    expertState.id = dataObject.id ?? 0;
+    expertState.guid = dataObject.guid ?? '';
+    expertState.version = dataObject.version ?? '';
+    expertState.name = dataObject.name ?? '';
+    expertState.description = dataObject.description ?? '';
+    expertState.type = dataObject.type ?? '';
+    expertState.question = dataObject.question ?? '';
+    expertState.createdAt = dataObject.createdAt ?? '';
+    expertState.updatedAt = dataObject.updatedAt ?? '';
 
-    expertState.systemProducts = fetchProducts
-      ? await GeniusApi.getSystemProducts(expertState.systemId ?? 0)
+    expertState.products = fetchProducts
+      ? await GeniusApi.getSystemProducts(expertState.id ?? 0)
       : [];
 
-    expertState.systemConditions = fetchConditions
-      ? await GeniusApi.getSystemConditions(expertState.systemId ?? 0)
+    expertState.conditions = fetchConditions
+      ? await GeniusApi.getSystemConditions(expertState.id ?? 0)
       : [];
 
-    expertState.systemRelations = fetchRelations
-      ? await GeniusApi.getSystemRelations(expertState.systemId ?? 0)
+    expertState.relations = fetchRelations
+      ? await GeniusApi.getSystemRelations(expertState.id ?? 0)
       : [];
 
     return expertState;
+  }
+
+  private static fetchSystemAboutObject(dataObject: any): IExpertAbout {
+    return new ExpertAbout(
+      dataObject?.id ?? 0,
+      dataObject?.products ?? 0,
+      dataObject?.conditions ?? 0,
+      dataObject?.relations ?? 0,
+    );
   }
 
   private static fetchConditionObject(dataObject: any): IExpertCondition {
@@ -523,9 +511,7 @@ export default class GeniusApi {
     );
   }
 
-  private static fetchProductRelationsObject(
-    dataObject: any,
-  ): IExpertProductRelations {
+  private static fetchProductRelationsObject(dataObject: any): IExpertProductRelations {
     return new ExpertProductRelations(
       dataObject.id ?? 0,
       dataObject.systemId ?? 0,
@@ -545,9 +531,7 @@ export default class GeniusApi {
     );
   }
 
-  private static async fetchResponseObject(
-    dataObject: any,
-  ): Promise<ISolverResponse> {
+  private static async fetchResponseObject(dataObject: any): Promise<ISolverResponse> {
     // TODO: Fix solving
     return new SolverResponse(
       dataObject.systemId ?? 0,
@@ -560,9 +544,7 @@ export default class GeniusApi {
     );
   }
 
-  private static async getProducts(
-    productIds: number[],
-  ): Promise<IExpertProduct[]> {
+  private static async getProducts(productIds: number[]): Promise<IExpertProduct[]> {
     let products: IExpertProduct[] = [];
 
     await Promise.all(

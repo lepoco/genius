@@ -92,7 +92,7 @@ export class Product extends RoutedPureComponent<IProductState> {
     const product = await GeniusApi.getProduct(this.state.productId);
     const productRelations = await GeniusApi.getProductRelations(this.state.productId);
 
-    if ((system?.systemId as number) < 1 || (product?.id as number) < 1) {
+    if ((system?.id as number) < 1 || (product?.id as number) < 1) {
       return false;
     }
 
@@ -104,7 +104,7 @@ export class Product extends RoutedPureComponent<IProductState> {
     let selectedConditionsFromRelations: number[] = [];
     let selectedProductConditions: IExpertCondition[] = [];
 
-    system.systemRelations?.forEach(rel => {
+    system.relations?.forEach(rel => {
       if (rel.id === undefined || rel.id < 1) {
         return;
       }
@@ -114,7 +114,7 @@ export class Product extends RoutedPureComponent<IProductState> {
       }
     });
 
-    system.systemConditions?.forEach(con => {
+    system.conditions?.forEach(con => {
       if (con.id === undefined || con.id < 1) {
         return;
       }
@@ -217,7 +217,7 @@ export class Product extends RoutedPureComponent<IProductState> {
 
             <ConditionsInput
               inputName="Conditions (confirming)"
-              systemId={this.state.selectedSystem.systemId ?? 0}
+              systemId={this.state.selectedSystem.id ?? 0}
               conditionsSelected={this.state.selectedProductConditions ?? []}
               onUpdate={this.conditionsInputOnUpdate}
             />

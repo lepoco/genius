@@ -7,22 +7,29 @@
 
 import IExpertProduct from './interfaces/IExpertProduct';
 
+/**
+ * Represents an expert system product.
+ */
 export default class ExpertProduct implements IExpertProduct {
-  public id: number = 0;
-  public system_id: number = 0;
-  public name: string = '';
-  public description: string = '';
-  public notes: string = '';
+  public id: number;
+
+  public systemId: number;
+
+  public name: string;
+
+  public description: string;
+
+  public notes: string;
 
   public constructor(
-    id: number,
+    id: number = 0,
     system_id: number = 0,
     name: string = '',
     description: string = '',
     notes: string = '',
   ) {
     this.id = id;
-    this.system_id = system_id;
+    this.systemId = system_id;
     this.name = name;
     this.description = description;
     this.notes = notes;

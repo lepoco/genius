@@ -5,10 +5,32 @@
  * All Rights Reserved.
  */
 
- export default interface IExpertRelation {
-  id?: number;
-  systemId?: number;
-  conditionId?: number;
-  productId?: number;
-  weight?: number;
+/**
+ * Represents an expert system relation between Product and Condition.
+ */
+export default interface IExpertRelation {
+  /**
+   * Relation identifier.
+   */
+  id: number;
+
+  /**
+   * Expert system identifier.
+   */
+  systemId: number;
+
+  /**
+   * Condition identifier.
+   */
+  conditionId: number;
+
+  /**
+   * Product identifier.
+   */
+  productId: number;
+
+  /**
+   * The importance of the relationship.
+   */
+  weight: number;
 }

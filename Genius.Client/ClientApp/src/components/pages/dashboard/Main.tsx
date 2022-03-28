@@ -35,7 +35,15 @@ export class Main extends RoutedPureComponent<IMainState> {
   }
 
   private async populateExpertSystemsData(): Promise<void> {
-    const systems = await GeniusApi.getAllSystems();
+    let systems = await GeniusApi.getAllSystems();
+
+    for (let index = 0; index < systems.length; index++) {
+      const systemAbout = await GeniusApi.getSystemAbout(systems[index].id);
+
+      systems[index].productsCount = systemAbout.products;
+      systems[index].conditionsCount = systemAbout.conditions;
+      systems[index].relationsCount = systemAbout.relations;
+    }
 
     this.setState({ systemsList: systems, isLoading: false });
   }
@@ -54,19 +62,35 @@ export class Main extends RoutedPureComponent<IMainState> {
       <div className="row">
         {systems.map(system => (
           <div
-            key={system.systemId ?? 0}
+            key={system.id ?? 0}
             className="col-12 dashboard__section -mb-3 -reveal">
             <div className="dashboard__banner h-100 p-5 bg-light -rounded-2">
-              <div>
-                <h4>{system.systemName ?? ''}</h4>
-                <p>{system.systemDescription ?? ''}</p>
+              <div style={{ width: '100%' }}>
+                <h4>{system.name ?? ''}</h4>
+                <p>{system.description ?? ''}</p>
+                <div>
+                  <div className="row">
+                    <div className="col-12 col-lg-4">
+                      <strong>Possible results:</strong>
+                      <p>{system.productsCount ?? 0}</p>
+                    </div>
+                    <div className="col-12 col-lg-4">
+                      <strong>Number of connections:</strong>
+                      <p>{system.relationsCount ?? 0}</p>
+                    </div>
+                    <div className="col-12 col-lg-4">
+                      <strong>Conditions available:</strong>
+                      <p>{system.conditionsCount ?? 0}</p>
+                    </div>
+                  </div>
+                </div>
                 <Link
-                  to={'/dashboard/sys/' + system.systemGuid ?? '#'}
+                  to={'/dashboard/sys/' + system.guid ?? '#'}
                   className="btn btn-outline-dark btn-mobile -lg-mr-1">
                   Run
                 </Link>
                 <Link
-                  to={'/dashboard/edit/' + system.systemGuid ?? '#'}
+                  to={'/dashboard/edit/' + system.guid ?? '#'}
                   className="btn btn-dark btn-mobile -lg-mr-1">
                   Edit
                 </Link>

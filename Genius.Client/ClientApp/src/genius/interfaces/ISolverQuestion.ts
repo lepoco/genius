@@ -7,13 +7,13 @@
 import IExpertCondition from './IExpertCondition';
 
 export default interface ISolverQuestion {
-  systemId?: number;
+  systemId: number;
 
-  multiple?: boolean;
+  multiple: boolean;
 
-  confirming?: IExpertCondition[];
+  confirming: IExpertCondition[];
 
-  negating?: IExpertCondition[];
+  negating: IExpertCondition[];
 
-  indifferent?: IExpertCondition[];
+  indifferent: IExpertCondition[];
 }

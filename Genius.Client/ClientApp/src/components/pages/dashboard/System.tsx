@@ -62,18 +62,21 @@ class System extends RoutedComponent<IExpertRunState> {
       isConditional: false,
       currentQuestion: '',
       systemLoaded: false,
-      systemId: 0,
-      systemGuid: '',
-      systemVersion: '',
-      systemName: '',
-      systemDescription: '',
-      systemType: '',
-      systemQuestion: '',
-      systemCreatedAt: '',
-      systemUpdatedAt: '',
-      systemConditions: [],
-      systemProducts: [],
-      systemRelations: [],
+      id: 0,
+      guid: '',
+      version: '',
+      name: '',
+      description: '',
+      type: '',
+      question: '',
+      createdAt: '',
+      updatedAt: '',
+      conditions: [],
+      products: [],
+      relations: [],
+      productsCount: 0,
+      conditionsCount: 0,
+      relationsCount: 0,
     };
   }
 
@@ -96,18 +99,18 @@ class System extends RoutedComponent<IExpertRunState> {
     );
 
     this.setState({
-      systemId: system.systemId ?? 0,
-      systemVersion: system.systemVersion ?? '1.0.0',
-      systemName: system.systemName ?? '',
-      systemDescription: system.systemDescription ?? '',
-      systemGuid: system.systemGuid ?? '',
-      systemQuestion: system.systemQuestion ?? '',
-      systemType: system.systemType ?? '',
-      systemCreatedAt: system.systemCreatedAt ?? '',
-      systemUpdatedAt: system.systemUpdatedAt ?? '',
-      systemConditions: system.systemConditions ?? [],
-      systemProducts: system.systemProducts ?? [],
-      systemRelations: system.systemRelations ?? [],
+      id: system.id ?? 0,
+      version: system.version ?? '1.0.0',
+      name: system.name ?? '',
+      description: system.description ?? '',
+      guid: system.guid ?? '',
+      question: system.question ?? '',
+      type: system.type ?? '',
+      createdAt: system.createdAt ?? '',
+      updatedAt: system.updatedAt ?? '',
+      conditions: system.conditions ?? [],
+      products: system.products ?? [],
+      relations: system.relations ?? [],
       systemLoaded: true,
     });
 
@@ -120,12 +123,12 @@ class System extends RoutedComponent<IExpertRunState> {
 
   private validateQuestion(): void {
     this.setState({
-      isConditional: this.state.systemQuestion?.includes('{condition}') ?? false,
+      isConditional: this.state.question?.includes('{condition}') ?? false,
     });
   }
 
   private async getFirstCondition(): Promise<void> {
-    let systemId: number = this.state.systemId ?? 0;
+    let systemId: number = this.state.id ?? 0;
 
     // ERROR, something went wrong
     if (systemId < 1) {
@@ -143,7 +146,7 @@ class System extends RoutedComponent<IExpertRunState> {
     let question = new SolverQuestion();
 
     question.multiple = true; // Always allow multiple results
-    question.systemId = this.state.systemId ?? 0;
+    question.systemId = this.state.id ?? 0;
     question.confirming = this.solverState.confirming ?? [];
     question.negating = this.solverState.negating ?? [];
     question.indifferent = this.solverState.indifferent ?? [];
@@ -220,13 +223,13 @@ class System extends RoutedComponent<IExpertRunState> {
           {this.state.isConditional ? (
             <h4 className="-font-secondary -fw-700 -pb-3">
               <span className="--current_condition -pattern">
-                {this.replaceQuestionCondition(this.state.systemQuestion ?? '')}
+                {this.replaceQuestionCondition(this.state.question ?? '')}
               </span>
             </h4>
           ) : (
             <div>
               <p>
-                <strong>{this.state.systemQuestion ?? ''}</strong>
+                <strong>{this.state.question ?? ''}</strong>
               </p>
               <h4 className="-font-secondary -fw-700 -pb-3">
                 <span className="--current_condition">{this.state.currentQuestion}</span>
@@ -319,7 +322,7 @@ class System extends RoutedComponent<IExpertRunState> {
    * Renders the content containing data downloaded from the server.
    */
   private renderContent(): JSX.Element {
-    if ((this.state.systemId ?? 0) < 1) {
+    if ((this.state.id ?? 0) < 1) {
       return (
         <div>
           <p>The specified expert system could not be found</p>
@@ -334,9 +337,9 @@ class System extends RoutedComponent<IExpertRunState> {
       <div className="row">
         <div className="col-12 -mb-3">
           <h4 className="-font-secondary -fw-700 -reveal">
-            {this.state.systemName ?? ''}
+            {this.state.name ?? ''}
           </h4>
-          <p className="-reveal">{this.state.systemDescription ?? ''}</p>
+          <p className="-reveal">{this.state.description ?? ''}</p>
         </div>
 
         {contents}

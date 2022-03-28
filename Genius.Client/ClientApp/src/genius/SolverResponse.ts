@@ -7,6 +7,7 @@
 import ISolverResponse from './interfaces/ISolverResponse';
 import IExpertCondition from './interfaces/IExpertCondition';
 import IExpertProduct from './interfaces/IExpertProduct';
+import ExpertCondition from './ExpertCondition';
 
 export default class SolverResponse implements ISolverResponse {
   public systemId: number = 0;
@@ -15,15 +16,15 @@ export default class SolverResponse implements ISolverResponse {
 
   public status: number = 0;
 
-  public nextCondition?: IExpertCondition;
+  public nextCondition: IExpertCondition;
 
   public products: IExpertProduct[] = [];
 
   public constructor(
-    systemId: number,
-    isSolved: boolean,
-    status: number,
-    products: IExpertProduct[],
+    systemId: number = 0,
+    isSolved: boolean = false,
+    status: number = 0,
+    products: IExpertProduct[] = [],
     nextCondition: IExpertCondition | null = null,
   ) {
     this.systemId = systemId;
@@ -31,8 +32,6 @@ export default class SolverResponse implements ISolverResponse {
     this.status = status;
     this.products = products;
 
-    if (nextCondition !== null) {
-      this.nextCondition = nextCondition;
-    }
+    this.nextCondition = nextCondition ?? new ExpertCondition();
   }
 }

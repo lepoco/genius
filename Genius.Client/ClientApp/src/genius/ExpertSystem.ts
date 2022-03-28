@@ -5,25 +5,33 @@
  * All Rights Reserved.
  */
 
+import IExpertAbout from './interfaces/IExpertAbout';
 import IExpertCondition from './interfaces/IExpertCondition';
 import IExpertProduct from './interfaces/IExpertProduct';
 import IExpertRelation from './interfaces/IExpertRelation';
 import IExpertSystem from './interfaces/IExpertSystem';
 
+/**
+ * Represents the expert system.
+ */
 export default class ExpertSystem implements IExpertSystem {
-  public systemId: number = 0;
-  public systemGuid: string = '';
-  public systemVersion: string = '';
-  public systemName: string = '';
-  public systemDescription: string = '';
-  public systemType: string = '';
-  public systemQuestion: string = '';
-  public systemCreatedAt: string = '';
-  public systemUpdatedAt: string = '';
+  public id: number;
+  public guid: string;
+  public version: string;
+  public name: string;
+  public description: string;
+  public type: string;
+  public question: string;
+  public createdAt: string;
+  public updatedAt: string;
 
-  public systemConditions: IExpertCondition[] = [];
-  public systemProducts: IExpertProduct[] = [];
-  public systemRelations: IExpertRelation[] = [];
+  public conditions: IExpertCondition[];
+  public products: IExpertProduct[];
+  public relations: IExpertRelation[];
+
+  public productsCount: number;
+  public conditionsCount: number;
+  public relationsCount: number;
 
   public constructor(
     systemId: number = 0,
@@ -39,29 +47,44 @@ export default class ExpertSystem implements IExpertSystem {
     systemProducts: IExpertProduct[] = [],
     systemRelations: IExpertRelation[] = [],
   ) {
-    this.systemId = systemId;
-    this.systemGuid = systemGuid;
-    this.systemVersion = systemVersion;
-    this.systemName = systemName;
-    this.systemDescription = systemDescription;
-    this.systemType = systemType;
-    this.systemQuestion = systemQuestion;
-    this.systemCreatedAt = systemCreatedAt;
-    this.systemUpdatedAt = systemUpdatedAt;
-    this.systemConditions = systemConditions;
-    this.systemProducts = systemProducts;
-    this.systemRelations = systemRelations;
+    this.id = systemId;
+    this.guid = systemGuid;
+    this.version = systemVersion;
+    this.name = systemName;
+    this.description = systemDescription;
+    this.type = systemType;
+    this.question = systemQuestion;
+    this.createdAt = systemCreatedAt;
+    this.updatedAt = systemUpdatedAt;
+    this.conditions = systemConditions;
+    this.products = systemProducts;
+    this.relations = systemRelations;
+
+    this.productsCount = systemProducts.length;
+    this.conditionsCount = systemConditions.length;
+    this.relationsCount = systemRelations.length;
   }
 
   public setConditions(conditions: IExpertCondition[]): void {
-    this.systemConditions = conditions;
+    this.conditions = conditions;
+    this.conditionsCount = conditions.length;
   }
 
   public setProducts(products: IExpertProduct[]): void {
-    this.systemProducts = products;
+    this.products = products;
+    this.productsCount = products.length;
   }
 
   public setRelations(relations: IExpertRelation[]): void {
-    this.systemRelations = relations;
+    this.relations = relations;
+    this.relationsCount = relations.length;
+  }
+
+  public updateAbout(about: IExpertAbout): void {
+    if (about.id !== this.id) return;
+
+    this.productsCount = about.products;
+    this.conditionsCount = about.conditions;
+    this.relationsCount = about.relations;
   }
 }

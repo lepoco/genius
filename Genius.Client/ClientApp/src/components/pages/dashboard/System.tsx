@@ -23,7 +23,6 @@ import {
   IExpertRelations,
   ISolverResponse,
   SolverQuestion,
-  ConditionType,
 } from '../../../genius/Genius';
 
 /**
@@ -189,7 +188,7 @@ class System extends RoutedComponent<IExpertRunState> {
 
   private async handleSubmitClick(
     event: any,
-    conditionType: ConditionType,
+    conditionType: Genius.ConditionType,
   ): Promise<void> {
     event.preventDefault();
 
@@ -197,11 +196,11 @@ class System extends RoutedComponent<IExpertRunState> {
 
     if ((currentCondition.id ?? 0) > 0) {
       switch (conditionType) {
-        case ConditionType.Confirming: {
+        case Genius.ConditionType.Confirming: {
           this.solverState.confirming.push(currentCondition);
           break;
         }
-        case ConditionType.Negating: {
+        case Genius.ConditionType.Negating: {
           this.solverState.negating.push(currentCondition);
           break;
         }
@@ -248,19 +247,19 @@ class System extends RoutedComponent<IExpertRunState> {
         <div className="-reveal">
           <button
             type="button"
-            onClick={e => this.handleSubmitClick(e, ConditionType.Confirming)}
+            onClick={e => this.handleSubmitClick(e, Genius.ConditionType.Confirming)}
             className="btn btn-dark btn-mobile -lg-mr-1">
             Yes
           </button>
           <button
             type="button"
-            onClick={e => this.handleSubmitClick(e, ConditionType.Negating)}
+            onClick={e => this.handleSubmitClick(e, Genius.ConditionType.Negating)}
             className="btn btn-outline-dark btn-mobile -lg-mr-1">
             No
           </button>
           <button
             type="button"
-            onClick={e => this.handleSubmitClick(e, ConditionType.Indifferent)}
+            onClick={e => this.handleSubmitClick(e, Genius.ConditionType.Indifferent)}
             className="btn btn-outline-dark btn-mobile">
             I do not know
           </button>

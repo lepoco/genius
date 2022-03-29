@@ -6,6 +6,7 @@
  */
 
 import { GeniusApi } from './GeniusApi';
+import { GeniusSolver } from './GeniusSolver';
 import { GeniusDataParser } from './GeniusDataParser';
 
 export type { IExpertSystem } from './interfaces/IExpertSystem';
@@ -19,8 +20,6 @@ export type { IImportResponse } from './interfaces/IImportResponse';
 export type { ISolverQuestion } from './interfaces/ISolverQuestion';
 export type { ISolverResponse } from './interfaces/ISolverResponse';
 
-export { ConditionType } from './ConditionType';
-
 export { ExpertSystem } from './ExpertSystem';
 export { ExpertAbout } from './ExpertAbout';
 export { ExpertProduct } from './ExpertProduct';
@@ -33,6 +32,38 @@ export { SolverQuestion } from './SolverQuestion';
 export { SolverResponse } from './SolverResponse';
 
 export namespace Genius {
+  /**
+   * Contains logic responsible for polling the internal API that connects via gRPC to the Genius microservice.
+   */
   export class Api extends GeniusApi {}
+
+  /**
+   * Contains methods for solving the expert system.
+   */
+  export class Solver extends GeniusSolver {}
+
+  /**
+   * Contains static methods that cast objects to the expected interfaces.
+   */
   export class Parser extends GeniusDataParser {}
+
+  /**
+   * Variants under which the condition may belong to the product.
+   */
+  export enum ConditionType {
+    /**
+     * The condition is met by a given product, and therefore belongs to it.
+     */
+    Confirming,
+
+    /**
+     * The condition negates the given product, so it does not belong to it.
+     */
+    Negating,
+
+    /**
+     * The condition is neutral for a given product, so it may or may not belong to it.
+     */
+    Indifferent,
+  }
 }

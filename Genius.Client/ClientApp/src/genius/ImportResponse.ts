@@ -5,9 +5,9 @@
  * All Rights Reserved.
  */
 
-import IImportResponse from './interfaces/IImportResponse';
+import { IImportResponse } from './interfaces/IImportResponse';
 
-export default class ImportResponse implements IImportResponse {
+export class ImportResponse implements IImportResponse {
   public systemId: number;
 
   public success: boolean;

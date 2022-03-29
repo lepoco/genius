@@ -5,7 +5,7 @@
  * All Rights Reserved.
  */
 
-export default interface IImportRequest {
+export interface IImportRequest {
   systemId: number;
 
   file: File;

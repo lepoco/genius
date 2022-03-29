@@ -4,10 +4,10 @@
  * Copyright (C) 2022 Leszek Pomianowski.
  * All Rights Reserved.
  */
-import ISolverQuestion from './interfaces/ISolverQuestion';
-import IExpertCondition from './interfaces/IExpertCondition';
+import { ISolverQuestion } from './interfaces/ISolverQuestion';
+import { IExpertCondition } from './interfaces/IExpertCondition';
 
-export default class SolverQuestion implements ISolverQuestion {
+export class SolverQuestion implements ISolverQuestion {
   public systemId: number;
 
   public multiple: boolean;

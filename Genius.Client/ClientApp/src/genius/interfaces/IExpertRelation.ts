@@ -8,7 +8,7 @@
 /**
  * Represents an expert system relation between Product and Condition.
  */
-export default interface IExpertRelation {
+export interface IExpertRelation {
   /**
    * Relation identifier.
    */

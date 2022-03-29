@@ -8,7 +8,7 @@
 /**
  * Represents an expert system condition.
  */
-export default interface IExpertCondition {
+export interface IExpertCondition {
   /**
    * Condition identifier.
    */

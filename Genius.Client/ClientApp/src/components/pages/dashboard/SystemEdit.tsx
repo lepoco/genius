@@ -8,18 +8,24 @@
 import { Link } from 'react-router-dom';
 import { ConditionsInput } from '../../common/ConditionsInput';
 import { ToastProvider, Toast } from '../../common/Toasts';
+import {
+  Genius,
+  ExpertSystem,
+  IExpertSystem,
+  ExpertCondition,
+  IExpertCondition,
+  ExpertProduct,
+  IExpertProduct,
+  IImportRequest,
+  ImportRequest
+} from '../../../genius/Genius';
 import Loader from '../../common/Loader';
 import Modal from '../../common/Modal';
 import RoutedPureComponent from '../../../common/RoutedPureComponent';
 import IRouterProps from '../../../interfaces/IRouterProps';
 import withRouter from '../../../common/withRouter';
-import IExpertPageState from '../../../genius/interfaces/IExpertPageState';
-import IExpertCondition from '../../../genius/interfaces/IExpertCondition';
-import GeniusApi from '../../../genius/GeniusApi';
-import ExpertProduct from '../../../genius/ExpertProduct';
-import IExpertProduct from '../../../genius/interfaces/IExpertProduct';
+import {IExpertPageState} from '../../../genius/interfaces/IExpertPageState';
 import Task from '../../common/Task';
-import ImportRequest from '../../../genius/ImportRequest';
 import { Edit16Regular } from '@fluentui/react-icons';
 
 /**
@@ -107,7 +113,7 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
    * Asynchronously gets data from the server.
    */
   private async populateData(): Promise<boolean> {
-    const system = await GeniusApi.getSystemByGuid(
+    const system = await Genius.Api.getSystemByGuid(
       this.router.params.guid ?? '',
       true,
       true,
@@ -173,7 +179,7 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
     //   return false;
     // }
 
-    const importResponse = await GeniusApi.importFromFile(
+    const importResponse = await Genius.Api.importFromFile(
       new ImportRequest(this.state.id ?? 0, selectedFile),
     );
 
@@ -211,7 +217,7 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
 
     console.debug('\\SystemEdit\\formOnSubmit\\productToAdd', productToAdd);
 
-    let apiResult = await GeniusApi.addProductWithConditions(
+    let apiResult = await Genius.Api.addProductWithConditions(
       productToAdd,
       this.newProduct.conditions,
     );
@@ -225,7 +231,7 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
     let currentProducts = this.state.products;
     currentProducts?.push(productToAdd);
 
-    let updatedRelations = await GeniusApi.getSystemRelations(this.state.id);
+    let updatedRelations = await Genius.Api.getSystemRelations(this.state.id);
 
     this.setState({
       relations: updatedRelations,

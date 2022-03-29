@@ -10,14 +10,21 @@ import Loader from '../../common/Loader';
 import RoutedComponent from '../../../common/RoutedComponent';
 import withRouter from '../../../common/withRouter';
 import IRouterProps from '../../../interfaces/IRouterProps';
-import IExpertPageState from '../../../genius/interfaces/IExpertPageState';
-import IExpertCondition from '../../../genius/interfaces/IExpertCondition';
-import SolverQuestion from '../../../genius/SolverQuestion';
-import GeniusApi from '../../../genius/GeniusApi';
-import ExpertCondition from '../../../genius/ExpertCondition';
-import ISolverResponse from '../../../genius/interfaces/ISolverResponse';
-import IExpertProduct from '../../../genius/interfaces/IExpertProduct';
-import { ConditionType } from '../../../genius/ConditionType';
+import { IExpertPageState } from '../../../genius/interfaces/IExpertPageState';
+import {
+  Genius,
+  ExpertSystem,
+  IExpertSystem,
+  IExpertProduct,
+  ExpertProduct,
+  ExpertCondition,
+  IExpertCondition,
+  ExpertRelations,
+  IExpertRelations,
+  ISolverResponse,
+  SolverQuestion,
+  ConditionType,
+} from '../../../genius/Genius';
 
 /**
  * Contains information about the current state of the expert system's solution.
@@ -91,7 +98,7 @@ class System extends RoutedComponent<IExpertRunState> {
    * Asynchronously gets data from the server.
    */
   private async populateData(): Promise<boolean> {
-    const system = await GeniusApi.getSystemByGuid(
+    const system = await Genius.Api.getSystemByGuid(
       this.router.params.guid ?? '',
       false,
       false,
@@ -151,7 +158,7 @@ class System extends RoutedComponent<IExpertRunState> {
     question.negating = this.solverState.negating ?? [];
     question.indifferent = this.solverState.indifferent ?? [];
 
-    let solverResponse = await GeniusApi.ask(question);
+    let solverResponse = await Genius.Api.ask(question);
 
     let nextCondition: IExpertCondition =
       solverResponse.nextCondition ?? new ExpertCondition(0);
@@ -336,9 +343,7 @@ class System extends RoutedComponent<IExpertRunState> {
     return (
       <div className="row">
         <div className="col-12 -mb-3">
-          <h4 className="-font-secondary -fw-700">
-            {this.state.name ?? ''}
-          </h4>
+          <h4 className="-font-secondary -fw-700">{this.state.name ?? ''}</h4>
           <p className="-reveal">{this.state.description ?? ''}</p>
         </div>
 

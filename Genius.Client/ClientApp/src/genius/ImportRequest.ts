@@ -5,9 +5,9 @@
  * All Rights Reserved.
  */
 
-import IImportRequest from './interfaces/IImportRequest';
+import { IImportRequest } from './interfaces/IImportRequest';
 
-export default class ImportRequest implements IImportRequest {
+export class ImportRequest implements IImportRequest {
   public systemId: number;
 
   public file: File;

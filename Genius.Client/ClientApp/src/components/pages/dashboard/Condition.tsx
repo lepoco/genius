@@ -6,18 +6,20 @@
  */
 
 import { Link } from 'react-router-dom';
+import {
+  Genius,
+  ExpertSystem,
+  IExpertSystem,
+  ExpertCondition,
+  IExpertCondition,
+  ExpertRelations,
+  IExpertRelations,
+} from '../../../genius/Genius';
 import RoutedPureComponent from '../../../common/RoutedPureComponent';
 import IRouterProps from '../../../interfaces/IRouterProps';
 import withRouter from '../../../common/withRouter';
 import Modal from '../../common/Modal';
-import IExpertCondition from '../../../genius/interfaces/IExpertCondition';
-import ExpertCondition from '../../../genius/ExpertCondition';
-import GeniusApi from '../../../genius/GeniusApi';
 import Loader from '../../common/Loader';
-import ExpertSystem from '../../../genius/ExpertSystem';
-import IExpertSystem from '../../../genius/interfaces/IExpertSystem';
-import IExpertRelations from '../../../genius/interfaces/IExpertRelations';
-import ExpertRelations from '../../../genius/ExpertRelations';
 
 /**
  * Represents the variables contained in the Component state.
@@ -78,9 +80,9 @@ export class Condition extends RoutedPureComponent<IConditionState> {
    * Asynchronously gets data from the server.
    */
   private async populateData(): Promise<boolean> {
-    const system = await GeniusApi.getSystemByGuid(this.state.selectedSystemGuid);
-    const condition = await GeniusApi.getCondition(this.state.selectedConditionId);
-    const conditionRelations = await GeniusApi.getConditionRelations(
+    const system = await Genius.Api.getSystemByGuid(this.state.selectedSystemGuid);
+    const condition = await Genius.Api.getCondition(this.state.selectedConditionId);
+    const conditionRelations = await Genius.Api.getConditionRelations(
       this.state.selectedConditionId,
     );
 

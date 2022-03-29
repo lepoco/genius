@@ -6,13 +6,11 @@
  */
 
 import { Link } from 'react-router-dom';
+import { Genius, ExpertSystem, IExpertSystem } from '../../../genius/Genius';
 import RoutedPureComponent from '../../../common/RoutedPureComponent';
 import IRouterProps from '../../../interfaces/IRouterProps';
 import Loader from '../../common/Loader';
 import withRouter from '../../../common/withRouter';
-import IExpertSystem from '../../../genius/interfaces/IExpertSystem';
-import ExpertSystem from '../../../genius/ExpertSystem';
-import GeniusApi from '../../../genius/GeniusApi';
 import { Edit16Regular, Delete16Regular } from '@fluentui/react-icons';
 
 /**
@@ -60,7 +58,7 @@ export class Conditions extends RoutedPureComponent<IConditionsState> {
    * Asynchronously gets data from the server.
    */
   private async populateData(): Promise<boolean> {
-    const system = await GeniusApi.getSystemByGuid(
+    const system = await Genius.Api.getSystemByGuid(
       this.state.selectedSystemGuid,
       false,
       true,

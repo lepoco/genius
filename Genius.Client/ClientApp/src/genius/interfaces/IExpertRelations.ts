@@ -5,12 +5,12 @@
  * All Rights Reserved.
  */
 
-import IExpertRelation from './IExpertRelation';
+import { IExpertRelation } from './IExpertRelation';
 
 /**
  * Represents relations and their type of belonging to a given element.
  */
-export default interface IExpertRelations {
+export interface IExpertRelations {
   /**
    * Selected element identifier.
    */

@@ -4,7 +4,7 @@
  * Copyright (C) 2022 Leszek Pomianowski.
  * All Rights Reserved.
  */
-export default interface IImportResponse {
+export interface IImportResponse {
   systemId: number;
 
   success: boolean;

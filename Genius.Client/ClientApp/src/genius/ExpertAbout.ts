@@ -5,12 +5,12 @@
  * All Rights Reserved.
  */
 
-import IExpertAbout from './interfaces/IExpertAbout';
+import { IExpertAbout } from './interfaces/IExpertAbout';
 
 /**
  * Represents additional information about the expert system.
  */
-export default class ExpertAbout implements IExpertAbout {
+export class ExpertAbout implements IExpertAbout {
   public id: number;
 
   public products: number;

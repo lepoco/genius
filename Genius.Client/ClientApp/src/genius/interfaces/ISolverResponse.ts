@@ -4,10 +4,10 @@
  * Copyright (C) 2022 Leszek Pomianowski.
  * All Rights Reserved.
  */
-import IExpertCondition from './IExpertCondition';
-import IExpertProduct from './IExpertProduct';
+import { IExpertCondition } from './IExpertCondition';
+import { IExpertProduct } from './IExpertProduct';
 
-export default interface ISolverResponse {
+export interface ISolverResponse {
   systemId: number;
 
   isSolved: boolean;

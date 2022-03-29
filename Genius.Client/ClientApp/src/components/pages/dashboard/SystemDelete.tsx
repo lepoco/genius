@@ -10,9 +10,11 @@ import Loader from '../../common/Loader';
 import RoutedPureComponent from '../../../common/RoutedPureComponent';
 import withRouter from '../../../common/withRouter';
 import IRouterProps from '../../../interfaces/IRouterProps';
-import GeniusApi from '../../../genius/GeniusApi';
-import IExpertSystem from '../../../genius/interfaces/IExpertSystem';
-import ExpertSystem from '../../../genius/ExpertSystem';
+import {
+  Genius,
+  ExpertSystem,
+  IExpertSystem,
+} from '../../../genius/Genius';
 
 /**
  * Represents the variables contained in the component state.
@@ -61,7 +63,7 @@ export class SystemDelete extends RoutedPureComponent<ISystemDeleteState> {
    */
   private async populateData(): Promise<boolean> {
     const guid: string = this.router.params.guid ?? '';
-    const selectedSystem: IExpertSystem = await GeniusApi.getSystemByGuid(guid);
+    const selectedSystem: IExpertSystem = await Genius.Api.getSystemByGuid(guid);
 
     this.setState({
       selectedSystem: selectedSystem,
@@ -95,7 +97,7 @@ export class SystemDelete extends RoutedPureComponent<ISystemDeleteState> {
       return false;
     }
 
-    const apiResult = await GeniusApi.deleteSystem(this.state.selectedSystem.id ?? 0);
+    const apiResult = await Genius.Api.deleteSystem(this.state.selectedSystem.id ?? 0);
 
     console.debug('\\SystemDelete\\formOnSubmit', apiResult);
 

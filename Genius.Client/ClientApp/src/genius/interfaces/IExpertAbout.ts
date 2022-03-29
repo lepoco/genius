@@ -8,7 +8,7 @@
 /**
  * Represents additional information about the expert system.
  */
-export default interface IExpertAbout {
+export interface IExpertAbout {
   /**
    * Expert system identifier.
    */

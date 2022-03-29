@@ -5,29 +5,50 @@
  * All Rights Reserved.
  */
 
-import IExpertSystem from './interfaces/IExpertSystem';
-import IExpertCondition from './interfaces/IExpertCondition';
-import IExpertProduct from './interfaces/IExpertProduct';
-import ExpertSystem from './ExpertSystem';
-import IExpertRelation from './interfaces/IExpertRelation';
-import ExpertCondition from './ExpertCondition';
-import ExpertProduct from './ExpertProduct';
-import ExpertRelation from './ExpertRelation';
-import ISolverQuestion from './interfaces/ISolverQuestion';
-import ISolverResponse from './interfaces/ISolverResponse';
-import SolverResponse from './SolverResponse';
-import IImportResponse from './interfaces/IImportResponse';
-import IImportRequest from './interfaces/IImportRequest';
-import ImportResponse from './ImportResponse';
-import ExpertRelations from './ExpertRelations';
-import IExpertRelations from './interfaces/IExpertRelations';
-import ExpertAbout from './ExpertAbout';
-import IExpertAbout from './interfaces/IExpertAbout';
+//import IExpertSystem from './interfaces/IExpertSystem';
+// import IExpertCondition from './interfaces/IExpertCondition';
+// import IExpertProduct from './interfaces/IExpertProduct';
+// import ExpertSystem from './ExpertSystem';
+// import IExpertRelation from './interfaces/IExpertRelation';
+// import ExpertCondition from './ExpertCondition';
+// import ExpertProduct from './ExpertProduct';
+// import ExpertRelation from './ExpertRelation';
+// import ISolverQuestion from './interfaces/ISolverQuestion';
+// import ISolverResponse from './interfaces/ISolverResponse';
+// import SolverResponse from './SolverResponse';
+// import IImportResponse from './interfaces/IImportResponse';
+// import IImportRequest from './interfaces/IImportRequest';
+// import ImportResponse from './ImportResponse';
+// import ExpertRelations from './ExpertRelations';
+// import IExpertRelations from './interfaces/IExpertRelations';
+// import ExpertAbout from './ExpertAbout';
+// import IExpertAbout from './interfaces/IExpertAbout';
+
+import {
+  IExpertSystem,
+  IExpertAbout,
+  ExpertAbout,
+  IExpertCondition,
+  IExpertProduct,
+  ExpertSystem,
+  IExpertRelation,
+  ExpertCondition,
+  IExpertRelations,
+  ExpertRelations,
+  ExpertProduct,
+  ExpertRelation,
+  ISolverQuestion,
+  ISolverResponse,
+  SolverResponse,
+  IImportResponse,
+  ImportResponse,
+  IImportRequest,
+} from './Genius';
 
 /**
  * Contains logic responsible for polling the internal API that connects via gRPC to the Genius microservice.
  */
-export default class GeniusApi {
+export class GeniusApi {
   private static readonly BASE_EXPERT_GATEWAY: string = '/api/expert/';
 
   private static readonly BASE_SOLVER_GATEWAY: string = '/api/solver/';

@@ -6,9 +6,17 @@
  */
 
 import React, { Component } from 'react';
-import IExpertCondition from '../../genius/interfaces/IExpertCondition';
-import ExpertCondition from '../../genius/ExpertCondition';
-import GeniusApi from '../../genius/GeniusApi';
+import {
+  Genius,
+  ExpertSystem,
+  IExpertSystem,
+  ExpertCondition,
+  IExpertCondition,
+  ExpertProduct,
+  IExpertProduct,
+  IImportRequest,
+  ImportRequest
+} from '../../genius/Genius';
 
 interface TagsUpdated<T = IExpertCondition[]> {
   (selected: T, available: T): void;
@@ -94,7 +102,7 @@ export class ConditionsInput extends Component<
    * Asynchronously gets data from the server.
    */
   private async populateData(): Promise<boolean> {
-    const systemConditions = await GeniusApi.getSystemConditions(this.state.systemId);
+    const systemConditions = await Genius.Api.getSystemConditions(this.state.systemId);
 
     this.setState({
       contentLoaded: true,
@@ -132,7 +140,7 @@ export class ConditionsInput extends Component<
 
     let newCondition = new ExpertCondition(0, this.state.systemId, conditionName, '');
 
-    const newConditionId = await GeniusApi.addCondition(newCondition);
+    const newConditionId = await Genius.Api.addCondition(newCondition);
 
     // console.debug('\\FloatingTags\\inputOnKeyPress\\newConditionId', newConditionId);
 

@@ -9,8 +9,10 @@ import { Link } from 'react-router-dom';
 import RoutedPureComponent from '../../../common/RoutedPureComponent';
 import IRouterProps from '../../../interfaces/IRouterProps';
 import withRouter from '../../../common/withRouter';
-import ExpertSystem from '../../../genius/ExpertSystem';
-import GeniusApi from '../../../genius/GeniusApi';
+import {
+  Genius,
+  ExpertSystem,
+} from '../../../genius/Genius';
 
 /**
  * Represents the variables contained in the component state.
@@ -78,7 +80,7 @@ export class SystemAdd extends RoutedPureComponent<ISystemAddState> {
       this.state.systemQuestion,
     );
 
-    let apiResult = await GeniusApi.addSystem(EXPERT_SYSTEM);
+    let apiResult = await Genius.Api.addSystem(EXPERT_SYSTEM);
 
     if (apiResult) {
       this.router.navigate('/dashboard');

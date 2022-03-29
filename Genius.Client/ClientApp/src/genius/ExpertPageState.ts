@@ -5,12 +5,12 @@
  * All Rights Reserved.
  */
 
-import IExpertPageState from './interfaces/IExpertPageState';
-import IExpertCondition from './interfaces/IExpertCondition';
-import IExpertRelation from './interfaces/IExpertRelation';
-import IExpertProduct from './interfaces/IExpertProduct';
+import { IExpertPageState } from './interfaces/IExpertPageState';
+import { IExpertCondition } from './interfaces/IExpertCondition';
+import { IExpertRelation } from './interfaces/IExpertRelation';
+import { IExpertProduct } from './interfaces/IExpertProduct';
 
-export default class ExpertPageState implements IExpertPageState {
+export class ExpertPageState implements IExpertPageState {
   public systemLoaded: boolean = false;
   public id: number = 0;
   public guid: string = '';

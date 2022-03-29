@@ -4,14 +4,14 @@
  * Copyright (C) 2022 Leszek Pomianowski.
  * All Rights Reserved.
  */
-import IExpertCondition from './IExpertCondition';
-import IExpertProduct from './IExpertProduct';
-import IExpertRelation from './IExpertRelation';
+import { IExpertCondition } from './IExpertCondition';
+import { IExpertProduct } from './IExpertProduct';
+import { IExpertRelation } from './IExpertRelation';
 
 /**
  * Represents the expert system.
  */
-export default interface IExpertSystem {
+export interface IExpertSystem {
   id: number;
   guid: string;
   version: string;

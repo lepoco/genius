@@ -8,7 +8,7 @@
 /**
  * Represents an expert system product.
  */
-export default interface IExpertProduct {
+export interface IExpertProduct {
   /**
    * Product identifier.
    */

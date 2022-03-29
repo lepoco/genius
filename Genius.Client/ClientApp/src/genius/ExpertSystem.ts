@@ -5,16 +5,16 @@
  * All Rights Reserved.
  */
 
-import IExpertAbout from './interfaces/IExpertAbout';
-import IExpertCondition from './interfaces/IExpertCondition';
-import IExpertProduct from './interfaces/IExpertProduct';
-import IExpertRelation from './interfaces/IExpertRelation';
-import IExpertSystem from './interfaces/IExpertSystem';
+import { IExpertAbout } from './interfaces/IExpertAbout';
+import { IExpertCondition } from './interfaces/IExpertCondition';
+import { IExpertProduct } from './interfaces/IExpertProduct';
+import { IExpertRelation } from './interfaces/IExpertRelation';
+import { IExpertSystem } from './interfaces/IExpertSystem';
 
 /**
  * Represents the expert system.
  */
-export default class ExpertSystem implements IExpertSystem {
+export class ExpertSystem implements IExpertSystem {
   public id: number;
   public guid: string;
   public version: string;

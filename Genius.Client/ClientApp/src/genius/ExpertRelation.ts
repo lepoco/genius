@@ -5,12 +5,12 @@
  * All Rights Reserved.
  */
 
-import IExpertRelation from './interfaces/IExpertRelation';
+import { IExpertRelation } from './interfaces/IExpertRelation';
 
 /**
  * Represents an expert system relation between Product and Condition.
  */
-export default class ExpertRelation implements IExpertRelation {
+export class ExpertRelation implements IExpertRelation {
   public id: number;
 
   public systemId: number;

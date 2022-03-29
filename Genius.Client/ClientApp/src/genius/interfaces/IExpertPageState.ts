@@ -5,8 +5,8 @@
  * All Rights Reserved.
  */
 
-import IExpertSystem from './IExpertSystem';
+import { IExpertSystem } from './IExpertSystem';
 
-export default interface IExpertPageState extends IExpertSystem {
+export interface IExpertPageState extends IExpertSystem {
   systemLoaded?: boolean;
 }

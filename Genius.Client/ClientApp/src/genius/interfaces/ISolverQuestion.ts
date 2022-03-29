@@ -4,9 +4,9 @@
  * Copyright (C) 2022 Leszek Pomianowski.
  * All Rights Reserved.
  */
-import IExpertCondition from './IExpertCondition';
+import {IExpertCondition} from './IExpertCondition';
 
-export default interface ISolverQuestion {
+export interface ISolverQuestion {
   systemId: number;
 
   multiple: boolean;

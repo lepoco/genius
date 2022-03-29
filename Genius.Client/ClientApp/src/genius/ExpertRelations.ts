@@ -5,12 +5,12 @@
  * All Rights Reserved.
  */
 
-import IExpertRelations from './interfaces/IExpertRelations';
+import { IExpertRelations } from './interfaces/IExpertRelations';
 
 /**
  * Represents relations and their type of belonging to a given element.
  */
-export default class ExpertRelations implements IExpertRelations {
+export class ExpertRelations implements IExpertRelations {
   public id: number = 0;
 
   public systemId: number = 0;

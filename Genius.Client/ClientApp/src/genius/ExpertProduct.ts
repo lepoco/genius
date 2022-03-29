@@ -5,12 +5,12 @@
  * All Rights Reserved.
  */
 
-import IExpertProduct from './interfaces/IExpertProduct';
+import { IExpertProduct } from './interfaces/IExpertProduct';
 
 /**
  * Represents an expert system product.
  */
-export default class ExpertProduct implements IExpertProduct {
+export class ExpertProduct implements IExpertProduct {
   public id: number;
 
   public systemId: number;

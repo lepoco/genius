@@ -5,12 +5,12 @@
  * All Rights Reserved.
  */
 
-import IExpertCondition from './interfaces/IExpertCondition';
+import { IExpertCondition } from './interfaces/IExpertCondition';
 
 /**
  * Represents an expert system condition.
  */
-export default class ExpertCondition implements IExpertCondition {
+export class ExpertCondition implements IExpertCondition {
   public id: number = 0;
 
   public systemId: number = 0;

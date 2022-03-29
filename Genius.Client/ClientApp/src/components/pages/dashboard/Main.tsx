@@ -6,10 +6,9 @@
  */
 
 import { Link } from 'react-router-dom';
+import { Genius, IExpertSystem } from '../../../genius/Genius';
 import RoutedPureComponent from '../../../common/RoutedPureComponent';
 import IRouterProps from '../../../interfaces/IRouterProps';
-import GeniusApi from '../../../genius/GeniusApi';
-import IExpertSystem from '../../../genius/interfaces/IExpertSystem';
 import Loader from '../../common/Loader';
 import withRouter from '../../../common/withRouter';
 
@@ -54,10 +53,10 @@ export class Main extends RoutedPureComponent<IMainState> {
    * Asynchronously gets data from the server.
    */
   private async populateData(): Promise<boolean> {
-    let systems = await GeniusApi.getAllSystems();
+    let systems = await Genius.Api.getAllSystems();
 
     for (let index = 0; index < systems.length; index++) {
-      const systemAbout = await GeniusApi.getSystemAbout(systems[index].id);
+      const systemAbout = await Genius.Api.getSystemAbout(systems[index].id);
 
       systems[index].productsCount = systemAbout.products;
       systems[index].conditionsCount = systemAbout.conditions;

@@ -4,12 +4,12 @@
  * Copyright (C) 2022 Leszek Pomianowski.
  * All Rights Reserved.
  */
-import ISolverResponse from './interfaces/ISolverResponse';
-import IExpertCondition from './interfaces/IExpertCondition';
-import IExpertProduct from './interfaces/IExpertProduct';
-import ExpertCondition from './ExpertCondition';
+import { ISolverResponse } from './interfaces/ISolverResponse';
+import { IExpertCondition } from './interfaces/IExpertCondition';
+import { IExpertProduct } from './interfaces/IExpertProduct';
+import { ExpertCondition } from './ExpertCondition';
 
-export default class SolverResponse implements ISolverResponse {
+export class SolverResponse implements ISolverResponse {
   public systemId: number = 0;
 
   public isSolved: boolean = false;

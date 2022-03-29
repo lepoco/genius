@@ -7,16 +7,19 @@
 
 import { Link } from 'react-router-dom';
 import { ConditionsInput } from '../../common/ConditionsInput';
+import {
+  Genius,
+  ExpertSystem,
+  IExpertSystem,
+  IExpertProduct,
+  ExpertProduct,
+  ExpertCondition,
+  IExpertCondition,
+  ExpertRelations,
+  IExpertRelations,
+} from '../../../genius/Genius';
 import RoutedPureComponent from '../../../common/RoutedPureComponent';
 import IRouterProps from '../../../interfaces/IRouterProps';
-import GeniusApi from '../../../genius/GeniusApi';
-import IExpertSystem from '../../../genius/interfaces/IExpertSystem';
-import IExpertCondition from '../../../genius/interfaces/IExpertCondition';
-import IExpertRelations from '../../../genius/interfaces/IExpertRelations';
-import IExpertProduct from '../../../genius/interfaces/IExpertProduct';
-import ExpertSystem from '../../../genius/ExpertSystem';
-import ExpertProduct from '../../../genius/ExpertProduct';
-import ExpertRelations from '../../../genius/ExpertRelations';
 import Loader from '../../common/Loader';
 import withRouter from '../../../common/withRouter';
 
@@ -83,14 +86,14 @@ export class Product extends RoutedPureComponent<IProductState> {
    * Asynchronously gets data from the server.
    */
   private async populateData(): Promise<boolean> {
-    const system = await GeniusApi.getSystemByGuid(
+    const system = await Genius.Api.getSystemByGuid(
       this.state.systemGUID,
       true,
       true,
       true,
     );
-    const product = await GeniusApi.getProduct(this.state.productId);
-    const productRelations = await GeniusApi.getProductRelations(this.state.productId);
+    const product = await Genius.Api.getProduct(this.state.productId);
+    const productRelations = await Genius.Api.getProductRelations(this.state.productId);
 
     if (system.id < 1 || product.id < 1) {
       return false;

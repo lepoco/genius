@@ -7,24 +7,41 @@
 
 import { PureComponent } from 'react';
 
+/**
+ * Represents the values passed as Component attributes.
+ */
 interface ILoaderProps {
-  center: boolean;
+  center?: boolean;
 }
 
+/**
+ * Represents the variables contained in the Component state.
+ */
 interface ILoaderState {
   center: boolean;
 }
 
 export default class Loader extends PureComponent<ILoaderProps, ILoaderState> {
+  /**
+   * The display name of the Component.
+   */
   static displayName: string = Loader.name;
 
+  /**
+   * Binds local methods, assigns properties, and defines the initial state.
+   * @param props Properties passed by the parent element.
+   */
   public constructor(props: ILoaderProps) {
     super(props);
+
     this.state = {
       center: props.center ?? false,
     };
   }
 
+  /**
+   * The main method responsible for refreshing and rendering the view.
+   */
   public render(): JSX.Element {
     return (
       <div className={'loading-boxes' + (this.state.center ? ' -w-20' : '')}>

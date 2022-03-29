@@ -5,31 +5,29 @@
  * All Rights Reserved.
  */
 
-import { Component } from 'react';
-import withRouter from '../../common/withRouter';
-import IRouterProps from '../../interfaces/IRouterProps';
-import IRouter from '../../interfaces/IRouter';
+import { PureComponent } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { Dropdown as BootstrapDropdown } from 'bootstrap';
 
-class NavMenu extends Component<IRouterProps> {
+/**
+ * Navigation Component for Default layout.
+ */
+export default class NavMenu extends PureComponent {
+  /**
+   * The display name of the Component.
+   */
   public static displayName: string = NavMenu.name;
 
-  private router: IRouter;
-
-  public constructor(props: IRouterProps) {
-    super(props);
-
-    this.router = props.router;
-
+  /**
+   * Called immediately after a component is mounted. Setting state here will trigger re-rendering.
+   */
+  public async componentDidMount(): Promise<boolean> {
     window.onload = function (this: GlobalEventHandlers, event: Event) {
       // TODO: Causes console error
       new BootstrapDropdown();
     };
-  }
 
-  private getBrandLink(): string {
-    return '/'; // /dashboard
+    return true;
   }
 
   // constructor (props) {
@@ -47,11 +45,14 @@ class NavMenu extends Component<IRouterProps> {
   //   });
   // }
 
+  /**
+   * The main method responsible for refreshing and rendering the view.
+   */
   public render(): JSX.Element {
     return (
       <section className="navbar navbar-expand-lg navbar-light">
         <div className="container">
-          <Link className="navbar-brand" to={this.getBrandLink()}>
+          <Link className="navbar-brand" to="/">
             <p>Genius</p>
           </Link>
           <button
@@ -113,5 +114,3 @@ class NavMenu extends Component<IRouterProps> {
     );
   }
 }
-
-export default withRouter(NavMenu);

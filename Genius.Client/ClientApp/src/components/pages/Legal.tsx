@@ -12,7 +12,7 @@ import { PureComponent } from 'react';
  */
 export default class Legal extends PureComponent {
   /**
-   * The display name of the component.
+   * The display name of the Component.
    */
   static displayName: string = Legal.name;
 

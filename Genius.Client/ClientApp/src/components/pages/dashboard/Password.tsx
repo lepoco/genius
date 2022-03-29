@@ -19,7 +19,7 @@ interface IPasswordState {}
  */
 export class Password extends RoutedPureComponent<IPasswordState> {
   /**
-   * The display name of the component.
+   * The display name of the Component.
    */
   public static displayName: string = Password.name;
 

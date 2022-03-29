@@ -5,13 +5,22 @@
  * All Rights Reserved.
  */
 
-import { Component } from 'react';
+import { PureComponent } from 'react';
 import NavMenu from '../common/NavMenu';
 import Footer from '../common/Footer';
 
-export class Default extends Component {
+/**
+ * The default application layout Component.
+ */
+export class Default extends PureComponent {
+  /**
+   * The display name of the Component.
+   */
   public static displayName: string = Default.name;
 
+  /**
+   * The main method responsible for refreshing and rendering the view.
+   */
   public render(): JSX.Element {
     return (
       <div id="app">

@@ -9,9 +9,17 @@ export interface TaskDelegate {
   (): boolean;
 }
 
+/**
+ * Represents an asynchronous operation.
+ */
 export default class Task {
-  public static delay(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+  /**
+   * Creates a task that will complete after a time delay.
+   *
+   * @param millisecondsDelay The number of milliseconds to wait before completing the returned task.
+   */
+  public static delay(millisecondsDelay: number) {
+    return new Promise(resolve => setTimeout(resolve, millisecondsDelay));
   }
 
   public static run(delegate: TaskDelegate): void {

@@ -12,7 +12,7 @@ import { PureComponent } from 'react';
  */
 export default class Privacy extends PureComponent {
   /**
-   * The display name of the component.
+   * The display name of the Component.
    */
   public static displayName: string = Privacy.name;
 

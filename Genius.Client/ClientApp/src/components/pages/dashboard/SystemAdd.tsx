@@ -16,13 +16,16 @@ import GeniusApi from '../../../genius/GeniusApi';
  * Represents the variables contained in the component state.
  */
 interface ISystemAddState {
-  systemName?: string;
-  systemDescription?: string;
-  systemType?: string;
-  systemQuestion?: string;
+  systemName: string;
+  systemDescription: string;
+  systemType: string;
+  systemQuestion: string;
 }
 
 export class SystemAdd extends RoutedPureComponent<ISystemAddState> {
+  /**
+   * The display name of the Component.
+   */
   public static displayName: string = SystemAdd.name;
 
   /**
@@ -38,19 +41,31 @@ export class SystemAdd extends RoutedPureComponent<ISystemAddState> {
       systemType: 'fuzzy',
       systemQuestion: 'Does your gnome have {condition}?',
     };
+
+    this.formOnSubmit = this.formOnSubmit.bind(this);
+    this.inputOnChange = this.inputOnChange.bind(this);
   }
 
-  private handleInputChange(event): void {
-    const target = event.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
-    const name = target.name;
+  private async inputOnChange(
+    event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>,
+  ): Promise<boolean> {
+    const target: HTMLInputElement | HTMLSelectElement = event.target;
+    const name: string = target.name;
+    let value: string | boolean = target.value;
 
+    if (target instanceof HTMLInputElement && target.type === 'checkbox') {
+      value = target.checked;
+    }
+
+    // @ts-ignore
     this.setState({
       [name]: value,
     });
+
+    return true;
   }
 
-  private async handleSubmit(event): Promise<void> {
+  private async formOnSubmit(event: React.FormEvent<HTMLFormElement>): Promise<boolean> {
     event.preventDefault();
 
     const EXPERT_SYSTEM = new ExpertSystem(
@@ -68,6 +83,8 @@ export class SystemAdd extends RoutedPureComponent<ISystemAddState> {
     if (apiResult) {
       this.router.navigate('/dashboard');
     }
+
+    return true;
   }
 
   /**
@@ -81,15 +98,10 @@ export class SystemAdd extends RoutedPureComponent<ISystemAddState> {
             <h4 className="-font-secondary -fw-700 -pb-3">Add</h4>
           </div>
           <div className="col-12">
-            <form
-              id="addSystem"
-              method="POST"
-              onSubmit={this.handleSubmit.bind(this)}>
+            <form id="addSystem" method="POST" onSubmit={e => this.formOnSubmit(e)}>
               <input type="hidden" name="nonce" readOnly value="addsystem" />
 
-              <h5 className="-font-secondary -fw-700 -pb-1">
-                New expert system
-              </h5>
+              <h5 className="-font-secondary -fw-700 -pb-1">New expert system</h5>
 
               <div className="floating-input">
                 <input
@@ -98,7 +110,7 @@ export class SystemAdd extends RoutedPureComponent<ISystemAddState> {
                   placeholder="Name"
                   name="systemName"
                   value={this.state.systemName}
-                  onChange={this.handleInputChange.bind(this)}
+                  onChange={e => this.inputOnChange(e)}
                 />
                 <label htmlFor="systemName">Name</label>
               </div>
@@ -110,7 +122,7 @@ export class SystemAdd extends RoutedPureComponent<ISystemAddState> {
                   placeholder="Description"
                   name="systemDescription"
                   value={this.state.systemDescription}
-                  onChange={this.handleInputChange.bind(this)}
+                  onChange={e => this.inputOnChange(e)}
                 />
                 <label htmlFor="systemDescription">Description</label>
               </div>
@@ -123,7 +135,7 @@ export class SystemAdd extends RoutedPureComponent<ISystemAddState> {
                   name="systemType"
                   placeholder="Type"
                   value={this.state.systemQuestion}
-                  onChange={this.handleInputChange.bind(this)}>
+                  onChange={e => this.inputOnChange(e)}>
                   <option value="relational">Relation based</option>
                   <option disabled value="fuzzy">
                     Fuzzy set method (weight)
@@ -143,33 +155,28 @@ export class SystemAdd extends RoutedPureComponent<ISystemAddState> {
                   placeholder="Primary question"
                   name="systemQuestion"
                   value={this.state.systemQuestion}
-                  onChange={this.handleInputChange.bind(this)}
+                  onChange={e => this.inputOnChange(e)}
                 />
                 <label htmlFor="systemQuestion">Primary question</label>
               </div>
 
               <div className="-mb-3">
                 <i>
-                  Main question is displayed during system running. Presents the
-                  name of the condition inside the bracket
-                  &#123;condition&#125;.
+                  Main question is displayed during system running. Presents the name of
+                  the condition inside the bracket &#123;condition&#125;.
                 </i>
                 <br />
                 <i>
-                  If the question has no bracket pattern, condition will be
-                  displayed below.
+                  If the question has no bracket pattern, condition will be displayed
+                  below.
                 </i>
               </div>
 
               <div className="-reveal -pb-1">
-                <button
-                  type="submit"
-                  className="btn btn-dark btn-mobile -lg-mr-1">
+                <button type="submit" className="btn btn-dark btn-mobile -lg-mr-1">
                   Create
                 </button>
-                <Link
-                  to="/dashboard"
-                  className="btn btn-outline-dark btn-mobile">
+                <Link to="/dashboard" className="btn btn-outline-dark btn-mobile">
                   Cancel
                 </Link>
               </div>

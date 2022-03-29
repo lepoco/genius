@@ -5,23 +5,22 @@
  * All Rights Reserved.
  */
 
-import { Component } from 'react';
+import { PureComponent } from 'react';
 import { Link } from 'react-router-dom';
 import withRouter from '../../common/withRouter';
-import IRouterProps from '../../interfaces/IRouterProps';
-import IRouter from '../../interfaces/IRouter';
 
-class Footer extends Component<IRouterProps> {
+/**
+ * Footer Component for Default layout.
+ */
+class Footer extends PureComponent {
+  /**
+   * The display name of the Component.
+   */
   public static displayName: string = Footer.name;
 
-  private router: IRouter;
-
-  public constructor(props: IRouterProps) {
-    super(props);
-
-    this.router = props.router;
-  }
-
+  /**
+   * The main method responsible for refreshing and rendering the view.
+   */
   public render(): JSX.Element {
     return (
       <section className="expanded-footer">
@@ -36,7 +35,7 @@ class Footer extends Component<IRouterProps> {
             <div className="expanded-footer__list col-12">
               <ul className="list-inline">
                 <li className="list-inline-item">
-                  © {new Date().getFullYear()} dev.lepo.co
+                  &copy; {new Date().getFullYear()} dev.lepo.co
                 </li>
                 <li className="list-inline-item">
                   <Link to={'/terms'}>Website Terms</Link>
@@ -62,9 +61,9 @@ class Footer extends Component<IRouterProps> {
             </div>
 
             <div className="expanded-footer__bottom col-12">
-              If you would like to find out more about which genius entity you
-              receive services from, or if you have any other questions, please
-              reach out to us via the help@genius.lepo.co email.
+              If you would like to find out more about which genius entity you receive
+              services from, or if you have any other questions, please reach out to us
+              via the help@genius.lepo.co email.
             </div>
           </div>
         </div>

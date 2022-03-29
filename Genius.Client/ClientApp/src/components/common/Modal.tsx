@@ -7,21 +7,42 @@
 
 import { Component } from 'react';
 
+/**
+ * Represents the values passed as Component attributes.
+ */
 interface IModalProps {
-  name: string;
-  title: string;
+  name?: string;
+  title?: string;
 }
 
+/**
+ * Represents the variables contained in the Component state.
+ */
 interface IModalState {
   name: string;
   title: string;
 }
 
 export default class Modal extends Component<IModalProps, IModalState> {
+  /**
+   * The display name of the Component.
+   */
   static displayName: string = Modal.name;
+
+  /**
+   * Gets or sets a value that indicates whether the modal is currently visible.
+   */
   private visible: boolean = false;
+
+  /**
+   * Gets or sets reference to the vDOM element which contains the modal.
+   */
   private element: HTMLDivElement | null = null;
 
+  /**
+   * Binds local methods, assigns properties, and defines the initial state.
+   * @param props Properties passed by the parent element.
+   */
   public constructor(props: IModalProps) {
     super(props);
 
@@ -30,11 +51,23 @@ export default class Modal extends Component<IModalProps, IModalState> {
       title: props.title ?? 'Default title',
     };
 
-    this.closeOnClick = this.closeOnClick.bind(this);
+    this.buttonCloseOnClick = this.buttonCloseOnClick.bind(this);
   }
 
-  public toggle(): void {}
+  /**
+   * Shows or hides the modal depending on its current state.
+   */
+  public toggle(): void {
+    if (this.visible) {
+      this.hide();
+    } else {
+      this.show();
+    }
+  }
 
+  /**
+   * Shows the modal.
+   */
   public show(): void {
     if (this.element == null) return;
     document.body.classList.add('modal-open');
@@ -45,6 +78,9 @@ export default class Modal extends Component<IModalProps, IModalState> {
     this.visible = true;
   }
 
+  /**
+   * Hides the modal.
+   */
   public hide(): void {
     document.body.classList.remove('modal-open');
 
@@ -56,12 +92,16 @@ export default class Modal extends Component<IModalProps, IModalState> {
     this.visible = false;
   }
 
-  private closeOnClick(
+  private buttonCloseOnClick(
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ): void {
+    event.preventDefault();
     this.hide();
   }
 
+  /**
+   * The main method responsible for refreshing and rendering the view.
+   */
   public render(): JSX.Element {
     return (
       <div
@@ -80,7 +120,7 @@ export default class Modal extends Component<IModalProps, IModalState> {
                 {this.state.title}
               </h5>
               <button
-                onClick={e => this.closeOnClick(e)}
+                onClick={e => this.buttonCloseOnClick(e)}
                 type="button"
                 className="btn-close"
                 data-bs-dismiss="modal"

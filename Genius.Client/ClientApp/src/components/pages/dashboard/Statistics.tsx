@@ -19,7 +19,7 @@ interface IStatisticsState {}
  */
 export class Statistics extends RoutedPureComponent<IStatisticsState> {
   /**
-   * The display name of the component.
+   * The display name of the Component.
    */
   public static displayName: string = Statistics.name;
 

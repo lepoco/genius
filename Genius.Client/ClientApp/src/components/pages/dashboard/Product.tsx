@@ -44,7 +44,7 @@ interface IProductState {
  */
 export class Product extends RoutedPureComponent<IProductState> {
   /**
-   * The display name of the component.
+   * The display name of the Component.
    */
   public static displayName: string = Product.name;
 

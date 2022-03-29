@@ -28,7 +28,7 @@ interface ISystemDeleteState {
  */
 export class SystemDelete extends RoutedPureComponent<ISystemDeleteState> {
   /**
-   * The display name of the component.
+   * The display name of the Component.
    */
   public static displayName: string = SystemDelete.name;
 

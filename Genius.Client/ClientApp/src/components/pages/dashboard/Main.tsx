@@ -5,22 +5,35 @@
  * All Rights Reserved.
  */
 
+import { Link } from 'react-router-dom';
 import RoutedPureComponent from '../../../common/RoutedPureComponent';
 import IRouterProps from '../../../interfaces/IRouterProps';
-import { Link } from 'react-router-dom';
 import GeniusApi from '../../../genius/GeniusApi';
 import IExpertSystem from '../../../genius/interfaces/IExpertSystem';
 import Loader from '../../common/Loader';
 import withRouter from '../../../common/withRouter';
 
+/**
+ * Represents the variables contained in the Component state.
+ */
 interface IMainState {
   isLoading: boolean;
   systemsList: IExpertSystem[];
 }
 
+/**
+ * Dashboard - Main page Component.
+ */
 export class Main extends RoutedPureComponent<IMainState> {
+  /**
+   * The display name of the Component.
+   */
   public static displayName: string = Main.name;
 
+  /**
+   * Binds local methods, assigns properties, and defines the initial state.
+   * @param props Properties passed by the router.
+   */
   public constructor(props: IRouterProps) {
     super(props);
 
@@ -30,11 +43,17 @@ export class Main extends RoutedPureComponent<IMainState> {
     };
   }
 
-  public componentDidMount(): void {
-    this.populateExpertSystemsData();
+  /**
+   * Called immediately after a component is mounted. Setting state here will trigger re-rendering.
+   */
+  public async componentDidMount(): Promise<boolean> {
+    return await this.populateData();
   }
 
-  private async populateExpertSystemsData(): Promise<void> {
+  /**
+   * Asynchronously gets data from the server.
+   */
+  private async populateData(): Promise<boolean> {
     let systems = await GeniusApi.getAllSystems();
 
     for (let index = 0; index < systems.length; index++) {
@@ -46,8 +65,13 @@ export class Main extends RoutedPureComponent<IMainState> {
     }
 
     this.setState({ systemsList: systems, isLoading: false });
+
+    return true;
   }
 
+  /**
+   * Renders additional view elements - a list of expert systems.
+   */
   private static renderSystemsList(systems: IExpertSystem[]): JSX.Element {
     if (Object.keys(systems).length < 1) {
       return (
@@ -61,9 +85,7 @@ export class Main extends RoutedPureComponent<IMainState> {
     return (
       <div className="row">
         {systems.map(system => (
-          <div
-            key={system.id ?? 0}
-            className="col-12 dashboard__section -mb-3">
+          <div key={system.id ?? 0} className="col-12 dashboard__section -mb-3">
             <div className="dashboard__banner h-100 p-5 bg-light -rounded-2">
               <div style={{ width: '100%' }}>
                 <h4>{system.name ?? ''}</h4>

@@ -6,6 +6,7 @@
  */
 
 import { PureComponent } from 'react';
+import { ToastContainer, ToastProvider } from '../common/Toasts';
 import NavMenu from '../common/NavMenu';
 import Footer from '../common/Footer';
 
@@ -19,15 +20,25 @@ export class Default extends PureComponent {
   public static displayName: string = Default.name;
 
   /**
+   * Called immediately after a component is mounted. Setting state here will trigger re-rendering.
+   */
+  public async componentDidMount(): Promise<boolean> {
+    return true;
+  }
+
+  /**
    * The main method responsible for refreshing and rendering the view.
    */
   public render(): JSX.Element {
     return (
-      <div id="app">
+      <>
         <NavMenu />
-        <div className="container">{this.props.children}</div>
+        <section className="main">
+          <div className="container">{this.props.children}</div>
+        </section>
+        <ToastContainer ref={e => ToastProvider.bind(e)} />
         <Footer />
-      </div>
+      </>
     );
   }
 }

@@ -18,19 +18,15 @@ body {
   text-rendering: optimizeLegibility;
 
   #root {
-    height: 100%;
-  }
-
-  #app {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    min-height: 100%;
 
-    & > .container {
+    & > section.main {
       flex: 1 0 auto;
     }
 
-    & > .expanded-footer {
+    & > section.expanded-footer {
       flex-shrink: 0;
     }
   }

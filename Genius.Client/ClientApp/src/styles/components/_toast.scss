@@ -1,4 +1,4 @@
-.toast__container {
+.toast-container {
   position: fixed;
   right: 0;
   bottom: 0;
@@ -13,18 +13,24 @@
   }
 
   .toast {
-    opacity: 1;
     margin-bottom: 1rem;
-    border-radius: 1rem;
     background-color: #fff;
+    border-radius: 1rem;
+    opacity: 1;
     // border: 1px solid #000;
 
     &-header {
+      padding: 1rem;
       border-top-left-radius: calc(1rem - 1px);
       border-top-right-radius: calc(1rem - 1px);
+
+      .btn-close {
+        margin-right: 0;
+      }
     }
 
     &-body {
+      padding: 1rem;
       font-size: 1.4rem;
       border-bottom-left-radius: calc(1rem - 1px);
       border-bottom-right-radius: calc(1rem - 1px);

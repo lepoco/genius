@@ -7,12 +7,11 @@
 
 import { PureComponent } from 'react';
 import { Link } from 'react-router-dom';
-import withRouter from '../../common/withRouter';
 
 /**
  * Footer Component for Default layout.
  */
-class Footer extends PureComponent {
+export default class Footer extends PureComponent {
   /**
    * The display name of the Component.
    */
@@ -71,5 +70,3 @@ class Footer extends PureComponent {
     );
   }
 }
-
-export default withRouter(Footer);

@@ -7,6 +7,7 @@
 
 import { Link } from 'react-router-dom';
 import { ConditionsInput } from '../../common/ConditionsInput';
+import { ToastProvider, Toast } from '../../common/Toasts';
 import Loader from '../../common/Loader';
 import Modal from '../../common/Modal';
 import RoutedPureComponent from '../../../common/RoutedPureComponent';
@@ -234,6 +235,8 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
     console.debug('\\SystemEdit\\formOnSubmit\\relations', this.state.relations);
 
     this.resetForm();
+
+    ToastProvider.show('New product added', "Product " + productToAdd.name + " added to ES.");
 
     return true;
   }

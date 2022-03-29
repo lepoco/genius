@@ -13,7 +13,6 @@ import {
   IExpertSystem,
   IExpertProduct,
   ExpertProduct,
-  ExpertCondition,
   IExpertCondition,
   ExpertRelations,
   IExpertRelations,

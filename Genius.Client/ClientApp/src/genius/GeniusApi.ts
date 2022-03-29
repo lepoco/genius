@@ -5,85 +5,26 @@
  * All Rights Reserved.
  */
 
-//import IExpertSystem from './interfaces/IExpertSystem';
-// import IExpertCondition from './interfaces/IExpertCondition';
-// import IExpertProduct from './interfaces/IExpertProduct';
-// import ExpertSystem from './ExpertSystem';
-// import IExpertRelation from './interfaces/IExpertRelation';
-// import ExpertCondition from './ExpertCondition';
-// import ExpertProduct from './ExpertProduct';
-// import ExpertRelation from './ExpertRelation';
-// import ISolverQuestion from './interfaces/ISolverQuestion';
-// import ISolverResponse from './interfaces/ISolverResponse';
-// import SolverResponse from './SolverResponse';
-// import IImportResponse from './interfaces/IImportResponse';
-// import IImportRequest from './interfaces/IImportRequest';
-// import ImportResponse from './ImportResponse';
-// import ExpertRelations from './ExpertRelations';
-// import IExpertRelations from './interfaces/IExpertRelations';
-// import ExpertAbout from './ExpertAbout';
-// import IExpertAbout from './interfaces/IExpertAbout';
+import { GeniusDataParser } from './GeniusDataParser';
 
-import {
-  IExpertSystem,
-  IExpertAbout,
-  ExpertAbout,
-  IExpertCondition,
-  IExpertProduct,
-  ExpertSystem,
-  IExpertRelation,
-  ExpertCondition,
-  IExpertRelations,
-  ExpertRelations,
-  ExpertProduct,
-  ExpertRelation,
-  ISolverQuestion,
-  ISolverResponse,
-  SolverResponse,
-  IImportResponse,
-  ImportResponse,
-  IImportRequest,
-} from './Genius';
+import { IExpertSystem } from './interfaces/IExpertSystem';
+import { IExpertCondition } from './interfaces/IExpertCondition';
+import { IExpertProduct } from './interfaces/IExpertProduct';
+import { ExpertSystem } from './ExpertSystem';
+import { IExpertRelation } from './interfaces/IExpertRelation';
+import { ISolverResponse } from './interfaces/ISolverResponse';
+import { SolverResponse } from './SolverResponse';
+import { IImportResponse } from './interfaces/IImportResponse';
+import { IImportRequest } from './interfaces/IImportRequest';
+import { ImportResponse } from './ImportResponse';
+import { ExpertRelations } from './ExpertRelations';
+import { ExpertAbout } from './ExpertAbout';
 
 /**
  * Contains logic responsible for polling the internal API that connects via gRPC to the Genius microservice.
  */
 export class GeniusApi {
   private static readonly BASE_EXPERT_GATEWAY: string = '/api/expert/';
-
-  private static readonly BASE_SOLVER_GATEWAY: string = '/api/solver/';
-
-  /**
-   * Asks a question to the service solving expert systems.
-   * @param question Terms of the question
-   * @returns Response from solver.
-   */
-  public static async ask(question: ISolverQuestion): Promise<ISolverResponse> {
-    const confirmingIds: number[] = (question.confirming ?? []).map(({ id }) => id ?? 0);
-    const negatingIds: number[] = (question.negating ?? []).map(({ id }) => id ?? 0);
-    const indifferentIds: number[] = (question.indifferent ?? []).map(
-      ({ id }) => id ?? 0,
-    );
-
-    let formData = GeniusApi.buildFormData({
-      systemId: question.systemId ?? 0,
-      multiple: question.multiple ?? false,
-      confirming: confirmingIds,
-      negating: negatingIds,
-      indifferent: indifferentIds,
-    });
-
-    let response = await fetch(GeniusApi.BASE_SOLVER_GATEWAY + 'ask', {
-      method: 'POST',
-      body: formData,
-    });
-
-    const responseData = await response.json();
-
-    console.debug('\\GeniusApi\\ask\\responseData', responseData);
-
-    return await this.fetchResponseObject(responseData);
-  }
 
   /**
    * Get the system by its GUID.
@@ -120,7 +61,7 @@ export class GeniusApi {
 
     console.debug('\\GeniusApi\\getSystemAbout\\data', data);
 
-    return GeniusApi.fetchSystemAboutObject(data);
+    return GeniusDataParser.fetchSystemAboutObject(data);
   }
 
   /**
@@ -172,7 +113,7 @@ export class GeniusApi {
       return false;
     }
 
-    let formData = GeniusApi.buildFormData({
+    let formData = GeniusDataParser.buildFormData({
       name: system.name ?? '',
       description: system.description ?? '',
       question: system.question ?? '',
@@ -228,7 +169,7 @@ export class GeniusApi {
     let conditionsList: IExpertCondition[] = [];
 
     for (let key in data) {
-      conditionsList.push(GeniusApi.fetchConditionObject(data[key]));
+      conditionsList.push(GeniusDataParser.fetchConditionObject(data[key]));
     }
 
     console.debug('\\GeniusApi\\getSystemConditions\\conditionsList', conditionsList);
@@ -244,11 +185,11 @@ export class GeniusApi {
 
     console.debug('\\GeniusApi\\getCondition\\data', data);
 
-    return await GeniusApi.fetchConditionObject(data);
+    return await GeniusDataParser.fetchConditionObject(data);
   }
 
   public static async addCondition(condition: IExpertCondition): Promise<number> {
-    let formData = GeniusApi.buildFormData({
+    let formData = GeniusDataParser.buildFormData({
       systemId: condition.systemId ?? 0,
       name: condition.name ?? '',
       description: condition.description ?? '',
@@ -286,7 +227,7 @@ export class GeniusApi {
     let productsList: IExpertProduct[] = [];
 
     for (let key in data) {
-      productsList.push(GeniusApi.fetchProductObject(data[key]));
+      productsList.push(GeniusDataParser.fetchProductObject(data[key]));
     }
 
     console.debug('\\GeniusApi\\getSystemProducts\\productsList', productsList);
@@ -300,11 +241,11 @@ export class GeniusApi {
 
     console.debug('\\GeniusApi\\getProduct\\data', data);
 
-    return await GeniusApi.fetchProductObject(data);
+    return await GeniusDataParser.fetchProductObject(data);
   }
 
   public static async addProduct(product: IExpertProduct): Promise<number> {
-    const formData = GeniusApi.buildFormData({
+    const formData = GeniusDataParser.buildFormData({
       systemId: product.systemId ?? 0,
       name: product.name ?? '',
       description: product.description ?? '',
@@ -345,7 +286,7 @@ export class GeniusApi {
       }
     }
 
-    const formData = GeniusApi.buildFormData({
+    const formData = GeniusDataParser.buildFormData({
       systemId: systemId,
       name: product.name ?? '',
       description: product.description ?? '',
@@ -389,7 +330,7 @@ export class GeniusApi {
     let relationsList: IExpertRelation[] = [];
 
     for (let key in data) {
-      relationsList.push(GeniusApi.fetchRelationObject(data[key]));
+      relationsList.push(GeniusDataParser.fetchRelationObject(data[key]));
     }
 
     console.debug('\\GeniusApi\\getSystemRelations\\relationsList', relationsList);
@@ -410,7 +351,7 @@ export class GeniusApi {
 
     console.debug('\\GeniusApi\\getProductRelations\\data', data);
 
-    return GeniusApi.fetchRelationsObject(data);
+    return GeniusDataParser.fetchRelationsObject(data);
   }
 
   public static async getConditionRelations(
@@ -428,7 +369,7 @@ export class GeniusApi {
 
     console.debug('\\GeniusApi\\getProductRelations\\data', data);
 
-    return GeniusApi.fetchRelationsObject(data);
+    return GeniusDataParser.fetchRelationsObject(data);
   }
 
   public static async getRelation(relationId: number): Promise<IExpertRelation> {
@@ -439,11 +380,11 @@ export class GeniusApi {
 
     console.debug('\\GeniusApi\\getRelation\\data', data);
 
-    return await GeniusApi.fetchRelationObject(data);
+    return await GeniusDataParser.fetchRelationObject(data);
   }
 
   public static async addRelation(relation: IExpertRelation): Promise<number> {
-    const formData = GeniusApi.buildFormData({
+    const formData = GeniusDataParser.buildFormData({
       systemId: relation.systemId ?? 0,
       conditionId: relation.conditionId,
       productId: relation.productId,
@@ -467,7 +408,7 @@ export class GeniusApi {
   public static async importFromFile(
     importData: IImportRequest,
   ): Promise<IImportResponse> {
-    const formData = GeniusApi.buildFormData({
+    const formData = GeniusDataParser.buildFormData({
       systemId: importData.systemId,
       file: importData.file,
     });
@@ -520,68 +461,7 @@ export class GeniusApi {
     return expertState;
   }
 
-  private static fetchSystemAboutObject(dataObject: any): IExpertAbout {
-    return new ExpertAbout(
-      dataObject?.id ?? 0,
-      dataObject?.products ?? 0,
-      dataObject?.conditions ?? 0,
-      dataObject?.relations ?? 0,
-    );
-  }
-
-  private static fetchConditionObject(dataObject: any): IExpertCondition {
-    return new ExpertCondition(
-      dataObject.id ?? 0,
-      dataObject.systemId ?? 0,
-      dataObject.name ?? '',
-      dataObject.description ?? '',
-    );
-  }
-
-  private static fetchProductObject(dataObject: any): IExpertProduct {
-    return new ExpertProduct(
-      dataObject.id ?? 0,
-      dataObject.systemId ?? 0,
-      dataObject.name ?? '',
-      dataObject.description ?? '',
-      dataObject.notes ?? '',
-    );
-  }
-
-  private static fetchRelationsObject(dataObject: any): IExpertRelations {
-    return new ExpertRelations(
-      dataObject.id ?? 0,
-      dataObject.systemId ?? 0,
-      dataObject.confirming ?? [],
-      dataObject.negating ?? [],
-      dataObject.indifferent ?? [],
-    );
-  }
-
-  private static fetchRelationObject(dataObject: any): IExpertRelation {
-    return new ExpertRelation(
-      dataObject.id ?? 0,
-      dataObject.systemId ?? 0,
-      dataObject.conditionId ?? 0,
-      dataObject.productId ?? 0,
-      dataObject.weight ?? 100,
-    );
-  }
-
-  private static async fetchResponseObject(dataObject: any): Promise<ISolverResponse> {
-    // TODO: Fix solving
-    return new SolverResponse(
-      dataObject.systemId ?? 0,
-      dataObject.isSolved ?? false,
-      dataObject.status ?? 0,
-      await this.getProducts(
-        Array.isArray(dataObject.products) ? dataObject.products : [],
-      ),
-      await this.getCondition(parseInt(dataObject.nextCondition ?? 0)),
-    );
-  }
-
-  private static async getProducts(productIds: number[]): Promise<IExpertProduct[]> {
+  public static async getProductsByIds(productIds: number[]): Promise<IExpertProduct[]> {
     let products: IExpertProduct[] = [];
 
     await Promise.all(
@@ -593,13 +473,16 @@ export class GeniusApi {
     return products;
   }
 
-  private static buildFormData(data: object): FormData {
-    const formData = new FormData();
-
-    for (let key in data) {
-      formData.append(key, data[key]);
-    }
-
-    return formData;
+  private static async fetchResponseObject(dataObject: any): Promise<ISolverResponse> {
+    // TODO: Fix solving
+    return new SolverResponse(
+      dataObject.systemId ?? 0,
+      dataObject.isSolved ?? false,
+      dataObject.status ?? 0,
+      await this.getProductsByIds(
+        Array.isArray(dataObject.products) ? dataObject.products : [],
+      ),
+      await this.getCondition(parseInt(dataObject.nextCondition ?? 0)),
+    );
   }
 }

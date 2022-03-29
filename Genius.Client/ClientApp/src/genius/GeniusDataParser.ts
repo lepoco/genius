@@ -19,7 +19,18 @@ import { ExpertRelations } from './ExpertRelations';
 /**
  * Contains static methods that cast objects to the expected interfaces.
  */
+
 export class GeniusDataParser {
+  public static buildFormData(data: object): FormData {
+    const formData = new FormData();
+
+    for (let key in data) {
+      formData.append(key, data[key]);
+    }
+
+    return formData;
+  }
+
   public static fetchSystemAboutObject(dataObject: any): IExpertAbout {
     return new ExpertAbout(
       dataObject?.id ?? 0,
@@ -66,15 +77,5 @@ export class GeniusDataParser {
       dataObject.productId ?? 0,
       dataObject.weight ?? 100,
     );
-  }
-
-  public static buildFormData(data: object): FormData {
-    const formData = new FormData();
-
-    for (let key in data) {
-      formData.append(key, data[key]);
-    }
-
-    return formData;
   }
 }

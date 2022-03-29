@@ -26,7 +26,7 @@ import Statistics from './components/pages/dashboard/Statistics';
 import Users from './components/pages/dashboard/Users';
 import Password from './components/pages/dashboard/Password';
 import Settings from './components/pages/dashboard/Settings';
-import System from './components/pages/dashboard/System';
+import Solver from './components/pages/dashboard/Solver';
 import SystemAdd from './components/pages/dashboard/SystemAdd';
 import SystemDelete from './components/pages/dashboard/SystemDelete';
 import SystemEdit from './components/pages/dashboard/SystemEdit';
@@ -58,7 +58,7 @@ ReactDOM.render(
           <Route path="/dashboard/password" element={<Password />} />
           <Route path="/dashboard/settings" element={<Settings />} />
 
-          <Route path="/dashboard/sys/:guid" element={<System />} />
+          <Route path="/dashboard/sys/:guid" element={<Solver />} />
           <Route path="/dashboard/product/:guid/:id" element={<Product />} />
           <Route path="/dashboard/condition/:guid/:id" element={<Condition />} />
           <Route path="/dashboard/conditions/:guid" element={<Conditions />} />

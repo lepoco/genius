@@ -11,7 +11,7 @@ import RoutedPureComponent from '../../../common/RoutedPureComponent';
 import IRouterProps from '../../../interfaces/IRouterProps';
 import Loader from '../../common/Loader';
 import withRouter from '../../../common/withRouter';
-import { Edit16Regular, Delete16Regular } from '@fluentui/react-icons';
+import { Edit16Regular /*, Delete16Regular*/ } from '@fluentui/react-icons';
 
 /**
  * Represents the variables contained in the Component state.

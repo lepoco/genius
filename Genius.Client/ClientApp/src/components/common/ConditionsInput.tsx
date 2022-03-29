@@ -6,17 +6,7 @@
  */
 
 import React, { Component } from 'react';
-import {
-  Genius,
-  ExpertSystem,
-  IExpertSystem,
-  ExpertCondition,
-  IExpertCondition,
-  ExpertProduct,
-  IExpertProduct,
-  IImportRequest,
-  ImportRequest
-} from '../../genius/Genius';
+import { Genius, ExpertCondition, IExpertCondition } from '../../genius/Genius';
 
 interface TagsUpdated<T = IExpertCondition[]> {
   (selected: T, available: T): void;
@@ -243,7 +233,7 @@ export class ConditionsInput extends Component<
       return false;
     }
 
-    const pattern = /^([\s\.]?[a-zA-Z]+)+$/;
+    const pattern = /^([\s.]?[a-zA-Z]+)+$/;
     const inputValue = event.target.value;
 
     if (!inputValue.match('/^' + pattern + '$/')) {

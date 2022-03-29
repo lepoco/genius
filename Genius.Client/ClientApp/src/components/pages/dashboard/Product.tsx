@@ -12,11 +12,11 @@ import IRouterProps from '../../../interfaces/IRouterProps';
 import GeniusApi from '../../../genius/GeniusApi';
 import IExpertSystem from '../../../genius/interfaces/IExpertSystem';
 import IExpertCondition from '../../../genius/interfaces/IExpertCondition';
-import IExpertProductRelations from '../../../genius/interfaces/IExpertProductRelations';
+import IExpertRelations from '../../../genius/interfaces/IExpertRelations';
 import IExpertProduct from '../../../genius/interfaces/IExpertProduct';
 import ExpertSystem from '../../../genius/ExpertSystem';
 import ExpertProduct from '../../../genius/ExpertProduct';
-import ExpertProductRelations from '../../../genius/ExpertProductRelations';
+import ExpertRelations from '../../../genius/ExpertRelations';
 import Loader from '../../common/Loader';
 import withRouter from '../../../common/withRouter';
 
@@ -34,7 +34,7 @@ interface IProductState {
 
   selectedProduct: IExpertProduct;
 
-  selectedProductRelations: IExpertProductRelations;
+  selectedProductRelations: IExpertRelations;
 
   selectedProductConditions: IExpertCondition[];
 }
@@ -62,7 +62,7 @@ export class Product extends RoutedPureComponent<IProductState> {
       selectedProductConditions: [],
       selectedSystem: new ExpertSystem(0, ''),
       selectedProduct: new ExpertProduct(0, 0),
-      selectedProductRelations: new ExpertProductRelations(0, 0, [], [], []),
+      selectedProductRelations: new ExpertRelations(0, 0, [], [], []),
     };
 
     this.renderContent = this.renderContent.bind(this);
@@ -109,7 +109,11 @@ export class Product extends RoutedPureComponent<IProductState> {
         return;
       }
 
-      if (selectedProductConfirmingRelations.includes(rel.id) && rel.conditionId !== undefined && rel.conditionId > 0) {
+      if (
+        selectedProductConfirmingRelations.includes(rel.id) &&
+        rel.conditionId !== undefined &&
+        rel.conditionId > 0
+      ) {
         selectedConditionsFromRelations.push(rel.conditionId);
       }
     });
@@ -215,6 +219,19 @@ export class Product extends RoutedPureComponent<IProductState> {
               <label htmlFor="product_notes">Notes</label>
             </div>
 
+            <p>
+              <small>
+                <i>
+                  Tip: At the bottom you can see all conditions already available in the
+                  database, you can add a new condition by typing its name and pressing
+                  enter.
+                  <br />
+                  You can add multiple conditions by entering their names after a comma.
+                  If any of the added conditions already exist, no copy will be made.
+                </i>
+              </small>
+            </p>
+
             <ConditionsInput
               inputName="Conditions (confirming)"
               systemId={this.state.selectedSystem.id ?? 0}
@@ -229,7 +246,7 @@ export class Product extends RoutedPureComponent<IProductState> {
               <Link
                 to={'/dashboard/edit/' + (this.state.systemGUID ?? '0')}
                 className="btn btn-outline-dark btn-mobile">
-                Back to system
+                Return to system
               </Link>
             </div>
           </form>
@@ -242,12 +259,6 @@ export class Product extends RoutedPureComponent<IProductState> {
    * The main method responsible for refreshing and rendering the view.
    */
   public render(): JSX.Element {
-    const contents = !this.state.contentLoaded ? (
-      <Loader center={false} />
-    ) : (
-      this.renderContent()
-    );
-
     return (
       <>
         <div className="dashboard container pt-5 pb-5">
@@ -257,7 +268,7 @@ export class Product extends RoutedPureComponent<IProductState> {
             </div>
           </div>
 
-          {contents}
+          {!this.state.contentLoaded ? <Loader center={false} /> : this.renderContent()}
         </div>
       </>
     );

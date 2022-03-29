@@ -147,7 +147,7 @@ namespace Genius.Client.Controllers
         [Route("product/{id}/relations")]
         public async Task<ProductRelationsModel> GetProductRelations([FromRoute] int id)
         {
-            return await _expertClient.GetProductRelations(id);
+            return await _expertClient.GetProductRelationsAsync(id);
         }
 
         [HttpPost]
@@ -176,6 +176,13 @@ namespace Genius.Client.Controllers
         public async Task<ConditionModel> GetSingleCondition([FromRoute] int id)
         {
             return await _expertClient.GetConditionAsync(id);
+        }
+
+        [HttpGet]
+        [Route("condition/{id}/relations")]
+        public async Task<ConditionRelationsModel> GetConditionRelations([FromRoute] int id)
+        {
+            return await _expertClient.GetConditionRelationsAsync(id);
         }
 
         [HttpPost]

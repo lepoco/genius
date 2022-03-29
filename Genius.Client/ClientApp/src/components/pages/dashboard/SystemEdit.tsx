@@ -236,7 +236,10 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
 
     this.resetForm();
 
-    ToastProvider.show('New product added', "Product " + productToAdd.name + " added to ES.");
+    ToastProvider.show(
+      'New product added',
+      'Product ' + productToAdd.name + ' added to ES.',
+    );
 
     return true;
   }
@@ -439,6 +442,9 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
                   Tip: At the bottom you can see all conditions already available in the
                   database, you can add a new condition by typing its name and pressing
                   enter.
+                  <br />
+                  You can add multiple conditions by entering their names after a comma.
+                  If any of the added conditions already exist, no copy will be made.
                 </i>
               </small>
             </p>
@@ -463,6 +469,11 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
               <button type="submit" className="btn btn-dark btn-mobile -lg-mr-1">
                 Add
               </button>
+              <Link
+                className="btn btn-outline-dark btn-mobile"
+                to={'/dashboard/conditions/' + this.state.guid}>
+                Edit all conditions
+              </Link>
             </div>
           </form>
         </div>

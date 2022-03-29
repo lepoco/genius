@@ -19,6 +19,8 @@ import SignIn from './components/pages/SignIn';
 
 import Dashboard from './components/pages/dashboard/Main';
 import Product from './components/pages/dashboard/Product';
+import Condition from './components/pages/dashboard/Condition';
+import Conditions from './components/pages/dashboard/Conditions';
 import Account from './components/pages/dashboard/Account';
 import Statistics from './components/pages/dashboard/Statistics';
 import Users from './components/pages/dashboard/Users';
@@ -58,6 +60,8 @@ ReactDOM.render(
 
           <Route path="/dashboard/sys/:guid" element={<System />} />
           <Route path="/dashboard/product/:guid/:id" element={<Product />} />
+          <Route path="/dashboard/condition/:guid/:id" element={<Condition />} />
+          <Route path="/dashboard/conditions/:guid" element={<Conditions />} />
           <Route path="/dashboard/add" element={<SystemAdd />} />
           <Route path="/dashboard/edit/:guid" element={<SystemEdit />} />
           <Route path="/dashboard/delete/:guid" element={<SystemDelete />} />

@@ -19,8 +19,8 @@ import SolverResponse from './SolverResponse';
 import IImportResponse from './interfaces/IImportResponse';
 import IImportRequest from './interfaces/IImportRequest';
 import ImportResponse from './ImportResponse';
-import ExpertProductRelations from './ExpertProductRelations';
-import IExpertProductRelations from './interfaces/IExpertProductRelations';
+import ExpertRelations from './ExpertRelations';
+import IExpertRelations from './interfaces/IExpertRelations';
 import ExpertAbout from './ExpertAbout';
 import IExpertAbout from './interfaces/IExpertAbout';
 
@@ -376,9 +376,7 @@ export default class GeniusApi {
     return relationsList;
   }
 
-  public static async getProductRelations(
-    productId: number,
-  ): Promise<ExpertProductRelations> {
+  public static async getProductRelations(productId: number): Promise<ExpertRelations> {
     const response = await fetch(
       GeniusApi.BASE_EXPERT_GATEWAY + 'product/' + productId + '/relations',
     );
@@ -386,12 +384,30 @@ export default class GeniusApi {
     const data = await response.json();
 
     if (!(data instanceof Object)) {
-      return new ExpertProductRelations(productId, 0);
+      return new ExpertRelations(productId, 0);
     }
 
     console.debug('\\GeniusApi\\getProductRelations\\data', data);
 
-    return GeniusApi.fetchProductRelationsObject(data);
+    return GeniusApi.fetchRelationsObject(data);
+  }
+
+  public static async getConditionRelations(
+    conditionId: number,
+  ): Promise<ExpertRelations> {
+    const response = await fetch(
+      GeniusApi.BASE_EXPERT_GATEWAY + 'condition/' + conditionId + '/relations',
+    );
+
+    const data = await response.json();
+
+    if (!(data instanceof Object)) {
+      return new ExpertRelations(conditionId, 0);
+    }
+
+    console.debug('\\GeniusApi\\getProductRelations\\data', data);
+
+    return GeniusApi.fetchRelationsObject(data);
   }
 
   public static async getRelation(relationId: number): Promise<IExpertRelation> {
@@ -511,8 +527,8 @@ export default class GeniusApi {
     );
   }
 
-  private static fetchProductRelationsObject(dataObject: any): IExpertProductRelations {
-    return new ExpertProductRelations(
+  private static fetchRelationsObject(dataObject: any): IExpertRelations {
+    return new ExpertRelations(
       dataObject.id ?? 0,
       dataObject.systemId ?? 0,
       dataObject.confirming ?? [],

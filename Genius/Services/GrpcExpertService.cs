@@ -37,11 +37,11 @@ namespace Genius.Services
             if (String.IsNullOrEmpty(request?.Name) || String.IsNullOrEmpty(request?.Question))
                 return new ExpertResponseModel { Id = 0 };
 
-            var existingSystems = await _expertService.Context.Systems.Where(sys => sys.Name == request.Name).ToListAsync();
+            var existingSystems =
+                await _expertService.Context.Systems.Where(sys => sys.Name == request.Name).ToListAsync();
 
             // System already exist
-            if (existingSystems.Count > 0)
-                return new ExpertResponseModel { Id = 0 };
+            if (existingSystems.Count > 0) return new ExpertResponseModel { Id = 0 };
 
             var insertedSystem = new Data.Models.Expert.System
             {
@@ -89,15 +89,15 @@ namespace Genius.Services
 
             if (!String.IsNullOrEmpty(request?.Guid))
                 expertSystem =
-                    await _expertService.Context.Systems.Where(sys => sys.Guid == request.Guid.Trim()).FirstOrDefaultAsync() ??
-                    new Data.Models.Expert.System { Id = 0 };
+                    await _expertService.Context.Systems.Where(sys => sys.Guid == request.Guid.Trim())
+                        .FirstOrDefaultAsync() ?? new Data.Models.Expert.System { Id = 0 };
 
             if ((request?.Id ?? 0) > 0)
-                expertSystem = await _expertService.Context.Systems.Where(sys => sys.Id == request.Id).FirstOrDefaultAsync() ??
-                               new Data.Models.Expert.System { Id = 0 };
+                expertSystem =
+                    await _expertService.Context.Systems.Where(sys => sys.Id == request.Id).FirstOrDefaultAsync() ??
+                    new Data.Models.Expert.System { Id = 0 };
 
-            if (expertSystem.Id < 1)
-                return new ExpertModel();
+            if (expertSystem.Id < 1) return new ExpertModel();
 
             return new ExpertModel
             {
@@ -118,45 +118,51 @@ namespace Genius.Services
 
             if (!String.IsNullOrEmpty(request?.Guid))
                 expertSystem =
-                    await _expertService.Context.Systems.Where(sys => sys.Guid == request.Guid.Trim()).FirstOrDefaultAsync() ??
-                    new Data.Models.Expert.System { Id = 0 };
+                    await _expertService.Context.Systems.Where(sys => sys.Guid == request.Guid.Trim())
+                        .FirstOrDefaultAsync() ?? new Data.Models.Expert.System { Id = 0 };
 
             if ((request?.Id ?? 0) > 0)
-                expertSystem = await _expertService.Context.Systems.Where(sys => sys.Id == request.Id).FirstOrDefaultAsync() ??
-                               new Data.Models.Expert.System { Id = 0 };
+                expertSystem =
+                    await _expertService.Context.Systems.Where(sys => sys.Id == request.Id).FirstOrDefaultAsync() ??
+                    new Data.Models.Expert.System { Id = 0 };
 
-            if (expertSystem.Id < 1)
-                return new ExpertAboutModel();
+            if (expertSystem.Id < 1) return new ExpertAboutModel();
 
             return new ExpertAboutModel
             {
                 Id = expertSystem.Id,
-                Conditions = await _expertService.Context.Conditions.Where(condition => condition.SystemId == expertSystem.Id)
-                    .CountAsync(),
-                Products = await _expertService.Context.Products.Where(product => product.SystemId == expertSystem.Id)
-                    .CountAsync(),
-                Relations = await _expertService.Context.Relations.Where(relation => relation.SystemId == expertSystem.Id)
+                Conditions =
+                    await _expertService.Context.Conditions
+                        .Where(condition => condition.SystemId == expertSystem.Id)
+                        .CountAsync(),
+                Products =
+                    await _expertService.Context.Products.Where(product => product.SystemId == expertSystem.Id)
+                        .CountAsync(),
+                Relations = await _expertService.Context.Relations
+                    .Where(relation => relation.SystemId == expertSystem.Id)
                     .CountAsync(),
             };
         }
 
         public override async Task<ExpertResponseModel> Delete(ExpertLookupModel request, ServerCallContext context)
         {
-            if (request?.Id < 1)
-                return new ExpertResponseModel { Id = 0 };
+            if (request?.Id < 1) return new ExpertResponseModel { Id = 0 };
 
-            var expertSystem = await _expertService.Context.Systems.Where(sys => sys.Id == request.Id).FirstOrDefaultAsync() ??
-                               new Data.Models.Expert.System { Id = 0 };
+            var expertSystem =
+                await _expertService.Context.Systems.Where(sys => sys.Id == request.Id).FirstOrDefaultAsync() ??
+                new Data.Models.Expert.System { Id = 0 };
 
             // Does not exist
-            if (expertSystem.Id < 1)
-                return new ExpertResponseModel { Id = 0 };
+            if (expertSystem.Id < 1) return new ExpertResponseModel { Id = 0 };
 
             int systemId = expertSystem.Id;
 
-            _expertService.Context.Relations.RemoveRange(_expertService.Context.Relations.Where(relation => relation.SystemId == systemId));
-            _expertService.Context.Conditions.RemoveRange(_expertService.Context.Conditions.Where(condition => condition.SystemId == systemId));
-            _expertService.Context.Products.RemoveRange(_expertService.Context.Products.Where(product => product.SystemId == systemId));
+            _expertService.Context.Relations.RemoveRange(
+                _expertService.Context.Relations.Where(relation => relation.SystemId == systemId));
+            _expertService.Context.Conditions.RemoveRange(
+                _expertService.Context.Conditions.Where(condition => condition.SystemId == systemId));
+            _expertService.Context.Products.RemoveRange(
+                _expertService.Context.Products.Where(product => product.SystemId == systemId));
 
             _expertService.Context.Systems.Remove(expertSystem);
 
@@ -173,28 +179,24 @@ namespace Genius.Services
 
         public override async Task<ConditionModel> AddCondition(ConditionModel request, ServerCallContext context)
         {
-            if (request == null)
-                return new ConditionModel { Id = 0 };
+            if (request == null) return new ConditionModel { Id = 0 };
 
-            if (request?.SystemId < 1)
-                return request;
+            if (request?.SystemId < 1) return request;
 
             var expertSystem =
                 await _expertService.Context.Systems.Where(sys => sys.Id == request.SystemId).FirstOrDefaultAsync() ??
                 new Data.Models.Expert.System { Id = 0 };
 
-            if (expertSystem.Id < 1)
-                return request;
+            if (expertSystem.Id < 1) return request;
 
-            if (String.IsNullOrEmpty(request?.Name))
-                return request;
+            if (String.IsNullOrEmpty(request?.Name)) return request;
 
             var existingConditions = await _expertService.Context.Conditions
-                .Where(con => con.SystemId == expertSystem.Id && con.Name == request.Name).ToListAsync();
+                .Where(con => con.SystemId == expertSystem.Id && con.Name == request.Name)
+                .ToListAsync();
 
             // Already exists
-            if (existingConditions.Count > 0)
-                return request;
+            if (existingConditions.Count > 0) return request;
 
             var insertedCondition = new Data.Models.Expert.Condition
             {
@@ -214,28 +216,24 @@ namespace Genius.Services
 
         public override async Task<ProductModel> AddProduct(ProductModel request, ServerCallContext context)
         {
-            if (request == null)
-                return new ProductModel { Id = 0 };
+            if (request == null) return new ProductModel { Id = 0 };
 
-            if (request?.SystemId < 1)
-                return request;
+            if (request?.SystemId < 1) return request;
 
             var expertSystem =
                 await _expertService.Context.Systems.Where(sys => sys.Id == request.SystemId).FirstOrDefaultAsync() ??
                 new Data.Models.Expert.System { Id = 0 };
 
-            if (expertSystem.Id < 1)
-                return request;
+            if (expertSystem.Id < 1) return request;
 
-            if (String.IsNullOrEmpty(request?.Name))
-                return request;
+            if (String.IsNullOrEmpty(request?.Name)) return request;
 
             var existingProducts = await _expertService.Context.Products
-                .Where(prod => prod.SystemId == expertSystem.Id && prod.Name == request.Name).ToListAsync();
+                .Where(prod => prod.SystemId == expertSystem.Id && prod.Name == request.Name)
+                .ToListAsync();
 
             // Already exists
-            if (existingProducts.Count > 0)
-                return request;
+            if (existingProducts.Count > 0) return request;
 
             var insertedProduct = new Data.Models.Expert.Product
             {
@@ -256,32 +254,27 @@ namespace Genius.Services
 
         public override async Task<RelationModel> AddRelation(RelationModel request, ServerCallContext context)
         {
-            if (request == null)
-                return new RelationModel { Id = 0 };
+            if (request == null) return new RelationModel { Id = 0 };
 
-            if (request?.SystemId < 1 || request?.ConditionId < 1 || request?.ProductId < 1)
-                return request;
+            if (request?.SystemId < 1 || request?.ConditionId < 1 || request?.ProductId < 1) return request;
 
             var expertSystem =
                 await _expertService.Context.Systems.Where(sys => sys.Id == request.SystemId).FirstOrDefaultAsync() ??
                 new Data.Models.Expert.System { Id = 0 };
 
             var databaseCondition =
-                await _expertService.Context.Conditions.Where(con => con.Id == request.ConditionId).FirstOrDefaultAsync() ??
-                new Data.Models.Expert.Condition { Id = 0 };
+                await _expertService.Context.Conditions.Where(con => con.Id == request.ConditionId)
+                    .FirstOrDefaultAsync() ?? new Data.Models.Expert.Condition { Id = 0 };
 
             var databaseProduct =
-                await _expertService.Context.Products.Where(prod => prod.Id == request.ProductId).FirstOrDefaultAsync() ??
-                new Data.Models.Expert.Product { Id = 0 };
+                await _expertService.Context.Products.Where(prod => prod.Id == request.ProductId)
+                    .FirstOrDefaultAsync() ?? new Data.Models.Expert.Product { Id = 0 };
 
-            if (expertSystem.Id < 1 || databaseProduct.Id < 1 || databaseCondition.Id < 1)
-                return request;
+            if (expertSystem.Id < 1 || databaseProduct.Id < 1 || databaseCondition.Id < 1) return request;
 
-            if (request.Weight > 100)
-                request.Weight = 100;
+            if (request.Weight > 100) request.Weight = 100;
 
-            if (request.Weight < 0)
-                request.Weight = 0;
+            if (request.Weight < 0) request.Weight = 0;
 
             var insertedRelation = new Data.Models.Expert.Relation
             {
@@ -306,8 +299,7 @@ namespace Genius.Services
 
         public override async Task<ConditionModel> GetCondition(ConditionLookupModel request, ServerCallContext context)
         {
-            if (request == null || request.Id < 1)
-                return new ConditionModel { Id = 0 };
+            if (request == null || request.Id < 1) return new ConditionModel { Id = 0 };
 
             var databaseCondition =
                 await _expertService.Context.Conditions.Where(con => con.Id == request.Id).FirstOrDefaultAsync() ??
@@ -324,8 +316,7 @@ namespace Genius.Services
 
         public override async Task<ProductModel> GetProduct(ProductLookupModel request, ServerCallContext context)
         {
-            if (request == null || request.Id < 1)
-                return new ProductModel { Id = 0 };
+            if (request == null || request.Id < 1) return new ProductModel { Id = 0 };
 
             var databaseProduct =
                 await _expertService.Context.Products.Where(prod => prod.Id == request.Id).FirstOrDefaultAsync() ??
@@ -343,8 +334,7 @@ namespace Genius.Services
 
         public override async Task<RelationModel> GetRelation(RelationLookupModel request, ServerCallContext context)
         {
-            if (request == null || request.Id < 1)
-                return new RelationModel { Id = 0 };
+            if (request == null || request.Id < 1) return new RelationModel { Id = 0 };
 
             var databaseRelation =
                 await _expertService.Context.Relations.Where(rel => rel.Id == request.Id).FirstOrDefaultAsync() ??
@@ -366,8 +356,7 @@ namespace Genius.Services
         public override async Task GetSystemConditions(ExpertLookupModel request,
             IServerStreamWriter<ConditionModel> responseStream, ServerCallContext context)
         {
-            if (request == null || request.Id < 1)
-                return;
+            if (request == null || request.Id < 1) return;
 
             var systemConditions = _expertService.Context.Conditions.Where(con => con.SystemId == request.Id);
 
@@ -386,8 +375,7 @@ namespace Genius.Services
         public override async Task GetSystemProducts(ExpertLookupModel request,
             IServerStreamWriter<ProductModel> responseStream, ServerCallContext context)
         {
-            if (request == null || request.Id < 1)
-                return;
+            if (request == null || request.Id < 1) return;
 
             var systemProducts = _expertService.Context.Products.Where(prod => prod.SystemId == request.Id);
 
@@ -407,8 +395,7 @@ namespace Genius.Services
         public override async Task GetSystemRelations(ExpertLookupModel request,
             IServerStreamWriter<RelationModel> responseStream, ServerCallContext context)
         {
-            if (request == null || request.Id < 1)
-                return;
+            if (request == null || request.Id < 1) return;
 
             var systemRelations = _expertService.Context.Relations.Where(rel => rel.SystemId == request.Id);
 
@@ -429,26 +416,104 @@ namespace Genius.Services
 
         #region Products
 
-        public override async Task<ProductRelationsModel> GetProductRelations(ProductLookupModel request, ServerCallContext context)
+        public override async Task<ProductRelationsModel> GetProductRelations(ProductLookupModel request,
+            ServerCallContext context)
         {
             if (request == null || request.Id < 1)
-                return new ProductRelationsModel { Id = 0, SystemId = 0, Confirming = { }, Indifferent = { }, Negating = { } };
+                return new ProductRelationsModel
+                {
+                    Id = 0,
+                    SystemId = 0,
+                    Confirming = { },
+                    Indifferent = { },
+                    Negating = { }
+                };
 
             var databaseProduct =
                 await _expertService.Context.Products.Where(prod => prod.Id == request.Id).FirstOrDefaultAsync() ??
                 new Data.Models.Expert.Product { Id = 0, SystemId = 0 };
 
             if (databaseProduct.Id < 1 || databaseProduct.SystemId < 1)
-                return new ProductRelationsModel { Id = 0, SystemId = 0, Confirming = { }, Indifferent = { }, Negating = { } };
+                return new ProductRelationsModel
+                {
+                    Id = 0,
+                    SystemId = 0,
+                    Confirming = { },
+                    Indifferent = { },
+                    Negating = { }
+                };
 
-            var confirming = await _expertService.Context.Relations.Where(rel => rel.ProductId == request.Id && rel.Type == RelationType.Compliance).Select(rel => rel.Id).ToArrayAsync();
-            var negating = await _expertService.Context.Relations.Where(rel => rel.ProductId == request.Id && rel.Type == RelationType.Contradiction).Select(rel => rel.Id).ToArrayAsync();
-            var indifferent = await _expertService.Context.Relations.Where(rel => rel.ProductId == request.Id && rel.Type == RelationType.Disregard).Select(rel => rel.Id).ToArrayAsync();
+            var confirming = await _expertService.Context.Relations
+                .Where(rel => rel.ProductId == request.Id && rel.Type == RelationType.Compliance)
+                .Select(rel => rel.Id)
+                .ToArrayAsync();
+            var negating = await _expertService.Context.Relations
+                .Where(rel => rel.ProductId == request.Id && rel.Type == RelationType.Contradiction)
+                .Select(rel => rel.Id)
+                .ToArrayAsync();
+            var indifferent = await _expertService.Context.Relations
+                .Where(rel => rel.ProductId == request.Id && rel.Type == RelationType.Disregard)
+                .Select(rel => rel.Id)
+                .ToArrayAsync();
 
             return new ProductRelationsModel
             {
                 Id = databaseProduct.Id,
                 SystemId = databaseProduct.SystemId,
+                Confirming = { confirming },
+                Indifferent = { negating },
+                Negating = { indifferent },
+            };
+        }
+
+        #endregion
+
+        #region Conditions
+
+        public override async Task<ConditionRelationsModel> GetConditionRelations(ConditionLookupModel request,
+            ServerCallContext context)
+        {
+            if (request == null || request.Id < 1)
+                return new ConditionRelationsModel
+                {
+                    Id = 0,
+                    SystemId = 0,
+                    Confirming = { },
+                    Indifferent = { },
+                    Negating = { }
+                };
+
+            var databaseCondition =
+                await _expertService.Context.Conditions.Where(con => con.Id == request.Id).FirstOrDefaultAsync() ??
+                new Data.Models.Expert.Condition { Id = 0, SystemId = 0 };
+
+            if (databaseCondition.Id < 1 || databaseCondition.SystemId < 1)
+                return new ConditionRelationsModel
+                {
+                    Id = 0,
+                    SystemId = 0,
+                    Confirming = { },
+                    Indifferent = { },
+                    Negating = { }
+                };
+
+            var confirming = await _expertService.Context.Relations
+                .Where(rel => rel.CondiotionId == request.Id && rel.Type == RelationType.Compliance)
+                .Select(rel => rel.Id)
+                .ToArrayAsync();
+            var negating = await _expertService.Context.Relations
+                .Where(rel => rel.CondiotionId == request.Id && rel.Type == RelationType.Contradiction)
+                .Select(rel => rel.Id)
+                .ToArrayAsync();
+            var indifferent = await _expertService.Context.Relations
+                .Where(rel => rel.CondiotionId == request.Id && rel.Type == RelationType.Disregard)
+                .Select(rel => rel.Id)
+                .ToArrayAsync();
+
+            return new ConditionRelationsModel
+            {
+                Id = databaseCondition.Id,
+                SystemId = databaseCondition.SystemId,
                 Confirming = { confirming },
                 Indifferent = { negating },
                 Negating = { indifferent },

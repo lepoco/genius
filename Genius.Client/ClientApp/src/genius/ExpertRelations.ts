@@ -5,26 +5,41 @@
  * All Rights Reserved.
  */
 
-import IExpertProductRelations from './interfaces/IExpertProductRelations';
+import IExpertRelations from './interfaces/IExpertRelations';
 
-export default class ExpertProductRelations implements IExpertProductRelations {
+/**
+ * Represents relations and their type of belonging to a given element.
+ */
+export default class ExpertRelations implements IExpertRelations {
   public id: number = 0;
-  public system_id: number = 0;
+
+  public systemId: number = 0;
+
   public confirming: number[];
+
   public negating: number[];
+
   public indifferent: number[];
 
   public constructor(
-    id: number,
+    id: number = 0,
     system_id: number = 0,
     confirming: number[] = [],
     negating: number[] = [],
     indifferent: number[] = [],
   ) {
     this.id = id;
-    this.system_id = system_id;
+    this.systemId = system_id;
     this.confirming = confirming;
     this.negating = negating;
     this.indifferent = indifferent;
+  }
+
+  public getAll(): number[] {
+    return this.confirming.concat(this.negating).concat(this.indifferent);
+  }
+
+  public count(): number {
+    return this.getAll().length;
   }
 }

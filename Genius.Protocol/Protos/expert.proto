@@ -32,6 +32,8 @@ service Expert {
 
 	rpc GetCondition(ConditionLookupModel) returns (ConditionModel);
 
+	rpc GetConditionRelations(ConditionLookupModel) returns (ConditionRelationsModel);
+
 	rpc UpdateCondition(ConditionModel) returns (ConditionModel);
 
 	rpc AddProduct(ProductModel) returns (ProductModel);
@@ -94,6 +96,14 @@ message ConditionModel {
 	int32 system_id = 2;
 	string name = 3;
 	string description = 4;
+}
+
+message ConditionRelationsModel {
+	int32 id = 1;
+	int32 system_id = 2;
+	repeated int32 confirming = 3;
+	repeated int32 negating = 4;
+	repeated int32 indifferent = 5;
 }
 
 message RelationModel {

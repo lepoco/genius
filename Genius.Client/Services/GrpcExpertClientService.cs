@@ -128,9 +128,20 @@ namespace Genius.Client.Services
             return systemRelations;
         }
 
-        public async Task<ProductRelationsModel> GetProductRelations(int productId)
+        /// <summary>
+        /// Wraps <see cref="Expert.ExpertClient.GetProductRelationsAsync"/>.
+        /// </summary>
+        public async Task<ProductRelationsModel> GetProductRelationsAsync(int productId)
         {
             return await _grpcClient.GetProductRelationsAsync(new ProductLookupModel { Id = productId });
+        }
+
+        /// <summary>
+        /// Wraps <see cref="Expert.ExpertClient.GetConditionRelationsAsync"/>.
+        /// </summary>
+        public async Task<ConditionRelationsModel> GetConditionRelationsAsync(int conditionId)
+        {
+            return await _grpcClient.GetConditionRelationsAsync(new ConditionLookupModel { Id = conditionId });
         }
 
         /// <summary>

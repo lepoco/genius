@@ -24,6 +24,10 @@
       border-top-left-radius: calc(1rem - 1px);
       border-top-right-radius: calc(1rem - 1px);
 
+      strong {
+        font-size: 1.4rem;
+      }
+
       .btn-close {
         margin-right: 0;
       }

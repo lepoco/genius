@@ -365,6 +365,9 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
               onClick={e => this.importButtonOnClick(e)}>
               Import
             </button>
+            <Link className="btn btn-outline-dark btn-mobile -btn-import -lg-mr-1" to={'/dashboard/sys/' + state.guid ?? '#'}>
+              Run
+            </Link>
             <Link to={'/dashboard/delete/' + state.guid ?? '#'}>
               Remove the expert system
             </Link>

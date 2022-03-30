@@ -3,24 +3,31 @@
 // Copyright (C) 2022 Leszek Pomianowski.
 // All Rights Reserved.
 
-using Genius.Data.Models.Expert;
 using Genius.Expert.Interfaces;
-using System.Collections.Generic;
 
 namespace Genius.Expert
 {
+    /// <summary>
+    /// Represents the <see cref="ISolver"/> response.
+    /// </summary>
     public class SolverResponse : ISolverResponse
     {
+        /// <inheritdoc />
         public int SystemId { get; set; } = 0;
 
+        /// <inheritdoc />
         public bool IsMultiple { get; set; } = false;
 
+        /// <inheritdoc />
         public bool IsSolved { get; set; } = false;
 
+        /// <inheritdoc />
         public SolverStatus Status { get; set; } = SolverStatus.Unknown;
 
-        public IEnumerable<Condition> NextConditions { get; set; } = new List<Condition>();
+        /// <inheritdoc />
+        public int[] NextConditions { get; set; } = { };
 
-        public IEnumerable<Product> ResultingProducts { get; set; } = new List<Product>();
+        /// <inheritdoc />
+        public int[] ResultingProducts { get; set; } = { };
     }
 }

@@ -5,10 +5,8 @@
 
 using Genius.Expert;
 using Genius.Expert.Interfaces;
-using GeniusProtocol;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SolverQuestion = GeniusProtocol.SolverQuestion;
@@ -16,7 +14,7 @@ using SolverResponse = GeniusProtocol.SolverResponse;
 
 namespace Genius.Services
 {
-    public class GrpcSolverService : Solver.SolverBase
+    public class GrpcSolverService : GeniusProtocol.Solver.SolverBase
     {
         private readonly ILogger<GrpcSolverService> _logger;
 
@@ -28,49 +26,28 @@ namespace Genius.Services
             _genius = genius;
         }
 
-        public override async Task<SolverResponse> Ask(SolverQuestion request, ServerCallContext context)
+        public override async Task<SolverResponse> Ask(SolverQuestion solverQuestion, ServerCallContext context)
         {
             // TODO: If ES types differ, change solver
-            var response = await _genius.Solve<ConditionalSolver>(BuildQuestion(request));
 
-            int nextCondition = 0;
-
-            if (response.NextConditions != null && response.NextConditions.Any())
-                nextCondition = response.NextConditions.First().Id;
-
-            IEnumerable<int> productIds = new int[] { };
-
-            if (response.ResultingProducts.Any())
-                productIds = response.ResultingProducts.Select(prod => prod.Id).ToArray();
+            var response = await _genius.Solve<ConditionalSolver>(new Expert.SolverQuestion
+            {
+                IsMultiple = solverQuestion?.Multiple ?? true,
+                SystemId = solverQuestion?.SystemId ?? 0,
+                Confirming = solverQuestion?.Confirming.ToArray() ?? new int[] { },
+                Negating = solverQuestion?.Negating.ToArray() ?? new int[] { },
+                Indifferent = solverQuestion?.Indifferent.ToArray() ?? new int[] { }
+            });
 
             return new SolverResponse
             {
                 SystemId = response.SystemId,
                 IsSolved = response.IsSolved,
                 Multiple = response.IsMultiple,
-                NextCondition = nextCondition,
                 Status = (int)response.Status,
-                Products = { productIds }
+                NextCondition = response.NextConditions.FirstOrDefault(0),
+                Products = { response.ResultingProducts }
             };
-        }
-
-        private ISolverQuestion BuildQuestion(SolverQuestion grpcQuestion)
-        {
-            var internalQuestion = new Expert.SolverQuestion
-            {
-                IsMultiple = grpcQuestion?.Multiple ?? true,
-                SystemId = grpcQuestion?.SystemId ?? 0
-            };
-
-            internalQuestion.Confirming = grpcQuestion?.Confirming.ToArray();
-            internalQuestion.Negating = grpcQuestion?.Negating.ToArray();
-            internalQuestion.Indifferent = grpcQuestion?.Indifferent.ToArray();
-
-            //internalQuestion.Confirming = await _genius.ExpertContext.Conditions.Where(con => confirmingConditionsIds.Contains(con.Id)).ToListAsync();
-            //internalQuestion.Negating = await _genius.ExpertContext.Conditions.Where(con => negatingConditionsIds.Contains(con.Id)).ToListAsync();
-            //internalQuestion.Indifferent = await _genius.ExpertContext.Conditions.Where(con => indifferentConditionsIds.Contains(con.Id)).ToListAsync();
-
-            return internalQuestion;
         }
     }
 }

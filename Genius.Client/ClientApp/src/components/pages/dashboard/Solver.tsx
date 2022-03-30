@@ -6,6 +6,7 @@
  */
 
 import { Link } from 'react-router-dom';
+import { ToastProvider } from '../../common/Toasts';
 import Loader from '../../common/Loader';
 import RoutedComponent from '../../../common/RoutedComponent';
 import withRouter from '../../../common/withRouter';
@@ -129,8 +130,28 @@ class Solver extends RoutedComponent<ISolverState> {
   private async submitButtonOnClick(
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     conditionType: Genius.ConditionType,
-  ): Promise<void> {
+  ): Promise<boolean> {
     event.preventDefault();
+
+    if (
+      this.solverMemory.confirming.filter(
+        con => con.id === this.state.selectedCondition.id,
+      ).length > 0 ||
+      this.solverMemory.negating.filter(con => con.id === this.state.selectedCondition.id)
+        .length > 0 ||
+      this.solverMemory.indifferent.filter(
+        con => con.id === this.state.selectedCondition.id,
+      ).length > 0
+    ) {
+      ToastProvider.show(
+        'Error',
+        'This condition has already appeared in the results once. The question will be asked again.',
+      );
+
+      await this.askQuestion();
+
+      return false;
+    }
 
     switch (conditionType) {
       case Genius.ConditionType.Confirming:
@@ -150,6 +171,8 @@ class Solver extends RoutedComponent<ISolverState> {
 
     console.debug('\\Solver\\submitButtonOnClick\\memory', this.solverMemory);
     console.debug('\\Solver\\submitButtonOnClick\\solverResponse', solverResponse);
+
+    return true;
   }
 
   private replaceQuestionCondition(question: string): string {

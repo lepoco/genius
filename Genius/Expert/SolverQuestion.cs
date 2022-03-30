@@ -4,20 +4,30 @@
 // All Rights Reserved.
 
 using Genius.Expert.Interfaces;
-using System.Collections.Generic;
 
 namespace Genius.Expert
 {
+    /// <summary>
+    /// Represents the <see cref="ISolver"/> question.
+    /// </summary>
     public class SolverQuestion : ISolverQuestion
     {
+        /// <inheritdoc />
         public int SystemId { get; set; } = 0;
 
+        /// <inheritdoc />
         public bool IsMultiple { get; set; } = true;
 
-        public IEnumerable<int> Confirming { get; set; } = new List<int>();
+        /// <inheritdoc />
+        public int[] Confirming { get; set; } = { };
 
-        public IEnumerable<int> Negating { get; set; } = new List<int>();
+        /// <inheritdoc />
+        public int[] Negating { get; set; } = { };
 
-        public IEnumerable<int> Indifferent { get; set; } = new List<int>();
+        /// <inheritdoc />
+        public int[] Indifferent { get; set; } = { };
+
+        /// <inheritdoc />
+        public bool IsEmpty() => Confirming.Length == 0 && Negating.Length == 0 && Indifferent.Length == 0;
     }
 }

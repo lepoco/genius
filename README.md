@@ -34,6 +34,13 @@ The method of asking questions is as follows:
 
 We assume that there may be many answers. Except for the responses themselves, we display the percentage of how many responses are the same as the result requirements.
 
+# Editing
+Ease of use was to be the basis of the client application. So we add our expert system and then its results. Each result has a number of conditions that belong to it.
+
+![image](https://user-images.githubusercontent.com/13592821/161128343-7f17449d-8e78-4332-b68a-c0d492f53245.png)
+
+![image](https://user-images.githubusercontent.com/13592821/161128766-41b0c5bb-e926-4f72-b8c0-6fe3c1170385.png)
+
 # Getting started
 To properly run Genius you need to have Visual Studio 2022 installed on your computer along with the web development tools and .NET 6. Besides, you should have Node and npm. Once downloaded and built, choose multiple startup projects - `Genius` and `Genius.Client`.
 

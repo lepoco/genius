@@ -16,6 +16,8 @@ Data in the application is stored using [SQLite](https://www.sqlite.org/). It is
 
 The database is not used directly. The structure was mapped to classes and objects using the [ORM (object-relational mapping)](https://en.wikipedia.org/wiki/Object%E2%80%93relational_mapping) mechanism. In the case of Genius, the [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/get-started/overview/first-app) was used.
 
+The language in which microservices communicate with each other is described in the `Genius.Protocol` project, which includes `.proto` files with instructions on how to generate classes and objects for `gRPC`.
+
 # Client application
 The sample client application found in the Genius.Client project uses React to present interface elements and perform queries. The queries from frontend are sent to the client server, which makes queries using gRPC to the main microservice, which contains the logic and the data of expert systems.
 
@@ -60,3 +62,5 @@ This project has adopted the code of conduct defined by the Contributor Covenant
 
 ## License
 Genius is free and open source software licensed under GNU General Public License v3.0.
+
+Permissions of this strong copyleft license are conditioned on making available complete source code of licensed works and modifications, which include larger works using a licensed work, under the same license. Copyright and license notices must be preserved. Contributors provide an express grant of patent rights.

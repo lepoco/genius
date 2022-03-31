@@ -59,4 +59,4 @@ Genius is an Open Source project. You are entitled to download and use the freel
 This project has adopted the code of conduct defined by the Contributor Covenant to clarify expected behavior in our community.
 
 ## License
-Genius is free and open source software licensed under GNU GPL-3.0.
+Genius is free and open source software licensed under GNU General Public License v3.0.

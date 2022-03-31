@@ -60,10 +60,17 @@ namespace Genius.Client.Controllers
         }
 
         [HttpGet]
-        [Route("system/{guid}")]
-        public async Task<ExpertModel> GetSingleSystem([FromRoute] string guid)
+        [Route("system/guid/{guid}")]
+        public async Task<ExpertModel> GetSingleSystemByGuid([FromRoute] string guid)
         {
             return await _expertClient.GetSystemByGuidAsync(guid);
+        }
+
+        [HttpGet]
+        [Route("system/{id}")]
+        public async Task<ExpertModel> GetSingleSystemById([FromRoute] int id)
+        {
+            return await _expertClient.GetSystemAsync(id);
         }
 
         [HttpGet]

@@ -15,12 +15,15 @@ import {
   Genius,
   IExpertSystem,
   ExpertSystem,
-  IExpertProduct,
   ExpertCondition,
   IExpertCondition,
   ISolverResponse,
+  ISolverResultingProduct,
   SolverQuestion,
 } from '../../../genius/Genius';
+
+// TODO: Display graph os used conditions
+// TODO: DIsplay confirming, negating, and indifferent
 
 /**
  * Represents the variables contained in the component state.
@@ -32,7 +35,7 @@ interface ISolverState {
   selectedSystemGuid: string;
   selectedSystem: IExpertSystem;
   selectedCondition: IExpertCondition;
-  solvedProducts: IExpertProduct[];
+  solvedProducts: ISolverResultingProduct[];
 }
 
 /**
@@ -47,6 +50,8 @@ class SolverMemory {
 class Solver extends RoutedComponent<ISolverState> {
   public static displayName: string = Solver.name;
 
+  private geniusSolver: Genius.Solver;
+
   private solverMemory: SolverMemory;
 
   /**
@@ -56,6 +61,7 @@ class Solver extends RoutedComponent<ISolverState> {
   public constructor(props: IRouterProps) {
     super(props);
 
+    this.geniusSolver = new Genius.Solver();
     this.solverMemory = new SolverMemory();
 
     this.state = {
@@ -82,7 +88,16 @@ class Solver extends RoutedComponent<ISolverState> {
    * Asynchronously gets data from the server.
    */
   private async populateData(): Promise<boolean> {
-    const system = await Genius.Api.getSystemByGuid(this.state.selectedSystemGuid);
+    const system = await Genius.Api.getSystemByGuid(
+      this.state.selectedSystemGuid,
+      true,
+      true,
+      true,
+    );
+
+    this.geniusSolver.setSystem(system);
+
+    // console.debug('\\Solver\\populateData\\geniusSolver', this.geniusSolver);
 
     let conditionalQuestion = false;
 
@@ -110,7 +125,7 @@ class Solver extends RoutedComponent<ISolverState> {
       this.solverMemory.indifferent,
     );
 
-    const solverResponse = await Genius.Solver.ask(solverQuestion);
+    const solverResponse = await this.geniusSolver.ask(solverQuestion);
 
     if (solverResponse.products.length > 0) {
       this.setState({ isSolved: true, solvedProducts: solverResponse.products });
@@ -138,11 +153,12 @@ class Solver extends RoutedComponent<ISolverState> {
         con => con.id === this.state.selectedCondition.id,
       ).length > 0 ||
       this.solverMemory.negating.filter(con => con.id === this.state.selectedCondition.id)
-        .length > 0 ||
-      this.solverMemory.indifferent.filter(
-        con => con.id === this.state.selectedCondition.id,
-      ).length > 0
+        .length > 0
     ) {
+      // ||
+      // this.solverMemory.indifferent.filter(
+      //   con => con.id === this.state.selectedCondition.id,
+      // ).length > 0
       ToastProvider.show(
         'Error',
         'This condition has already appeared in the results once. The question will be asked again.',
@@ -227,11 +243,64 @@ class Solver extends RoutedComponent<ISolverState> {
     );
   }
 
+  private calcCompliance(resultingProduct: ISolverResultingProduct): number {
+    let productCount = 0;
+    const confirmedCount = this.solverMemory.confirming.length; // 100
+
+    if (confirmedCount === 0) {
+      return 100;
+    }
+
+    for (const singleConditions of resultingProduct.confirming) {
+      if (
+        this.solverMemory.confirming.filter(function (con) {
+          return con.id === singleConditions.id;
+        }).length > 0
+      ) {
+        productCount++;
+      }
+    }
+
+    console.log('Confirmed: ', confirmedCount);
+    console.log('Found: ', productCount);
+    console.log('Percent: ', Math.floor((productCount * 100) / confirmedCount));
+
+    return Math.floor((productCount * 100) / confirmedCount);
+  }
+
+  private getBadgeType(conditionId: number): string {
+    if (
+      this.solverMemory.confirming.filter(function (con) {
+        return con.id === conditionId;
+      }).length > 0
+    ) {
+      return 'success';
+    }
+
+    if (
+      this.solverMemory.negating.filter(function (con) {
+        return con.id === conditionId;
+      }).length > 0
+    ) {
+      return 'danger';
+    }
+
+    if (
+      this.solverMemory.indifferent.filter(function (con) {
+        return con.id === conditionId;
+      }).length > 0
+    ) {
+      return 'warning text-dark';
+    }
+
+    return 'secondary';
+  }
+
   private renderResults(): JSX.Element {
     return (
       <div className="col-12">
         <div>
-          <p>
+          <p className="-pm-0">
             <strong>
               <i>
                 {'Found ' +
@@ -243,28 +312,93 @@ class Solver extends RoutedComponent<ISolverState> {
             </strong>
           </p>
         </div>
+        <div className="-pb-2">
+          <p className="-pm-0">
+            <span className="-mr-1">With conditions:</span>
+            {this.solverMemory.confirming.map(con => {
+              return (
+                <span className="-mr-1 badge bg-success" key={con.id}>
+                  {con.name}
+                </span>
+              );
+            })}
+            {this.solverMemory.negating.map(con => {
+              return (
+                <span className="-mr-1 badge bg-danger" key={con.id}>
+                  {con.name}
+                </span>
+              );
+            })}
+            {this.solverMemory.indifferent.map(con => {
+              return (
+                <span className="-mr-1 badge warning text-dark" key={con.id}>
+                  {con.name}
+                </span>
+              );
+            })}
+          </p>
+        </div>
         <div>
           {this.state.solvedProducts.map((singleProduct, i) => {
-            return (
-              <div key={singleProduct.id ?? 0}>
-                <h4>{singleProduct.name ?? ''}</h4>
-                {(singleProduct.description ?? '') === '' ? (
-                  false
-                ) : (
-                  <p>{singleProduct.description}</p>
-                )}
-                {(singleProduct.notes ?? '') === '' ? (
-                  false
-                ) : (
-                  <div>
-                    <span>
-                      <strong className="-font-secondary -fw-700">Notes:</strong>
-                    </span>
-                    <p>{singleProduct.notes}</p>
-                  </div>
-                )}
+            const resultCompliance = this.calcCompliance(singleProduct);
 
-                {i > 0 ? <hr /> : false}
+            return (
+              <div
+                key={singleProduct.id ?? 0}
+                className="dashboard__banner h-100 p-5 bg-light -rounded-2 -mb-2">
+                <div className="-w-100">
+                  <div className="-w-100 d-flex justify-content-between align-items-center">
+                    <div>
+                      <h4>{singleProduct.name ?? ''}</h4>
+                      {(singleProduct.description ?? '') === '' ? (
+                        false
+                      ) : (
+                        <p>{singleProduct.description}</p>
+                      )}
+                      {(singleProduct.notes ?? '') === '' ? (
+                        false
+                      ) : (
+                        <div>
+                          <span>
+                            <strong className="-font-secondary -fw-700">Notes:</strong>
+                          </span>
+                          <p>{singleProduct.notes}</p>
+                        </div>
+                      )}
+                    </div>
+                    <div className="d-flex flex-column justify-content-center align-items-center">
+                      <div className="single-chart">
+                        <svg viewBox="0 0 36 36" className="circular-chart blue">
+                          <path
+                            className="circle-bg"
+                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                          />
+                          <path
+                            className="circle"
+                            strokeDasharray={resultCompliance + ', 100'}
+                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                          />
+                          <text x="18" y="20.35" className="percentage">
+                            {resultCompliance.toString() + '%'}
+                          </text>
+                        </svg>
+                      </div>
+                      <div>Compliance</div>
+                    </div>
+                  </div>
+                  <div className="-w-100">
+                    {singleProduct.confirming.map(condition => {
+                      console.log('PRODUCT CONDITION', condition);
+                      return (
+                        <span
+                          className={'-mr-1 badge bg-' + this.getBadgeType(condition.id)}
+                          key={condition.id}>
+                          {condition.name}
+                        </span>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
             );
           })}

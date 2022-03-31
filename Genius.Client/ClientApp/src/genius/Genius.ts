@@ -19,6 +19,7 @@ export type { IImportRequest } from './interfaces/IImportRequest';
 export type { IImportResponse } from './interfaces/IImportResponse';
 export type { ISolverQuestion } from './interfaces/ISolverQuestion';
 export type { ISolverResponse } from './interfaces/ISolverResponse';
+export type { ISolverResultingProduct } from './interfaces/ISolverResultingProduct';
 
 export { ExpertSystem } from './ExpertSystem';
 export { ExpertAbout } from './ExpertAbout';
@@ -30,6 +31,7 @@ export { ImportRequest } from './ImportRequest';
 export { ImportResponse } from './ImportResponse';
 export { SolverQuestion } from './SolverQuestion';
 export { SolverResponse } from './SolverResponse';
+export { SolverResultingProduct } from './SolverResultingProduct';
 
 export namespace Genius {
   /**

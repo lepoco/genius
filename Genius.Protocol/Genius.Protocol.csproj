@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Protos\cache.proto" />
     <None Remove="Protos\expert.proto" />
     <None Remove="Protos\solver.proto" />
     <None Remove="Protos\statistic.proto" />
@@ -23,6 +24,7 @@
   <ItemGroup>
     <Protobuf Include="Protos\solver.proto" />
     <Protobuf Include="Protos\expert.proto" />
+    <Protobuf Include="Protos\cache.proto" />
     <Protobuf Include="Protos\statistic.proto" />
     <Protobuf Include="Protos\user.proto" />
   </ItemGroup>

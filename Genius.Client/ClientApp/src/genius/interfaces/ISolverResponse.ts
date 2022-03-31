@@ -5,7 +5,7 @@
  * All Rights Reserved.
  */
 import { IExpertCondition } from './IExpertCondition';
-import { IExpertProduct } from './IExpertProduct';
+import { ISolverResultingProduct } from './ISolverResultingProduct';
 
 export interface ISolverResponse {
   systemId: number;
@@ -16,5 +16,5 @@ export interface ISolverResponse {
 
   nextCondition: IExpertCondition;
 
-  products: IExpertProduct[];
+  products: ISolverResultingProduct[];
 }

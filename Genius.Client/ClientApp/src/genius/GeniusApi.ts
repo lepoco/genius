@@ -12,8 +12,6 @@ import { IExpertCondition } from './interfaces/IExpertCondition';
 import { IExpertProduct } from './interfaces/IExpertProduct';
 import { ExpertSystem } from './ExpertSystem';
 import { IExpertRelation } from './interfaces/IExpertRelation';
-import { ISolverResponse } from './interfaces/ISolverResponse';
-import { SolverResponse } from './SolverResponse';
 import { IImportResponse } from './interfaces/IImportResponse';
 import { IImportRequest } from './interfaces/IImportRequest';
 import { ImportResponse } from './ImportResponse';
@@ -25,6 +23,25 @@ import { ExpertAbout } from './ExpertAbout';
  */
 export class GeniusApi {
   private static readonly BASE_EXPERT_GATEWAY: string = '/api/expert/';
+
+  public static async getSystemById(
+    systemId: number,
+    fetchProducts: boolean = false,
+    fetchConditions: boolean = false,
+    fetchRelations: boolean = false,
+  ): Promise<IExpertSystem> {
+    const response = await fetch(GeniusApi.BASE_EXPERT_GATEWAY + 'system/' + systemId);
+    const data = await response.json();
+
+    console.debug('\\GeniusApi\\getSystemByGuid\\data', data);
+
+    return await GeniusApi.fetchSystemObject(
+      data,
+      fetchProducts,
+      fetchConditions,
+      fetchRelations,
+    );
+  }
 
   /**
    * Get the system by its GUID.
@@ -40,7 +57,7 @@ export class GeniusApi {
     fetchConditions: boolean = false,
     fetchRelations: boolean = false,
   ): Promise<IExpertSystem> {
-    const response = await fetch(GeniusApi.BASE_EXPERT_GATEWAY + 'system/' + guid);
+    const response = await fetch(GeniusApi.BASE_EXPERT_GATEWAY + 'system/guid/' + guid);
     const data = await response.json();
 
     console.debug('\\GeniusApi\\getSystemByGuid\\data', data);
@@ -471,18 +488,5 @@ export class GeniusApi {
     );
 
     return products;
-  }
-
-  private static async fetchResponseObject(dataObject: any): Promise<ISolverResponse> {
-    // TODO: Fix solving
-    return new SolverResponse(
-      dataObject.systemId ?? 0,
-      dataObject.isSolved ?? false,
-      dataObject.status ?? 0,
-      await this.getProductsByIds(
-        Array.isArray(dataObject.products) ? dataObject.products : [],
-      ),
-      await this.getCondition(parseInt(dataObject.nextCondition ?? 0)),
-    );
   }
 }

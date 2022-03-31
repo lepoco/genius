@@ -9,19 +9,29 @@ option csharp_namespace = "GeniusProtocol";
 
 package GeniusProtocol;
 
-service Cache {
-	rpc Push(CacheModel) returns (CacheLookupModel);
+service Statistic {
+	rpc Push(StatisticModel) returns (StatisticResponseModel);
 
-	rpc Get(CacheLookupModel) returns (stream CacheModel);
+	rpc Get(StatisticLookupModel) returns (stream StatisticModel);
 }
 
-message CacheModel {
+enum StatisticType {
+	UNKNOWN = 0;
+	USER = 1;
+	SYSTEM = 2;
+	EVENT = 3;
+}
+
+message StatisticModel {
 	int32 id = 1;
-	string name = 2;
-	string content = 3;
-	int32 timeout = 4;
+	StatisticType type = 2;
+	string context = 3;
 }
 
-message CacheLookupModel {
+message StatisticLookupModel {
+	int32 id = 1;
+}
+
+message StatisticResponseModel {
 	int32 id = 1;
 }

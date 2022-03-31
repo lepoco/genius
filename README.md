@@ -29,7 +29,7 @@ Currently, a conditional mechanism for solving expert systems is implemented. It
 
 The method of asking questions is as follows:
 1. Display the question
-2. User replies: Yes, No, or Don't know
+2. User replies: `Yes`, `No`, or `Don't know`
 3. The system displays the next question or result
 
 We assume that there may be many answers. Except for the responses themselves, we display the percentage of how many responses are the same as the result requirements.

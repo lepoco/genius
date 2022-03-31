@@ -33,7 +33,7 @@ export class GeniusApi {
     const response = await fetch(GeniusApi.BASE_EXPERT_GATEWAY + 'system/' + systemId);
     const data = await response.json();
 
-    console.debug('\\GeniusApi\\getSystemByGuid\\data', data);
+    // console.debug('\\GeniusApi\\getSystemByGuid\\data', data);
 
     return await GeniusApi.fetchSystemObject(
       data,
@@ -113,7 +113,7 @@ export class GeniusApi {
       );
     }
 
-    console.debug('\\GeniusApi\\getAllSystems\\systemsList', systemsList);
+    // console.debug('\\GeniusApi\\getAllSystems\\systemsList', systemsList);
 
     return systemsList;
   }
@@ -189,7 +189,7 @@ export class GeniusApi {
       conditionsList.push(GeniusDataParser.fetchConditionObject(data[key]));
     }
 
-    console.debug('\\GeniusApi\\getSystemConditions\\conditionsList', conditionsList);
+    // console.debug('\\GeniusApi\\getSystemConditions\\conditionsList', conditionsList);
 
     return conditionsList;
   }
@@ -212,7 +212,7 @@ export class GeniusApi {
       description: condition.description ?? '',
     });
 
-    console.debug('\\GeniusApi\\addCondition\\condition', condition);
+    // console.debug('\\GeniusApi\\addCondition\\condition', condition);
 
     let response = await fetch('api/expert/condition', {
       method: 'POST',
@@ -221,7 +221,7 @@ export class GeniusApi {
 
     let responseText = await response.text();
 
-    console.debug('\\GeniusApi\\addCondition\\responseText', responseText);
+    // console.debug('\\GeniusApi\\addCondition\\responseText', responseText);
 
     return +responseText; //unary operator
   }
@@ -247,7 +247,7 @@ export class GeniusApi {
       productsList.push(GeniusDataParser.fetchProductObject(data[key]));
     }
 
-    console.debug('\\GeniusApi\\getSystemProducts\\productsList', productsList);
+    // console.debug('\\GeniusApi\\getSystemProducts\\productsList', productsList);
 
     return productsList;
   }
@@ -256,7 +256,7 @@ export class GeniusApi {
     const response = await fetch(GeniusApi.BASE_EXPERT_GATEWAY + 'product/' + productId);
     const data = await response.json();
 
-    console.debug('\\GeniusApi\\getProduct\\data', data);
+    // console.debug('\\GeniusApi\\getProduct\\data', data);
 
     return await GeniusDataParser.fetchProductObject(data);
   }
@@ -269,7 +269,7 @@ export class GeniusApi {
       notes: product.notes ?? '',
     });
 
-    console.debug('\\GeniusApi\\addProduct\\product', product);
+    // console.debug('\\GeniusApi\\addProduct\\product', product);
 
     const response = await fetch('api/expert/product', {
       method: 'POST',
@@ -278,7 +278,7 @@ export class GeniusApi {
 
     const responseText = await response.text();
 
-    console.debug('\\GeniusApi\\addProduct\\responseText', +responseText);
+    // console.debug('\\GeniusApi\\addProduct\\responseText', +responseText);
 
     return +responseText; //unary operator
   }
@@ -311,11 +311,11 @@ export class GeniusApi {
       conditions: conditionIds,
     });
 
-    console.debug('\\GeniusApi\\addProductWithConditions', {
-      product: product,
-      conditionIds: conditionIds,
-      formData: formData,
-    });
+    // console.debug('\\GeniusApi\\addProductWithConditions', {
+    //   product: product,
+    //   conditionIds: conditionIds,
+    //   formData: formData,
+    // });
 
     const response = await fetch('api/expert/product', {
       method: 'POST',
@@ -350,7 +350,7 @@ export class GeniusApi {
       relationsList.push(GeniusDataParser.fetchRelationObject(data[key]));
     }
 
-    console.debug('\\GeniusApi\\getSystemRelations\\relationsList', relationsList);
+    // console.debug('\\GeniusApi\\getSystemRelations\\relationsList', relationsList);
 
     return relationsList;
   }
@@ -366,7 +366,7 @@ export class GeniusApi {
       return new ExpertRelations(productId, 0);
     }
 
-    console.debug('\\GeniusApi\\getProductRelations\\data', data);
+    // console.debug('\\GeniusApi\\getProductRelations\\data', data);
 
     return GeniusDataParser.fetchRelationsObject(data);
   }
@@ -384,7 +384,7 @@ export class GeniusApi {
       return new ExpertRelations(conditionId, 0);
     }
 
-    console.debug('\\GeniusApi\\getProductRelations\\data', data);
+    // console.debug('\\GeniusApi\\getProductRelations\\data', data);
 
     return GeniusDataParser.fetchRelationsObject(data);
   }
@@ -395,7 +395,7 @@ export class GeniusApi {
     );
     const data = await response.json();
 
-    console.debug('\\GeniusApi\\getRelation\\data', data);
+    // console.debug('\\GeniusApi\\getRelation\\data', data);
 
     return await GeniusDataParser.fetchRelationObject(data);
   }
@@ -408,7 +408,7 @@ export class GeniusApi {
       weight: relation.weight,
     });
 
-    console.debug('\\GeniusApi\\addRelation\\relation', relation);
+    // console.debug('\\GeniusApi\\addRelation\\relation', relation);
 
     const response = await fetch('api/expert/relation', {
       method: 'POST',
@@ -417,7 +417,7 @@ export class GeniusApi {
 
     const responseText = await response.text();
 
-    console.debug('\\GeniusApi\\addRelation\\responseText', +responseText);
+    // console.debug('\\GeniusApi\\addRelation\\responseText', +responseText);
 
     return +responseText; //unary operator
   }

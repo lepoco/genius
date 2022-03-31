@@ -69,7 +69,7 @@ export class Conditions extends RoutedPureComponent<IConditionsState> {
       return false;
     }
 
-    console.debug('\\Conditions\\populateData\\system', system);
+    // console.debug('\\Conditions\\populateData\\system', system);
 
     this.setState({
       selectedSystem: system,

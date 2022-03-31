@@ -103,7 +103,7 @@ export class ConditionsInput extends Component<
   }
 
   private async addCondition(conditionName: string): Promise<boolean> {
-    console.debug('\\ConditionsInput\\addCondition', conditionName);
+    // console.debug('\\ConditionsInput\\addCondition', conditionName);
 
     let existingCondition: IExpertCondition | null = null;
 
@@ -123,7 +123,8 @@ export class ConditionsInput extends Component<
       updatedList.push(existingCondition);
 
       this.setState({ conditionsSelected: updatedList });
-      console.debug('\\ConditionsInput\\addCondition', 'This condition already exists.');
+
+      // console.debug('\\ConditionsInput\\addCondition', 'This condition already exists.');
 
       return true;
     }
@@ -160,7 +161,7 @@ export class ConditionsInput extends Component<
   ): Promise<boolean> {
     event.preventDefault();
 
-    console.debug('\\ConditionsInput\\buttonAddOnClick\\condition', condition);
+    // console.debug('\\ConditionsInput\\buttonAddOnClick\\condition', condition);
 
     let updatedList = this.state.conditionsSelected;
     updatedList.push(condition);
@@ -177,7 +178,7 @@ export class ConditionsInput extends Component<
   ): Promise<boolean> {
     event.preventDefault();
 
-    console.debug('\\ConditionsInput\\buttonRemoveOnClick\\condition', condition);
+    // console.debug('\\ConditionsInput\\buttonRemoveOnClick\\condition', condition);
 
     const updatedList = this.state.conditionsSelected.filter(
       singleCondition => singleCondition.id !== condition.id,

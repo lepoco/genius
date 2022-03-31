@@ -81,7 +81,10 @@ namespace Genius.Expert
 
             if (!availableConditionsIds.Any()) return new int[] { };
 
-            // TODO: What about indifferent?
+
+            // Delete all indifferent, if this makes it impossible to ask a condition, maybe we should ask for one again
+            availableConditionsIds =
+                availableConditionsIds.Where(con => !_question.Indifferent.Contains(con)).ToArray();
 
             return availableConditionsIds;
         }

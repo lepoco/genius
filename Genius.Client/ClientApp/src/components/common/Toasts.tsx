@@ -130,7 +130,7 @@ export class ToastContainer extends Component<
   private async closeButtonOnClick(
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ): Promise<boolean> {
-    console.log(event);
+    // TODO: Remove default bootstrap behavior
     return true;
   }
 

@@ -32,6 +32,7 @@ interface ISolverState {
   contentLoaded: boolean;
   isConditionalQuestion: boolean;
   isSolved: boolean;
+  impossibleToSolve: boolean;
   selectedSystemGuid: string;
   selectedSystem: IExpertSystem;
   selectedCondition: IExpertCondition;
@@ -68,6 +69,7 @@ class Solver extends RoutedComponent<ISolverState> {
       contentLoaded: false,
       isConditionalQuestion: false,
       isSolved: false,
+      impossibleToSolve: false,
       selectedSystemGuid: props.router.params?.guid ?? '',
       solvedProducts: [],
       selectedSystem: new ExpertSystem(),
@@ -127,6 +129,15 @@ class Solver extends RoutedComponent<ISolverState> {
 
     const solverResponse = await this.geniusSolver.ask(solverQuestion);
 
+    if (solverResponse.products.length === 0 && solverResponse.nextCondition.id < 1) {
+      this.setState({
+        isSolved: true,
+        impossibleToSolve: true,
+      });
+
+      return solverResponse;
+    }
+
     if (solverResponse.products.length > 0) {
       this.setState({ isSolved: true, solvedProducts: solverResponse.products });
 
@@ -185,8 +196,8 @@ class Solver extends RoutedComponent<ISolverState> {
 
     const solverResponse: ISolverResponse = await this.askQuestion();
 
-    console.debug('\\Solver\\submitButtonOnClick\\memory', this.solverMemory);
-    console.debug('\\Solver\\submitButtonOnClick\\solverResponse', solverResponse);
+    // console.debug('\\Solver\\submitButtonOnClick\\memory', this.solverMemory);
+    // console.debug('\\Solver\\submitButtonOnClick\\solverResponse', solverResponse);
 
     return true;
   }
@@ -261,10 +272,6 @@ class Solver extends RoutedComponent<ISolverState> {
       }
     }
 
-    console.log('Confirmed: ', confirmedCount);
-    console.log('Found: ', productCount);
-    console.log('Percent: ', Math.floor((productCount * 100) / confirmedCount));
-
     return Math.floor((productCount * 100) / confirmedCount);
   }
 
@@ -297,6 +304,25 @@ class Solver extends RoutedComponent<ISolverState> {
   }
 
   private renderResults(): JSX.Element {
+    if (this.state.impossibleToSolve) {
+      return (
+        <div className="col-12">
+          <p>
+            Finding the results is impossible, the system does not have products with such
+            a combination.
+          </p>
+          <div className="-pt-3">
+            <button
+              type="button"
+              onClick={e => this.reload()}
+              className="btn btn-outline-dark btn-mobile">
+              Restart
+            </button>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="col-12">
         <div>
@@ -314,7 +340,7 @@ class Solver extends RoutedComponent<ISolverState> {
         </div>
         <div className="-pb-2">
           <p className="-pm-0">
-            <span className="-mr-1">With conditions:</span>
+            <span className="-mr-1">Based on the following conditions:</span>
             {this.solverMemory.confirming.map(con => {
               return (
                 <span className="-mr-1 badge bg-success" key={con.id}>
@@ -331,7 +357,7 @@ class Solver extends RoutedComponent<ISolverState> {
             })}
             {this.solverMemory.indifferent.map(con => {
               return (
-                <span className="-mr-1 badge warning text-dark" key={con.id}>
+                <span className="-mr-1 badge bg-warning text-dark" key={con.id}>
                   {con.name}
                 </span>
               );
@@ -388,7 +414,6 @@ class Solver extends RoutedComponent<ISolverState> {
                   </div>
                   <div className="-w-100">
                     {singleProduct.confirming.map(condition => {
-                      console.log('PRODUCT CONDITION', condition);
                       return (
                         <span
                           className={'-mr-1 badge bg-' + this.getBadgeType(condition.id)}

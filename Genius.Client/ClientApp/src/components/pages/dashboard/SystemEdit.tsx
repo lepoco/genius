@@ -139,7 +139,6 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
   private async importButtonOnClick(
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ): Promise<boolean> {
-    console.log(event);
     if (this.importModal == null) return false;
 
     this.importModal.show();
@@ -179,7 +178,7 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
       new ImportRequest(this.state.id ?? 0, selectedFile),
     );
 
-    console.log(importResponse);
+    console.log('\\SystemEdit\\importInputOnChange\\importResponse', importResponse);
 
     await Task.delay(1000);
 
@@ -211,7 +210,7 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
       this.newProduct.notes,
     );
 
-    console.debug('\\SystemEdit\\formOnSubmit\\productToAdd', productToAdd);
+    // console.debug('\\SystemEdit\\formOnSubmit\\productToAdd', productToAdd);
 
     let apiResult = await Genius.Api.addProductWithConditions(
       productToAdd,
@@ -234,7 +233,7 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
       products: currentProducts,
     });
 
-    console.debug('\\SystemEdit\\formOnSubmit\\relations', this.state.relations);
+    // console.debug('\\SystemEdit\\formOnSubmit\\relations', this.state.relations);
 
     this.resetForm();
 
@@ -270,7 +269,6 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
     selected: IExpertCondition[],
     available: IExpertCondition[],
   ): void {
-    console.debug('\\SystemEdit\\conditionsInputOnUpdate\\selected', selected);
     this.newProduct.conditions = selected;
   }
 

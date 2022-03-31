@@ -103,7 +103,7 @@ export class Condition extends RoutedPureComponent<IConditionState> {
   private async formOnSubmit(event: React.FormEvent<HTMLFormElement>): Promise<boolean> {
     event.preventDefault();
 
-    console.debug('\\Condition\\formOnSubmit\\event', event);
+    // console.debug('\\Condition\\formOnSubmit\\event', event);
 
     return true;
   }

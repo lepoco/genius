@@ -69,9 +69,6 @@ export class Product extends RoutedPureComponent<IProductState> {
 
     this.renderContent = this.renderContent.bind(this);
     this.formOnSubmit = this.formOnSubmit.bind(this);
-
-    console.debug('Props', props);
-    console.debug('State', this.state);
   }
 
   /**
@@ -98,9 +95,9 @@ export class Product extends RoutedPureComponent<IProductState> {
       return false;
     }
 
-    console.debug('\\Product\\populateData\\system', system);
-    console.debug('\\Product\\populateData\\product', product);
-    console.debug('\\Product\\populateData\\productRelations', productRelations);
+    // console.debug('\\Product\\populateData\\system', system);
+    // console.debug('\\Product\\populateData\\product', product);
+    // console.debug('\\Product\\populateData\\productRelations', productRelations);
 
     let selectedProductConfirmingRelations: number[] = productRelations.confirming;
     let selectedConditionsFromRelations: number[] = [];
@@ -153,8 +150,7 @@ export class Product extends RoutedPureComponent<IProductState> {
   private async formOnSubmit(event: React.FormEvent<HTMLFormElement>): Promise<boolean> {
     event.preventDefault();
 
-    console.debug(event);
-    console.debug(this.state);
+    // TODO: Update
 
     return true;
   }

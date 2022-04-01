@@ -121,6 +121,7 @@ export class Condition extends RoutedPureComponent<IConditionState> {
   }
 
   public renderContent(): JSX.Element {
+    const relationsCount: number = this.state.selectedConditionRelations.count();
     return (
       <>
         <div className="row">
@@ -135,13 +136,30 @@ export class Condition extends RoutedPureComponent<IConditionState> {
               <p className="-font-secondary -pm-0">
                 System: <strong>{this.state.selectedSystem.name}</strong>
               </p>
-              <p className="-font-secondary -pm-0">
-                Relations count: {this.state.selectedConditionRelations.count()}
-              </p>
+              <p className="-font-secondary -pm-0">Relations count: {relationsCount}</p>
             </div>
           </div>
           <div className="col-12">
             <form onSubmit={e => this.formOnSubmit(e)}>
+              <div className="floating-input">
+                <select
+                  id="systemName"
+                  data-selected="fuzzy"
+                  className="floating-input__field"
+                  name="systemName"
+                  disabled={true}
+                  value={this.state.selectedSystem.id}
+                  placeholder="Type">
+                  <option value={this.state.selectedSystem.id}>
+                    {'#' +
+                      this.state.selectedSystem.id +
+                      ' ' +
+                      this.state.selectedSystem.name}
+                  </option>
+                </select>
+                <label htmlFor="systemName">System</label>
+              </div>
+
               <div className="floating-input">
                 <input
                   className="floating-input__field"
@@ -175,6 +193,7 @@ export class Condition extends RoutedPureComponent<IConditionState> {
               <button
                 onClick={e => this.buttonDeleteOnClick(e)}
                 type="button"
+                disabled={relationsCount > 0}
                 className="btn btn-mobile btn-outline-danger -lg-mr-1">
                 Delete
               </button>

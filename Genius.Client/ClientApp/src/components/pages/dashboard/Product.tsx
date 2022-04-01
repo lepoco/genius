@@ -176,6 +176,25 @@ export class Product extends RoutedPureComponent<IProductState> {
         <div className="col-12">
           <form onSubmit={e => this.formOnSubmit(e)}>
             <div className="floating-input">
+              <select
+                id="systemName"
+                data-selected="fuzzy"
+                className="floating-input__field"
+                name="systemName"
+                disabled={true}
+                value={this.state.selectedSystem.id}
+                placeholder="Type">
+                <option value={this.state.selectedSystem.id}>
+                  {'#' +
+                    this.state.selectedSystem.id +
+                    ' ' +
+                    this.state.selectedSystem.name}
+                </option>
+              </select>
+              <label htmlFor="systemName">System</label>
+            </div>
+
+            <div className="floating-input">
               <input
                 className="floating-input__field"
                 type="text"

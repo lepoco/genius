@@ -7,43 +7,66 @@
 
 import { PureComponent } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { Dropdown as BootstrapDropdown } from 'bootstrap';
+
+interface INavMenuProps {}
+
+interface INavMenuState {
+  navbarCollapsed: boolean;
+}
 
 /**
  * Navigation Component for Default layout.
  */
-export default class NavMenu extends PureComponent {
+export default class NavMenu extends PureComponent<INavMenuProps, INavMenuState> {
   /**
    * The display name of the Component.
    */
   public static displayName: string = NavMenu.name;
 
   /**
+   * Binds local methods, assigns properties, and defines the initial state.
+   * @param props Properties passed by the parent element.
+   */
+  public constructor(props: INavMenuProps) {
+    super(props);
+
+    this.state = {
+      navbarCollapsed: true,
+    };
+
+    this.navButtonOnClick = this.navButtonOnClick.bind(this);
+    this.togglerButtonOnClick = this.togglerButtonOnClick.bind(this);
+  }
+
+  /**
    * Called immediately after a component is mounted. Setting state here will trigger re-rendering.
    */
   public async componentDidMount(): Promise<boolean> {
-    window.onload = function (this: GlobalEventHandlers, event: Event) {
-      // TODO: Causes console error
-      new BootstrapDropdown();
-    };
+    // window.onload = function (this: GlobalEventHandlers, event: Event) {
+    //   // TODO: Causes console error
+    //   new BootstrapDropdown();
+    // };
 
     return true;
   }
 
-  // constructor (props) {
-  //   super(props);
+  public async togglerButtonOnClick(
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ): Promise<boolean> {
+    this.setState({ navbarCollapsed: !this.state.navbarCollapsed });
 
-  //   this.toggleNavbar = this.toggleNavbar.bind(this);
-  //   this.state = {
-  //     collapsed: true
-  //   };
-  // }
+    return true;
+  }
 
-  // toggleNavbar () {
-  //   this.setState({
-  //     collapsed: !this.state.collapsed
-  //   });
-  // }
+  public async navButtonOnClick(
+    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+  ): Promise<boolean> {
+    this.setState({
+      navbarCollapsed: true,
+    });
+
+    return true;
+  }
 
   /**
    * The main method responsible for refreshing and rendering the view.
@@ -56,6 +79,7 @@ export default class NavMenu extends PureComponent {
             <p>Genius</p>
           </Link>
           <button
+            onClick={e => this.togglerButtonOnClick(e)}
             className="navbar-toggler"
             type="button"
             data-bs-toggle="collapse"
@@ -65,18 +89,27 @@ export default class NavMenu extends PureComponent {
             aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
           </button>
-          <div className="collapse navbar-collapse" id="navbarSupportedContent">
+          <div
+            className={`${this.state.navbarCollapsed ? 'collapse' : ''} navbar-collapse`}
+            id="navbarSupportedContent">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0"></ul>
             <div className="d-flex -lg-mr-2">
               <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                 <li className="nav-item">
-                  <NavLink className="nav-link" to={'/dashboard'} end={true}>
+                  <NavLink
+                    onClick={e => this.navButtonOnClick(e)}
+                    className="nav-link"
+                    to={'/dashboard'}
+                    end={true}>
                     Dashboard
                   </NavLink>
                 </li>
 
                 <li className="nav-item">
-                  <NavLink className="nav-link" to={'/dashboard/add'}>
+                  <NavLink
+                    onClick={e => this.navButtonOnClick(e)}
+                    className="nav-link"
+                    to={'/dashboard/add'}>
                     Add new
                   </NavLink>
                 </li>

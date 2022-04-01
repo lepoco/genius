@@ -19,7 +19,7 @@ The database is not used directly. The structure was mapped to classes and objec
 The ***'language'*** in which microservices communicate with each other is described in the `Genius.Protocol` project, which includes `.proto` files with instructions on how to generate classes and objects for `gRPC`.
 
 # Client application
-The sample client application found in the Genius.Client project uses React to present interface elements and perform queries. The queries from frontend are sent to the client server, which makes queries using gRPC to the main microservice, which contains the logic and the data of expert systems.
+The sample client application found in the `Genius.Client` project uses React to present interface elements and perform queries. The queries from frontend are sent to the client server, which makes queries using gRPC to the main microservice, which contains the logic and the data of expert systems.
 
 The lack of security on the side of the main microservice assumes that the client microservice verifies the permissions to perform queries with the use of some form of authorization.
 

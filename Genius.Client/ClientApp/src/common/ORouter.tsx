@@ -25,10 +25,14 @@ import {
 export namespace ORouter {
   /**
    * Ugly static way to make React component classes variable from a router.
-   * @param Component Instance of React component.
+   * @param Component Instance of routable React component.
    * @returns JSX.Element with DOM Router parameters applied.
    */
-  export function bind(Component: any) {
+  export function bind(
+    Component: new (props: ORouter.IRouterProps, state?: any) =>
+      | ORouter.Component<any>
+      | ORouter.PureComponent<any>,
+  ): any {
     return props => (
       <Component
         {...props}

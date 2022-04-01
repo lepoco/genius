@@ -5,14 +5,9 @@
  * All Rights Reserved.
  */
 
+import { ORouter } from '../../../common/ORouter';
 import { Link } from 'react-router-dom';
-import RoutedPureComponent from '../../../common/RoutedPureComponent';
-import IRouterProps from '../../../interfaces/IRouterProps';
-import withRouter from '../../../common/withRouter';
-import {
-  Genius,
-  ExpertSystem,
-} from '../../../genius/Genius';
+import { Genius, ExpertSystem } from '../../../genius/Genius';
 
 /**
  * Represents the variables contained in the component state.
@@ -24,7 +19,7 @@ interface ISystemAddState {
   systemQuestion: string;
 }
 
-export class SystemAdd extends RoutedPureComponent<ISystemAddState> {
+export class SystemAdd extends ORouter.PureComponent<ISystemAddState> {
   /**
    * The display name of the Component.
    */
@@ -34,7 +29,7 @@ export class SystemAdd extends RoutedPureComponent<ISystemAddState> {
    * Binds local methods, assigns properties, and defines the initial state.
    * @param props Properties passed by the router.
    */
-  public constructor(props: IRouterProps) {
+  public constructor(props: ORouter.IRouterProps) {
     super(props);
 
     this.state = {
@@ -190,4 +185,4 @@ export class SystemAdd extends RoutedPureComponent<ISystemAddState> {
   }
 }
 
-export default withRouter(SystemAdd);
+export default ORouter.bind(SystemAdd);

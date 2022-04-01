@@ -5,12 +5,10 @@
  * All Rights Reserved.
  */
 
+import { ORouter } from '../../../common/ORouter';
 import { Link } from 'react-router-dom';
 import { ToastProvider } from '../../common/Toasts';
 import Loader from '../../common/Loader';
-import RoutedComponent from '../../../common/RoutedComponent';
-import withRouter from '../../../common/withRouter';
-import IRouterProps from '../../../interfaces/IRouterProps';
 import {
   Genius,
   IExpertSystem,
@@ -48,7 +46,7 @@ class SolverMemory {
   public indifferent: IExpertCondition[] = [];
 }
 
-class Solver extends RoutedComponent<ISolverState> {
+class Solver extends ORouter.Component<ISolverState> {
   public static displayName: string = Solver.name;
 
   private geniusSolver: Genius.Solver;
@@ -59,7 +57,7 @@ class Solver extends RoutedComponent<ISolverState> {
    * Binds local methods, assigns properties, and defines the initial state.
    * @param props Properties passed by the router.
    */
-  public constructor(props: IRouterProps) {
+  public constructor(props: ORouter.IRouterProps) {
     super(props);
 
     this.geniusSolver = new Genius.Solver();
@@ -477,4 +475,4 @@ class Solver extends RoutedComponent<ISolverState> {
   }
 }
 
-export default withRouter(Solver);
+export default ORouter.bind(Solver);

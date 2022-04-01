@@ -5,6 +5,7 @@
  * All Rights Reserved.
  */
 
+import { ORouter } from '../../../common/ORouter';
 import { Link } from 'react-router-dom';
 import { ConditionsInput } from '../../common/ConditionsInput';
 import { ToastProvider } from '../../common/Toasts';
@@ -15,13 +16,10 @@ import {
   IExpertProduct,
   ImportRequest,
 } from '../../../genius/Genius';
-import Loader from '../../common/Loader';
-import Modal from '../../common/Modal';
-import RoutedPureComponent from '../../../common/RoutedPureComponent';
-import IRouterProps from '../../../interfaces/IRouterProps';
-import withRouter from '../../../common/withRouter';
 import { IExpertPageState } from '../../../genius/interfaces/IExpertPageState';
 import Task from '../../common/Task';
+import Loader from '../../common/Loader';
+import Modal from '../../common/Modal';
 import { Edit16Regular } from '@fluentui/react-icons';
 
 /**
@@ -46,7 +44,7 @@ class ProductWithConditions {
 /**
  * Allows for editing the expert system.
  */
-class SystemEdit extends RoutedPureComponent<ISystemEditState> {
+class SystemEdit extends ORouter.PureComponent<ISystemEditState> {
   public static displayName: string = SystemEdit.name;
 
   private newProduct: ProductWithConditions = new ProductWithConditions();
@@ -69,7 +67,7 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
    * Binds local methods, assigns properties, and defines the initial state.
    * @param props Properties passed by the router.
    */
-  public constructor(props: IRouterProps) {
+  public constructor(props: ORouter.IRouterProps) {
     super(props);
 
     this.state = {
@@ -363,7 +361,9 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
               onClick={e => this.importButtonOnClick(e)}>
               Import
             </button>
-            <Link className="btn btn-outline-dark btn-mobile -btn-import -lg-mr-1" to={'/dashboard/sys/' + state.guid ?? '#'}>
+            <Link
+              className="btn btn-outline-dark btn-mobile -btn-import -lg-mr-1"
+              to={'/dashboard/sys/' + state.guid ?? '#'}>
               Run
             </Link>
             <Link to={'/dashboard/delete/' + state.guid ?? '#'}>
@@ -570,4 +570,4 @@ class SystemEdit extends RoutedPureComponent<ISystemEditState> {
   }
 }
 
-export default withRouter(SystemEdit);
+export default ORouter.bind(SystemEdit);

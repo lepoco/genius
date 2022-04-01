@@ -5,16 +5,10 @@
  * All Rights Reserved.
  */
 
+import { ORouter } from '../../../common/ORouter';
 import { Link } from 'react-router-dom';
+import { Genius, ExpertSystem, IExpertSystem } from '../../../genius/Genius';
 import Loader from '../../common/Loader';
-import RoutedPureComponent from '../../../common/RoutedPureComponent';
-import withRouter from '../../../common/withRouter';
-import IRouterProps from '../../../interfaces/IRouterProps';
-import {
-  Genius,
-  ExpertSystem,
-  IExpertSystem,
-} from '../../../genius/Genius';
 
 /**
  * Represents the variables contained in the component state.
@@ -28,7 +22,7 @@ interface ISystemDeleteState {
 /**
  * It allows you to remove an expert system.
  */
-export class SystemDelete extends RoutedPureComponent<ISystemDeleteState> {
+export class SystemDelete extends ORouter.PureComponent<ISystemDeleteState> {
   /**
    * The display name of the Component.
    */
@@ -38,7 +32,7 @@ export class SystemDelete extends RoutedPureComponent<ISystemDeleteState> {
    * Binds local methods, assigns properties, and defines the initial state.
    * @param props Properties passed by the router.
    */
-  public constructor(props: IRouterProps) {
+  public constructor(props: ORouter.IRouterProps) {
     super(props);
 
     this.state = {
@@ -176,9 +170,7 @@ export class SystemDelete extends RoutedPureComponent<ISystemDeleteState> {
     return (
       <div className="row">
         <div className="col-12">
-          <h4 className="-font-secondary -fw-700 -pb-3">
-            Remove the expert system
-          </h4>
+          <h4 className="-font-secondary -fw-700 -pb-3">Remove the expert system</h4>
         </div>
 
         <div className="col-12 -mb-3">
@@ -193,4 +185,4 @@ export class SystemDelete extends RoutedPureComponent<ISystemDeleteState> {
   }
 }
 
-export default withRouter(SystemDelete);
+export default ORouter.bind(SystemDelete);

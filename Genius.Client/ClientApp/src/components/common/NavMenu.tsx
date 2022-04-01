@@ -114,11 +114,14 @@ export default class NavMenu extends PureComponent<INavMenuProps, INavMenuState>
                   </NavLink>
                 </li>
 
-                {/* <li className="nav-item">
-                  <Link className="nav-link" to={'/dashboard/account'}>
+                <li className="nav-item">
+                  <Link
+                    onClick={e => this.navButtonOnClick(e)}
+                    className="nav-link"
+                    to={'/dashboard/account'}>
                     Account
                   </Link>
-                </li> */}
+                </li>
 
                 {/* <li className="nav-item">
                   <Link className="nav-link" to={'/dashboard/statistics'}>
@@ -130,11 +133,14 @@ export default class NavMenu extends PureComponent<INavMenuProps, INavMenuState>
                     Users
                   </Link>
                 </li> */}
-                {/* <li className="nav-item">
-                  <Link className="nav-link" to={'/dashboard/settings'}>
+                <li className="nav-item">
+                  <Link
+                    onClick={e => this.navButtonOnClick(e)}
+                    className="nav-link"
+                    to={'/dashboard/settings'}>
                     Settings
                   </Link>
-                </li> */}
+                </li>
               </ul>
             </div>
             <div className="d-flex">

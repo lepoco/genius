@@ -5,6 +5,7 @@
  * All Rights Reserved.
  */
 
+import { ORouter } from '../../../common/ORouter';
 import { Link } from 'react-router-dom';
 import { ConditionsInput } from '../../common/ConditionsInput';
 import {
@@ -17,10 +18,7 @@ import {
   ExpertRelations,
   IExpertRelations,
 } from '../../../genius/Genius';
-import RoutedPureComponent from '../../../common/RoutedPureComponent';
-import IRouterProps from '../../../interfaces/IRouterProps';
 import Loader from '../../common/Loader';
-import withRouter from '../../../common/withRouter';
 
 /**
  * Represents the variables contained in the Component state.
@@ -44,7 +42,7 @@ interface IProductState {
 /**
  * Responsible for editing a single product.
  */
-export class Product extends RoutedPureComponent<IProductState> {
+export class Product extends ORouter.PureComponent<IProductState> {
   /**
    * The display name of the Component.
    */
@@ -54,7 +52,7 @@ export class Product extends RoutedPureComponent<IProductState> {
    * Binds local methods, assigns properties, and defines the initial state.
    * @param props Properties passed by the router.
    */
-  public constructor(props: IRouterProps) {
+  public constructor(props: ORouter.IRouterProps) {
     super(props);
 
     this.state = {
@@ -292,4 +290,4 @@ export class Product extends RoutedPureComponent<IProductState> {
   }
 }
 
-export default withRouter(Product);
+export default ORouter.bind(Product);

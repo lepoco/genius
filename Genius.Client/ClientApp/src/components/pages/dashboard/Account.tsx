@@ -5,9 +5,8 @@
  * All Rights Reserved.
  */
 
-import RoutedPureComponent from '../../../common/RoutedPureComponent';
-import IRouterProps from '../../../interfaces/IRouterProps';
-import withRouter from '../../../common/withRouter';
+import { ORouter } from '../../../common/ORouter';
+import { ToastProvider } from '../../common/Toasts';
 
 /**
  * Represents the variables contained in the Component state.
@@ -17,7 +16,7 @@ interface IAccountState {}
 /**
  * Dashboard - Account page Component.
  */
-export class Account extends RoutedPureComponent<IAccountState> {
+export class Account extends ORouter.PureComponent<IAccountState> {
   /**
    * The display name of the Component.
    */
@@ -27,10 +26,20 @@ export class Account extends RoutedPureComponent<IAccountState> {
    * Binds local methods, assigns properties, and defines the initial state.
    * @param props Properties passed by the router.
    */
-  public constructor(props: IRouterProps) {
+  public constructor(props: ORouter.IRouterProps) {
     super(props);
 
     this.state = {};
+
+    this.formOnSubmit = this.formOnSubmit.bind(this);
+  }
+
+  private async formOnSubmit(event: React.FormEvent<HTMLFormElement>): Promise<boolean> {
+    event.preventDefault();
+
+    ToastProvider.show('Error', 'Profile update is not possible.');
+
+    return false;
   }
 
   /**
@@ -61,11 +70,7 @@ export class Account extends RoutedPureComponent<IAccountState> {
             </div>
           </div>
           <div className="col-12 -mt-5">
-            <form id="account" method="POST">
-              <input type="hidden" name="action" value="Account" />
-              <input type="hidden" name="nonce" value="account_nonce" />
-              <input type="hidden" name="id" value="user_id" />
-
+            <form method="POST" onSubmit={e => this.formOnSubmit(e)}>
               <div className="floating-input">
                 <input
                   disabled={true}
@@ -128,4 +133,4 @@ export class Account extends RoutedPureComponent<IAccountState> {
   }
 }
 
-export default withRouter(Account);
+export default ORouter.bind(Account);

@@ -5,6 +5,7 @@
  * All Rights Reserved.
  */
 
+import { ORouter } from '../../../common/ORouter';
 import { Link } from 'react-router-dom';
 import {
   Genius,
@@ -15,9 +16,6 @@ import {
   ExpertRelations,
   IExpertRelations,
 } from '../../../genius/Genius';
-import RoutedPureComponent from '../../../common/RoutedPureComponent';
-import IRouterProps from '../../../interfaces/IRouterProps';
-import withRouter from '../../../common/withRouter';
 import Modal from '../../common/Modal';
 import Loader from '../../common/Loader';
 
@@ -41,7 +39,7 @@ interface IConditionState {
 /**
  * Dashboard - Condition page Component.
  */
-export class Condition extends RoutedPureComponent<IConditionState> {
+export class Condition extends ORouter.PureComponent<IConditionState> {
   /**
    * The display name of the Component.
    */
@@ -53,7 +51,7 @@ export class Condition extends RoutedPureComponent<IConditionState> {
    * Binds local methods, assigns properties, and defines the initial state.
    * @param props Properties passed by the router.
    */
-  public constructor(props: IRouterProps) {
+  public constructor(props: ORouter.IRouterProps) {
     super(props);
 
     this.state = {
@@ -244,4 +242,4 @@ export class Condition extends RoutedPureComponent<IConditionState> {
   }
 }
 
-export default withRouter(Condition);
+export default ORouter.bind(Condition);

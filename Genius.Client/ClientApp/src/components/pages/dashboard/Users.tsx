@@ -5,9 +5,7 @@
  * All Rights Reserved.
  */
 
-import RoutedPureComponent from '../../../common/RoutedPureComponent';
-import IRouterProps from '../../../interfaces/IRouterProps';
-import withRouter from '../../../common/withRouter';
+import { ORouter } from '../../../common/ORouter';
 
 /**
  * Represents the variables contained in the Component state.
@@ -17,7 +15,7 @@ interface IUsersState {}
 /**
  * Dashboard - Users page Component.
  */
-export class Users extends RoutedPureComponent<IUsersState> {
+export class Users extends ORouter.PureComponent<IUsersState> {
   /**
    * The display name of the Component.
    */
@@ -27,7 +25,7 @@ export class Users extends RoutedPureComponent<IUsersState> {
    * Binds local methods, assigns properties, and defines the initial state.
    * @param props Properties passed by the router.
    */
-  public constructor(props: IRouterProps) {
+  public constructor(props: ORouter.IRouterProps) {
     super(props);
 
     this.state = {};
@@ -59,4 +57,4 @@ export class Users extends RoutedPureComponent<IUsersState> {
   }
 }
 
-export default withRouter(Users);
+export default ORouter.bind(Users);

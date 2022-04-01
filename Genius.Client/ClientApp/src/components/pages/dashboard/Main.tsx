@@ -5,12 +5,10 @@
  * All Rights Reserved.
  */
 
+import { ORouter } from '../../../common/ORouter';
 import { Link } from 'react-router-dom';
 import { Genius, IExpertSystem } from '../../../genius/Genius';
-import RoutedPureComponent from '../../../common/RoutedPureComponent';
-import IRouterProps from '../../../interfaces/IRouterProps';
 import Loader from '../../common/Loader';
-import withRouter from '../../../common/withRouter';
 
 /**
  * Represents the variables contained in the Component state.
@@ -23,7 +21,7 @@ interface IMainState {
 /**
  * Dashboard - Main page Component.
  */
-export class Main extends RoutedPureComponent<IMainState> {
+export class Main extends ORouter.PureComponent<IMainState> {
   /**
    * The display name of the Component.
    */
@@ -33,7 +31,7 @@ export class Main extends RoutedPureComponent<IMainState> {
    * Binds local methods, assigns properties, and defines the initial state.
    * @param props Properties passed by the router.
    */
-  public constructor(props: IRouterProps) {
+  public constructor(props: ORouter.IRouterProps) {
     super(props);
 
     this.state = {
@@ -147,4 +145,4 @@ export class Main extends RoutedPureComponent<IMainState> {
   }
 }
 
-export default withRouter(Main);
+export default ORouter.bind(Main);

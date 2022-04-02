@@ -19,17 +19,20 @@ namespace Genius.Client.Services
     /// </summary>
     public class GrpcChannelService : IChannel
     {
+        /// <inheritdoc />
+        public string ChannelAddress { get; set; } = "https://localhost:5006";
+
         private readonly ILogger<GrpcChannelService> _logger;
 
         private readonly GrpcChannel _channel;
 
-        private readonly Dictionary<int, object> _clients = new();
+        private readonly Dictionary<Type, object> _clients = new();
 
         public GrpcChannelService(ILogger<GrpcChannelService> logger)
         {
             _logger = logger;
 
-            _channel = GrpcChannel.ForAddress("https://localhost:5006", new GrpcChannelOptions
+            _channel = GrpcChannel.ForAddress(ChannelAddress, new GrpcChannelOptions
             {
                 HttpHandler = new SocketsHttpHandler
                 {
@@ -42,20 +45,23 @@ namespace Genius.Client.Services
         }
 
         /// <inheritdoc />
-        public T GetClient<T>() where T : Grpc.Core.ClientBase
-        {
-            var hash = typeof(T).GetHashCode();
-
-            if (!_clients.ContainsKey(hash))
-                _clients.Add(hash, (T)Activator.CreateInstance(typeof(T), _channel));
-
-            return (T)_clients[hash];
-        }
+        public GrpcChannel GetChannel() => _channel;
 
         /// <inheritdoc />
-        public GrpcChannel GetChannel()
+        public T GetClient<T>() where T : Grpc.Core.ClientBase
         {
-            return _channel;
+            var type = typeof(T);
+
+            _clients.TryGetValue(type, out var clientObject);
+
+            if (clientObject != null)
+                return (T)clientObject;
+
+            clientObject = Activator.CreateInstance(type, _channel);
+
+            _clients.Add(type, clientObject);
+
+            return (T)clientObject;
         }
     }
 }

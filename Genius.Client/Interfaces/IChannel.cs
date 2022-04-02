@@ -13,6 +13,11 @@ namespace Genius.Client.Interfaces
     public interface IChannel
     {
         /// <summary>
+        /// The address of the microservice to which the class should connect.
+        /// </summary>
+        public string ChannelAddress { get; set; }
+
+        /// <summary>
         /// Takes the globally available gRPC channel.
         /// </summary>
         public GrpcChannel GetChannel();

@@ -5,7 +5,8 @@
 
 using Genius.Client.Export;
 using Genius.Client.Import;
-using Genius.Client.Services;
+using Genius.Client.Interfaces;
+using GeniusProtocol;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -23,12 +24,12 @@ namespace Genius.Client.Controllers
     {
         private readonly ILogger<ExportController> _logger;
 
-        private readonly GrpcExpertClientService _expertClient;
+        private readonly Expert.ExpertClient _grpcClient;
 
-        public ImportController(ILogger<ExportController> logger, GrpcExpertClientService expertClient)
+        public ImportController(ILogger<ExportController> logger, IChannel channel)
         {
             _logger = logger;
-            _expertClient = expertClient;
+            _grpcClient = new Expert.ExpertClient(channel.GetChannel());
         }
 
         [HttpPost]
@@ -56,7 +57,7 @@ namespace Genius.Client.Controllers
             if (exportedData?.System?.Id < 1)
                 return BadRequest("Serialization failed.");
 
-            var mergeStatus = await SystemImporter.MergeSystems(_expertClient, iSystemId, exportedData);
+            var mergeStatus = await SystemImporter.MergeSystems(_grpcClient, iSystemId, exportedData);
 
             if (!mergeStatus)
                 return BadRequest("Merging failed.");

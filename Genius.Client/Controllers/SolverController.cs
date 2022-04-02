@@ -3,7 +3,7 @@
 // Copyright (C) 2022 Leszek Pomianowski.
 // All Rights Reserved.
 
-using Genius.Client.Services;
+using Genius.Client.Interfaces;
 using GeniusProtocol;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -20,12 +20,12 @@ namespace Genius.Client.Controllers
     {
         private readonly ILogger<SolverController> _logger;
 
-        private readonly GrpcSolverClientService _solverClient;
+        private readonly Solver.SolverClient _grpcClient;
 
-        public SolverController(ILogger<SolverController> logger, GrpcSolverClientService solverClient)
+        public SolverController(ILogger<SolverController> logger, IChannel channel)
         {
             _logger = logger;
-            _solverClient = solverClient;
+            _grpcClient = new Solver.SolverClient(channel.GetChannel());
         }
 
         [HttpGet]
@@ -58,7 +58,7 @@ namespace Genius.Client.Controllers
                 Indifferent = { idsIndifferent },
             };
 
-            return await _solverClient.AskAsync(question);
+            return await _grpcClient.AskAsync(question);
         }
 
         private IEnumerable<int> FetchRawArray(string rawArray)

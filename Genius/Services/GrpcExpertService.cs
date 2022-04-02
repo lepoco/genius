@@ -524,24 +524,143 @@ namespace Genius.Services
 
         #region UPDATES
 
-        public override Task<ExpertResponseModel> Update(ExpertModel request, ServerCallContext context)
+        public override async Task<ExpertResponseModel> Update(ExpertModel request, ServerCallContext context)
         {
-            return base.Update(request, context);
+            if (request == null || request.Id < 1)
+                return new ExpertResponseModel { Id = 0 };
+
+            var expertSystem = await _expertService.Context.Systems.Where(sys => sys.Id == request.Id)
+                .FirstOrDefaultAsync<Data.Models.Expert.System>();
+
+            if (expertSystem == null || expertSystem.Id < 1)
+                return new ExpertResponseModel { Id = 0 };
+
+            expertSystem.Name = request.Name;
+            expertSystem.Description = request.Description;
+            expertSystem.Question = request.Question;
+            expertSystem.UpdatedAt = DateTime.Now;
+
+            _expertService.Context.Systems.Update(expertSystem);
+            await _expertService.Context.SaveChangesAsync();
+
+            return new ExpertResponseModel { Id = expertSystem.Id };
         }
 
-        public override Task<ConditionModel> UpdateCondition(ConditionModel request, ServerCallContext context)
+        public override async Task<ProductModel> UpdateProduct(ProductModel request, ServerCallContext context)
         {
-            return base.UpdateCondition(request, context);
+            if (request == null || request.Id < 1)
+                return new ProductModel { Id = 0, SystemId = 0 };
+
+            var product = await _expertService.Context.Products.Where(prod => prod.Id == request.Id)
+                .FirstOrDefaultAsync<Data.Models.Expert.Product>();
+
+            if (product == null || product.Id < 1)
+                return new ProductModel { Id = 0, SystemId = 0 };
+
+            product.Name = request.Name;
+            product.Description = request.Description;
+            product.Notes = request.Notes;
+
+            _expertService.Context.Products.Update(product);
+            await _expertService.Context.SaveChangesAsync();
+
+            return new ProductModel { Id = 0, SystemId = 0 };
         }
 
-        public override Task<ProductModel> UpdateProduct(ProductModel request, ServerCallContext context)
+        public override async Task<ProductRelationsModel> UpdateProductConditions(ProductConditionsModel request, ServerCallContext context)
         {
-            return base.UpdateProduct(request, context);
+            if (request == null || request.Id < 1)
+                return new ProductRelationsModel { Id = 0, SystemId = 0 };
+
+            var product = await _expertService.Context.Products.Where(prod => prod.Id == request.Id)
+                .FirstOrDefaultAsync<Data.Models.Expert.Product>();
+
+            if (product == null || product.Id < 1)
+                return new ProductRelationsModel { Id = 0, SystemId = 0 };
+
+            _expertService.Context.Relations.RemoveRange(
+                _expertService.Context.Relations.Where(relation => relation.ProductId == product.Id));
+
+            foreach (var singleConditionId in request.Confirming)
+            {
+                _expertService.Context.Relations.Add(new Data.Models.Expert.Relation
+                {
+                    SystemId = request.SystemId,
+                    ProductId = product.Id,
+                    CondiotionId = singleConditionId,
+                    Weight = 100,
+                    Type = RelationType.Compliance
+                });
+            }
+
+            foreach (var singleConditionId in request.Negating)
+            {
+                _expertService.Context.Relations.Add(new Data.Models.Expert.Relation
+                {
+                    SystemId = product.SystemId,
+                    ProductId = product.Id,
+                    CondiotionId = singleConditionId,
+                    Weight = 100,
+                    Type = RelationType.Contradiction
+                });
+            }
+
+            foreach (var singleConditionId in request.Negating)
+            {
+                _expertService.Context.Relations.Add(new Data.Models.Expert.Relation
+                {
+                    SystemId = product.SystemId,
+                    ProductId = product.Id,
+                    CondiotionId = singleConditionId,
+                    Weight = 100,
+                    Type = RelationType.Disregard
+                });
+            }
+
+            await _expertService.Context.SaveChangesAsync();
+
+            var confirmingRelations = await _expertService.Context.Relations
+                .Where(rel => rel.ProductId == product.Id && rel.Type == RelationType.Compliance)
+                .Select(rel => rel.Id)
+                .ToArrayAsync();
+
+            var negatingRelations = await _expertService.Context.Relations
+                .Where(rel => rel.ProductId == product.Id && rel.Type == RelationType.Contradiction)
+                .Select(rel => rel.Id)
+                .ToArrayAsync();
+
+            var indifferentRelations = await _expertService.Context.Relations
+                .Where(rel => rel.ProductId == product.Id && rel.Type == RelationType.Disregard)
+                .Select(rel => rel.Id)
+                .ToArrayAsync();
+
+            return new ProductRelationsModel { Id = product.Id, SystemId = 0, Confirming = { confirmingRelations }, Negating = { negatingRelations }, Indifferent = { indifferentRelations } };
         }
 
-        public override Task<RelationModel> UpdateRelation(RelationModel request, ServerCallContext context)
+        public override async Task<ConditionModel> UpdateCondition(ConditionModel request, ServerCallContext context)
         {
-            return base.UpdateRelation(request, context);
+            if (request == null || request.Id < 1)
+                return new ConditionModel { Id = 0, SystemId = 0 };
+
+            var condition = await _expertService.Context.Conditions.Where(con => con.Id == request.Id)
+                .FirstOrDefaultAsync<Data.Models.Expert.Condition>();
+
+            if (condition == null || condition.Id < 1)
+                return new ConditionModel { Id = 0, SystemId = 0 };
+
+            condition.Name = request.Name;
+            condition.Description = request.Description;
+
+            _expertService.Context.Conditions.Update(condition);
+            await _expertService.Context.SaveChangesAsync();
+
+            return new ConditionModel { Id = 0, SystemId = 0 };
+        }
+
+        public override async Task<RelationModel> UpdateRelation(RelationModel request, ServerCallContext context)
+        {
+            // TODO: Update relation, but with what rules?
+            return new RelationModel { Id = 0, SystemId = 0 };
         }
 
         #endregion

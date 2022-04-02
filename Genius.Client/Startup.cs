@@ -27,12 +27,6 @@ namespace Genius.Client
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IChannel, GrpcChannelService>();
-
-            services.AddScoped<GrpcUserClientService>();
-            services.AddScoped<GrpcExpertClientService>();
-            services.AddScoped<GrpcSolverClientService>();
-            services.AddScoped<GrpcStatisticsClientService>();
-
             services.AddControllersWithViews();
 
             // In production, the React files will be served from this directory

@@ -44,6 +44,8 @@ service Expert {
 
 	rpc UpdateProduct(ProductModel) returns (ProductModel);
 
+	rpc UpdateProductConditions(ProductConditionsModel) returns (ProductRelationsModel);
+
 	rpc AddRelation(RelationModel) returns (RelationModel);
 
 	rpc GetRelation(RelationLookupModel) returns (RelationModel);
@@ -84,6 +86,14 @@ message ProductModel {
 }
 
 message ProductRelationsModel {
+	int32 id = 1;
+	int32 system_id = 2;
+	repeated int32 confirming = 3;
+	repeated int32 negating = 4;
+	repeated int32 indifferent = 5;
+}
+
+message ProductConditionsModel{
 	int32 id = 1;
 	int32 system_id = 2;
 	repeated int32 confirming = 3;

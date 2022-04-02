@@ -3,8 +3,9 @@
 // Copyright (C) 2022 Leszek Pomianowski.
 // All Rights Reserved.
 
-using Genius.Client.Services;
+using Genius.Client.Interfaces;
 using GeniusProtocol;
+using Grpc.Core;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -19,12 +20,12 @@ namespace Genius.Client.Controllers
     {
         private readonly ILogger<ExpertController> _logger;
 
-        private readonly GrpcExpertClientService _expertClient;
+        private readonly Expert.ExpertClient _grpcClient;
 
-        public ExpertController(ILogger<ExpertController> logger, GrpcExpertClientService expertClient)
+        public ExpertController(ILogger<ExpertController> logger, IChannel channel)
         {
             _logger = logger;
-            _expertClient = expertClient;
+            _grpcClient = new Expert.ExpertClient(channel.GetChannel());
         }
 
         [HttpGet]
@@ -37,7 +38,14 @@ namespace Genius.Client.Controllers
         [Route("system")]
         public async Task<IEnumerable<ExpertModel>> GetAllSystems()
         {
-            return await _expertClient.GetAllSystems();
+            var expertSystems = new List<ExpertModel>();
+
+            using var call = _grpcClient.GetAll(new ExpertEmptyModel());
+
+            while (await call.ResponseStream.MoveNext())
+                expertSystems.Add(call.ResponseStream.Current);
+
+            return expertSystems;
         }
 
         [HttpPost]
@@ -54,7 +62,7 @@ namespace Genius.Client.Controllers
             if (String.IsNullOrEmpty(newSystem.Name) || String.IsNullOrEmpty(newSystem.Question))
                 return StatusCode(200, false);
 
-            var newSystemId = await _expertClient.CreateSystemAsync(newSystem);
+            var newSystemId = (await _grpcClient.CreateAsync(newSystem))?.Id ?? 0;
 
             return StatusCode(200, newSystemId > 0 ? "success" : "error");
         }
@@ -63,28 +71,32 @@ namespace Genius.Client.Controllers
         [Route("system/guid/{guid}")]
         public async Task<ExpertModel> GetSingleSystemByGuid([FromRoute] string guid)
         {
-            return await _expertClient.GetSystemByGuidAsync(guid);
+            return await _grpcClient.GetAsync(new ExpertLookupModel { Guid = guid });
         }
 
         [HttpGet]
         [Route("system/{id}")]
         public async Task<ExpertModel> GetSingleSystemById([FromRoute] int id)
         {
-            return await _expertClient.GetSystemAsync(id);
+            return await _grpcClient.GetAsync(new ExpertLookupModel { Id = id });
         }
 
         [HttpGet]
         [Route("system/{id}/about")]
-        public async Task<ExpertAboutModel> GetSingleSystem([FromRoute] int id)
+        public async Task<ExpertAboutModel> GetSystemAbout([FromRoute] int id)
         {
-            return await _expertClient.GetSystemAboutAsync(id);
+            return await _grpcClient.GetAboutAsync(new ExpertLookupModel { Id = id });
         }
 
         [HttpDelete]
         [Route("system/{id}")]
         public async Task<IActionResult> DeleteSingleSystem([FromRoute] int id)
         {
-            bool isDeleted = await _expertClient.DeleteSystemAsync(new ExpertModel { Id = id }) > 0;
+            if (id < 1)
+                return StatusCode(400, "Unable to delete unknown system");
+
+            var system = await _grpcClient.DeleteAsync(new ExpertLookupModel { Id = id });
+            var isDeleted = system != null && system.Id > 0;
 
             return StatusCode(200, isDeleted ? "success" : "error");
         }
@@ -93,27 +105,42 @@ namespace Genius.Client.Controllers
         [Route("system/{systemId}/conditions")]
         public async Task<IEnumerable<ConditionModel>> GetAllConditions([FromRoute] int systemId)
         {
-            IEnumerable<ConditionModel> conditions = await _expertClient.GetSystemConditionsAsync(systemId);
+            var systemConditions = new List<ConditionModel>();
 
-            return conditions;
+            using var call = _grpcClient.GetSystemConditions(new ExpertLookupModel { Id = systemId });
+
+            while (await call.ResponseStream.MoveNext())
+                systemConditions.Add(call.ResponseStream.Current);
+
+            return systemConditions;
         }
 
         [HttpGet]
         [Route("system/{systemId}/products")]
         public async Task<IEnumerable<ProductModel>> GetAllProducts([FromRoute] int systemId)
         {
-            IEnumerable<ProductModel> products = await _expertClient.GetSystemProductsAsync(systemId);
+            var systemProducts = new List<ProductModel>();
 
-            return products;
+            using var call = _grpcClient.GetSystemProducts(new ExpertLookupModel { Id = systemId });
+
+            while (await call.ResponseStream.MoveNext())
+                systemProducts.Add(call.ResponseStream.Current);
+
+            return systemProducts;
         }
 
         [HttpGet]
         [Route("system/{systemId}/relations")]
         public async Task<IEnumerable<RelationModel>> GetAllRelations([FromRoute] int systemId)
         {
-            IEnumerable<RelationModel> relations = await _expertClient.GetSystemRelationsAsync(systemId);
+            var systemRelations = new List<RelationModel>();
 
-            return relations;
+            using var call = _grpcClient.GetSystemRelations(new ExpertLookupModel { Id = systemId });
+
+            while (await call.ResponseStream.MoveNext())
+                systemRelations.Add(call.ResponseStream.Current);
+
+            return systemRelations;
         }
 
         [HttpPost]
@@ -135,26 +162,54 @@ namespace Genius.Client.Controllers
                 Notes = HttpContext.Request.Form["notes"]
             };
 
-            var newProductId = await _expertClient.AddProductAsync(newProduct);
+            var newProductId = (await _grpcClient.AddProductAsync(newProduct))?.Id ?? 0;
 
             if (newProductId > 0 && !String.IsNullOrEmpty(rawConditionsList))
-                await AddProductRelations(systemId, newProductId, rawConditionsList);
+                await AddProductConditions(systemId, newProductId, rawConditionsList);
 
             return StatusCode(200, newProductId);
+        }
+
+        [HttpPost]
+        [Route("product/update")]
+        public async Task<IActionResult> UpdateProduct()
+        {
+            //Int32.TryParse(HttpContext.Request.Form["systemId"], out int systemId);
+            //Int32.TryParse(HttpContext.Request.Form["id"], out int productId);
+
+            //if (systemId < 1 || productId < 1)
+            //    return StatusCode(200, 0);
+
+            //string rawConditionsList = HttpContext.Request.Form["conditions"];
+
+            //var newProduct = new ProductModel
+            //{
+            //    SystemId = systemId,
+            //    Name = HttpContext.Request.Form["name"],
+            //    Description = HttpContext.Request.Form["description"],
+            //    Notes = HttpContext.Request.Form["notes"]
+            //};
+
+            //var newProductId = await _expertClient.AddProductAsync(newProduct);
+
+            //if (newProductId > 0 && !String.IsNullOrEmpty(rawConditionsList))
+            //    await AddProductConditions(systemId, newProductId, rawConditionsList);
+
+            return StatusCode(200, 0);
         }
 
         [HttpGet]
         [Route("product/{id}")]
         public async Task<ProductModel> GetSingleProduct([FromRoute] int id)
         {
-            return await _expertClient.GetProductAsync(id);
+            return await _grpcClient.GetProductAsync(new ProductLookupModel { Id = id });
         }
 
         [HttpGet]
         [Route("product/{id}/relations")]
         public async Task<ProductRelationsModel> GetProductRelations([FromRoute] int id)
         {
-            return await _expertClient.GetProductRelationsAsync(id);
+            return await _grpcClient.GetProductRelationsAsync(new ProductLookupModel { Id = id });
         }
 
         [HttpPost]
@@ -173,7 +228,7 @@ namespace Genius.Client.Controllers
                 Description = HttpContext.Request.Form["description"],
             };
 
-            var newConditionId = await _expertClient.AddConditionAsync(newCondition);
+            var newConditionId = (await _grpcClient.AddConditionAsync(newCondition))?.Id ?? 0;
 
             return StatusCode(200, newConditionId);
         }
@@ -182,14 +237,14 @@ namespace Genius.Client.Controllers
         [Route("condition/{id}")]
         public async Task<ConditionModel> GetSingleCondition([FromRoute] int id)
         {
-            return await _expertClient.GetConditionAsync(id);
+            return await _grpcClient.GetConditionAsync(new ConditionLookupModel { Id = id });
         }
 
         [HttpGet]
         [Route("condition/{id}/relations")]
         public async Task<ConditionRelationsModel> GetConditionRelations([FromRoute] int id)
         {
-            return await _expertClient.GetConditionRelationsAsync(id);
+            return await _grpcClient.GetConditionRelationsAsync(new ConditionLookupModel { Id = id });
         }
 
         [HttpPost]
@@ -218,7 +273,7 @@ namespace Genius.Client.Controllers
                 Weight = weight
             };
 
-            var serverResponse = await _expertClient.AddRelationAsync(newRelation);
+            var serverResponse = (await _grpcClient.AddRelationAsync(newRelation))?.Id ?? 0;
 
             return StatusCode(200, serverResponse);
         }
@@ -227,13 +282,13 @@ namespace Genius.Client.Controllers
         [Route("relation/{id}")]
         public async Task<RelationModel> GetSingleRelation([FromRoute] int id)
         {
-            return await _expertClient.GetRelationAsync(id);
+            return await _grpcClient.GetRelationAsync(new RelationLookupModel { Id = id });
         }
 
-        private async Task<IEnumerable<int>> AddProductRelations(int systemId, int productId, string rawRelations)
+        private async Task<IEnumerable<int>> AddProductConditions(int systemId, int productId, string rawConditions)
         {
-            string[] conditionsList = rawRelations.Trim().Split(',');
-            int currentCondition = 0;
+            var conditionsList = rawConditions.Trim().Split(',');
+            var currentCondition = 0;
 
             List<int> relationIds = new List<int>();
 
@@ -244,17 +299,17 @@ namespace Genius.Client.Controllers
                 if (currentCondition < 1)
                     continue;
 
-                var dbCondition = await _expertClient.GetConditionAsync(currentCondition);
+                var dbCondition = await _grpcClient.GetConditionAsync(new ConditionLookupModel { Id = currentCondition });
 
                 if (dbCondition?.Id > 0 || dbCondition?.SystemId == systemId)
                 {
-                    var newRelation = await _expertClient.AddRelationAsync(new RelationModel
+                    var newRelation = (await _grpcClient.AddRelationAsync(new RelationModel
                     {
                         SystemId = systemId,
                         ProductId = productId,
                         ConditionId = dbCondition.Id,
                         Weight = 100
-                    });
+                    }))?.Id ?? 0;
 
                     if (newRelation > 0)
                     {

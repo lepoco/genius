@@ -4,7 +4,7 @@
 // All Rights Reserved.
 
 using Genius.Client.Export;
-using Genius.Client.Services;
+using GeniusProtocol;
 using System.Threading.Tasks;
 
 namespace Genius.Client.Import
@@ -17,7 +17,7 @@ namespace Genius.Client.Import
         /// <summary>
         /// Tries to add data from <see cref="ExportExpertModel"/> to selected Expert System.
         /// </summary>
-        public static async Task<bool> MergeSystems(GrpcExpertClientService expertClient, int systemId, ExportExpertModel expertModel)
+        public static async Task<bool> MergeSystems(Expert.ExpertClient grpcClient, int systemId, ExportExpertModel expertModel)
         {
             return false;
         }

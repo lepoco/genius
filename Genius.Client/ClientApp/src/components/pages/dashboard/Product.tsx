@@ -19,6 +19,7 @@ import {
   IExpertRelations,
 } from '../../../genius/Genius';
 import Loader from '../../common/Loader';
+import { ToastProvider, ToastType } from '../../common/Toasts';
 
 /**
  * Represents the variables contained in the Component state.
@@ -66,6 +67,7 @@ export class Product extends ORouter.PureComponent<IProductState> {
     };
 
     this.renderContent = this.renderContent.bind(this);
+    this.buttonDeleteOnClick = this.buttonDeleteOnClick.bind(this);
     this.formOnSubmit = this.formOnSubmit.bind(this);
   }
 
@@ -145,8 +147,29 @@ export class Product extends ORouter.PureComponent<IProductState> {
     });
   }
 
+  private async buttonDeleteOnClick(
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ): Promise<boolean> {
+    return false;
+  }
+
   private async formOnSubmit(event: React.FormEvent<HTMLFormElement>): Promise<boolean> {
     event.preventDefault();
+
+    const apiResponse: boolean = await Genius.Api.updateProduct(
+      this.state.selectedProduct,
+    );
+
+    if (apiResponse) {
+      ToastProvider.show(
+        'Success!',
+        'Product ' + this.state.selectedProduct.name + ' has been updated.',
+        5000,
+        ToastType.Success,
+      );
+    } else {
+      ToastProvider.show('Error!', 'Product update failed.', 5000, ToastType.Error);
+    }
 
     // TODO: Update
 
@@ -257,6 +280,12 @@ export class Product extends ORouter.PureComponent<IProductState> {
             <div className="-pb-2">
               <button type="submit" className="btn btn-dark btn-mobile -lg-mr-1">
                 Update
+              </button>
+              <button
+                onClick={e => this.buttonDeleteOnClick(e)}
+                type="button"
+                className="btn btn-mobile btn-outline-danger -lg-mr-1">
+                Delete
               </button>
               <Link
                 to={'/dashboard/edit/' + (this.state.systemGUID ?? '0')}

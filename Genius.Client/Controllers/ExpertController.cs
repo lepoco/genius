@@ -171,31 +171,34 @@ namespace Genius.Client.Controllers
         }
 
         [HttpPost]
-        [Route("product/update")]
-        public async Task<IActionResult> UpdateProduct()
+        [Route("product/{id}/update")]
+        public async Task<IActionResult> UpdateProduct([FromRoute] int productId)
         {
-            //Int32.TryParse(HttpContext.Request.Form["systemId"], out int systemId);
-            //Int32.TryParse(HttpContext.Request.Form["id"], out int productId);
+            if (productId < 1)
+                return StatusCode(422, "Unknown product");
 
-            //if (systemId < 1 || productId < 1)
-            //    return StatusCode(200, 0);
+            var product = await _grpcClient.GetProductAsync(new ProductLookupModel { Id = productId });
 
-            //string rawConditionsList = HttpContext.Request.Form["conditions"];
+            if (product == null || product.Id < 1)
+                return StatusCode(422, "Unknown product");
 
-            //var newProduct = new ProductModel
-            //{
-            //    SystemId = systemId,
-            //    Name = HttpContext.Request.Form["name"],
-            //    Description = HttpContext.Request.Form["description"],
-            //    Notes = HttpContext.Request.Form["notes"]
-            //};
+            var productName = HttpContext.Request.Form["name"].ToString() ?? String.Empty;
+            var productDescription = HttpContext.Request.Form["description"].ToString() ?? String.Empty;
+            var productNotes = HttpContext.Request.Form["notes"].ToString() ?? String.Empty;
 
-            //var newProductId = await _expertClient.AddProductAsync(newProduct);
+            if (String.IsNullOrEmpty(productName))
+                return StatusCode(422, "Name could not be empty");
 
-            //if (newProductId > 0 && !String.IsNullOrEmpty(rawConditionsList))
-            //    await AddProductConditions(systemId, newProductId, rawConditionsList);
+            var updatedProduct = await _grpcClient.UpdateProductAsync(new ProductModel
+            {
+                Id = productId,
+                SystemId = product.SystemId,
+                Name = productName,
+                Description = productDescription,
+                Notes = productNotes,
+            });
 
-            return StatusCode(200, 0);
+            return StatusCode(200, updatedProduct?.Id ?? 0);
         }
 
         [HttpGet]
@@ -231,6 +234,35 @@ namespace Genius.Client.Controllers
             var newConditionId = (await _grpcClient.AddConditionAsync(newCondition))?.Id ?? 0;
 
             return StatusCode(200, newConditionId);
+        }
+
+        [HttpPost]
+        [Route("condition/{id}/update")]
+        public async Task<IActionResult> UpdateCondition([FromRoute] int conditionId)
+        {
+            if (conditionId < 1)
+                return StatusCode(422, "Unknown condition");
+
+            var condition = await _grpcClient.GetConditionAsync(new ConditionLookupModel { Id = conditionId });
+
+            if (condition == null || condition.Id < 1)
+                return StatusCode(422, "Unknown condition");
+
+            var conditionName = HttpContext.Request.Form["name"].ToString() ?? String.Empty;
+            var conditionDescription = HttpContext.Request.Form["description"].ToString() ?? String.Empty;
+
+            if (String.IsNullOrEmpty(conditionName))
+                return StatusCode(422, "Name could not be empty");
+
+            var updatedCondition = await _grpcClient.UpdateConditionAsync(new ConditionModel
+            {
+                Id = conditionId,
+                SystemId = condition.SystemId,
+                Name = conditionName,
+                Description = conditionDescription,
+            });
+
+            return StatusCode(200, updatedCondition?.Id ?? 0);
         }
 
         [HttpGet]

@@ -52,7 +52,7 @@ namespace Genius.Client
 
             app.UseHttpsRedirection();
 
-            //app.UseWebSockets();
+            // app.UseWebSockets();
 
             app.UseStaticFiles();
             app.UseSpaStaticFiles();

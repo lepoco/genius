@@ -24,6 +24,39 @@ import { ExpertAbout } from './ExpertAbout';
 export class GeniusApi {
   private static readonly BASE_EXPERT_GATEWAY: string = '/api/expert/';
 
+  //#region SYSTEM ACTIONS
+
+  /**
+   * Adds a new expert system to the database.
+   * @param system New system to be added.
+   * @returns true if the operation was successful.
+   */
+  public static async addSystem(system: IExpertSystem): Promise<boolean> {
+    if (system.name === '' || system.type === '') {
+      console.debug('\\GeniusApi\\addSystem', false);
+
+      return false;
+    }
+
+    let formData = GeniusDataParser.buildFormData({
+      name: system.name ?? '',
+      description: system.description ?? '',
+      question: system.question ?? '',
+      type: system.type ?? '',
+    });
+
+    let response = await fetch('api/expert/system', {
+      method: 'POST',
+      body: formData,
+    });
+
+    let responseText = await response.text();
+
+    console.debug('\\GeniusApi\\addSystem\\responseText', responseText);
+
+    return responseText === 'success';
+  }
+
   public static async getSystemById(
     systemId: number,
     fetchProducts: boolean = false,
@@ -70,6 +103,30 @@ export class GeniusApi {
     );
   }
 
+  /**
+   * Tries to remove the expert system with the given ID.
+   * @param id Expert system identifier.
+   * @returns true if the operation was successful.
+   */
+  public static async deleteSystem(id: number): Promise<boolean> {
+    const response = await fetch(GeniusApi.BASE_EXPERT_GATEWAY + 'system/' + id, {
+      method: 'DELETE',
+    });
+
+    console.debug('\\GeniusApi\\deleteSystem\\id', id);
+
+    const responseText = await response.text();
+
+    console.debug('\\GeniusApi\\deleteSystem\\responseText', responseText);
+
+    return responseText === 'success';
+  }
+
+  public static async updateSystem(system: IExpertProduct): Promise<boolean> {
+    //TODO: TO DO
+    return false;
+  }
+
   public static async getSystemAbout(systemId: number): Promise<ExpertAbout> {
     const response = await fetch(
       GeniusApi.BASE_EXPERT_GATEWAY + 'system/' + systemId + '/about',
@@ -79,6 +136,84 @@ export class GeniusApi {
     console.debug('\\GeniusApi\\getSystemAbout\\data', data);
 
     return GeniusDataParser.fetchSystemAboutObject(data);
+  }
+
+  /**
+   * Retrieves the products assigned to the given expert system.
+   * @param id Expert system identifier.
+   * @returns List of products assigned to the system.
+   */
+  public static async getSystemProducts(id: number): Promise<IExpertProduct[]> {
+    const response = await fetch(
+      GeniusApi.BASE_EXPERT_GATEWAY + 'system/' + id + '/products',
+    );
+    const data = await response.json();
+
+    if (!(data instanceof Object)) {
+      return [];
+    }
+
+    let productsList: IExpertProduct[] = [];
+
+    for (let key in data) {
+      productsList.push(GeniusDataParser.fetchProductObject(data[key]));
+    }
+
+    // console.debug('\\GeniusApi\\getSystemProducts\\productsList', productsList);
+
+    return productsList;
+  }
+
+  /**
+   * Retrieves the conditions assigned to the given expert system.
+   * @param id Expert system identifier.
+   * @returns List of conditions assigned to the system.
+   */
+  public static async getSystemConditions(id: number): Promise<IExpertCondition[]> {
+    const response = await fetch(
+      GeniusApi.BASE_EXPERT_GATEWAY + 'system/' + id + '/conditions',
+    );
+    const data = await response.json();
+
+    if (!(data instanceof Object)) {
+      return [];
+    }
+
+    let conditionsList: IExpertCondition[] = [];
+
+    for (let key in data) {
+      conditionsList.push(GeniusDataParser.fetchConditionObject(data[key]));
+    }
+
+    // console.debug('\\GeniusApi\\getSystemConditions\\conditionsList', conditionsList);
+
+    return conditionsList;
+  }
+
+  /**
+   * Retrieves the relations assigned to the given expert system.
+   * @param id Expert system identifier.
+   * @returns List of relations assigned to the system.
+   */
+  public static async getSystemRelations(id: number): Promise<IExpertRelation[]> {
+    const response = await fetch(
+      GeniusApi.BASE_EXPERT_GATEWAY + 'system/' + id + '/relations',
+    );
+    const data = await response.json();
+
+    if (!(data instanceof Object)) {
+      return [];
+    }
+
+    let relationsList: IExpertRelation[] = [];
+
+    for (let key in data) {
+      relationsList.push(GeniusDataParser.fetchRelationObject(data[key]));
+    }
+
+    // console.debug('\\GeniusApi\\getSystemRelations\\relationsList', relationsList);
+
+    return relationsList;
   }
 
   /**
@@ -118,148 +253,9 @@ export class GeniusApi {
     return systemsList;
   }
 
-  /**
-   * Adds a new expert system to the database.
-   * @param system New system to be added.
-   * @returns true if the operation was successful.
-   */
-  public static async addSystem(system: IExpertSystem): Promise<boolean> {
-    if (system.name === '' || system.type === '') {
-      console.debug('\\GeniusApi\\addSystem', false);
+  //#endregion
 
-      return false;
-    }
-
-    let formData = GeniusDataParser.buildFormData({
-      name: system.name ?? '',
-      description: system.description ?? '',
-      question: system.question ?? '',
-      type: system.type ?? '',
-    });
-
-    let response = await fetch('api/expert/system', {
-      method: 'POST',
-      body: formData,
-    });
-
-    let responseText = await response.text();
-
-    console.debug('\\GeniusApi\\addSystem\\responseText', responseText);
-
-    return responseText === 'success';
-  }
-
-  /**
-   * Tries to remove the expert system with the given ID.
-   * @param id Expert system identifier.
-   * @returns true if the operation was successful.
-   */
-  public static async deleteSystem(id: number): Promise<boolean> {
-    const response = await fetch(GeniusApi.BASE_EXPERT_GATEWAY + 'system/' + id, {
-      method: 'DELETE',
-    });
-
-    console.debug('\\GeniusApi\\deleteSystem\\id', id);
-
-    const responseText = await response.text();
-
-    console.debug('\\GeniusApi\\deleteSystem\\responseText', responseText);
-
-    return responseText === 'success';
-  }
-
-  /**
-   * Retrieves the conditions assigned to the given expert system.
-   * @param id Expert system identifier.
-   * @returns List of conditions assigned to the system.
-   */
-  public static async getSystemConditions(id: number): Promise<IExpertCondition[]> {
-    const response = await fetch(
-      GeniusApi.BASE_EXPERT_GATEWAY + 'system/' + id + '/conditions',
-    );
-    const data = await response.json();
-
-    if (!(data instanceof Object)) {
-      return [];
-    }
-
-    let conditionsList: IExpertCondition[] = [];
-
-    for (let key in data) {
-      conditionsList.push(GeniusDataParser.fetchConditionObject(data[key]));
-    }
-
-    // console.debug('\\GeniusApi\\getSystemConditions\\conditionsList', conditionsList);
-
-    return conditionsList;
-  }
-
-  public static async getCondition(conditionId: number): Promise<IExpertCondition> {
-    const response = await fetch(
-      GeniusApi.BASE_EXPERT_GATEWAY + 'condition/' + conditionId,
-    );
-    const data = await response.json();
-
-    console.debug('\\GeniusApi\\getCondition\\data', data);
-
-    return await GeniusDataParser.fetchConditionObject(data);
-  }
-
-  public static async addCondition(condition: IExpertCondition): Promise<number> {
-    let formData = GeniusDataParser.buildFormData({
-      systemId: condition.systemId ?? 0,
-      name: condition.name ?? '',
-      description: condition.description ?? '',
-    });
-
-    // console.debug('\\GeniusApi\\addCondition\\condition', condition);
-
-    let response = await fetch('api/expert/condition', {
-      method: 'POST',
-      body: formData,
-    });
-
-    let responseText = await response.text();
-
-    // console.debug('\\GeniusApi\\addCondition\\responseText', responseText);
-
-    return +responseText; //unary operator
-  }
-
-  /**
-   * Retrieves the products assigned to the given expert system.
-   * @param id Expert system identifier.
-   * @returns List of products assigned to the system.
-   */
-  public static async getSystemProducts(id: number): Promise<IExpertProduct[]> {
-    const response = await fetch(
-      GeniusApi.BASE_EXPERT_GATEWAY + 'system/' + id + '/products',
-    );
-    const data = await response.json();
-
-    if (!(data instanceof Object)) {
-      return [];
-    }
-
-    let productsList: IExpertProduct[] = [];
-
-    for (let key in data) {
-      productsList.push(GeniusDataParser.fetchProductObject(data[key]));
-    }
-
-    // console.debug('\\GeniusApi\\getSystemProducts\\productsList', productsList);
-
-    return productsList;
-  }
-
-  public static async getProduct(productId: number): Promise<IExpertProduct> {
-    const response = await fetch(GeniusApi.BASE_EXPERT_GATEWAY + 'product/' + productId);
-    const data = await response.json();
-
-    // console.debug('\\GeniusApi\\getProduct\\data', data);
-
-    return await GeniusDataParser.fetchProductObject(data);
-  }
+  //#region PRODUCT ACTIONS
 
   public static async addProduct(product: IExpertProduct): Promise<number> {
     const formData = GeniusDataParser.buildFormData({
@@ -281,6 +277,52 @@ export class GeniusApi {
     // console.debug('\\GeniusApi\\addProduct\\responseText', +responseText);
 
     return +responseText; //unary operator
+  }
+
+  public static async getProduct(productId: number): Promise<IExpertProduct> {
+    const response = await fetch(GeniusApi.BASE_EXPERT_GATEWAY + 'product/' + productId);
+    const data = await response.json();
+
+    // console.debug('\\GeniusApi\\getProduct\\data', data);
+
+    return await GeniusDataParser.fetchProductObject(data);
+  }
+
+  public static async updateProduct(product: IExpertProduct): Promise<boolean> {
+    if (product.id < 1) {
+      return false;
+    }
+
+    const formData = GeniusDataParser.buildFormData({
+      id: product.id ?? 0,
+      systemId: product.systemId ?? 0,
+      name: product.name,
+      description: product.description,
+      notes: product.notes,
+    });
+
+    const response = await fetch('api/expert/product/' + product.id + '/update', {
+      method: 'POST',
+      body: formData,
+    });
+
+    const responseText = await response.text();
+
+    console.debug('\\GeniusApi\\updateProduct\\responseText', responseText);
+
+    return false;
+  }
+
+  public static async deleteProduct(productId: number): Promise<boolean> {
+    const response = await fetch('api/expert/product/' + productId + '/delete', {
+      method: 'POST',
+    });
+
+    const responseText = await response.text();
+
+    console.debug('\\GeniusApi\\deleteProduct\\responseText', responseText);
+
+    return false;
   }
 
   public static async addProductWithConditions(
@@ -329,32 +371,6 @@ export class GeniusApi {
     return +responseText;
   }
 
-  /**
-   * Retrieves the relations assigned to the given expert system.
-   * @param id Expert system identifier.
-   * @returns List of relations assigned to the system.
-   */
-  public static async getSystemRelations(id: number): Promise<IExpertRelation[]> {
-    const response = await fetch(
-      GeniusApi.BASE_EXPERT_GATEWAY + 'system/' + id + '/relations',
-    );
-    const data = await response.json();
-
-    if (!(data instanceof Object)) {
-      return [];
-    }
-
-    let relationsList: IExpertRelation[] = [];
-
-    for (let key in data) {
-      relationsList.push(GeniusDataParser.fetchRelationObject(data[key]));
-    }
-
-    // console.debug('\\GeniusApi\\getSystemRelations\\relationsList', relationsList);
-
-    return relationsList;
-  }
-
   public static async getProductRelations(productId: number): Promise<ExpertRelations> {
     const response = await fetch(
       GeniusApi.BASE_EXPERT_GATEWAY + 'product/' + productId + '/relations',
@@ -369,6 +385,54 @@ export class GeniusApi {
     // console.debug('\\GeniusApi\\getProductRelations\\data', data);
 
     return GeniusDataParser.fetchRelationsObject(data);
+  }
+
+  public static async getProductsByIds(productIds: number[]): Promise<IExpertProduct[]> {
+    let products: IExpertProduct[] = [];
+
+    await Promise.all(
+      productIds.map(async (item): Promise<void> => {
+        products.push(await this.getProduct(item));
+      }),
+    );
+
+    return products;
+  }
+
+  //#endregion
+
+  //#region CONDITION ACTIONS
+
+  public static async addCondition(condition: IExpertCondition): Promise<number> {
+    let formData = GeniusDataParser.buildFormData({
+      systemId: condition.systemId ?? 0,
+      name: condition.name ?? '',
+      description: condition.description ?? '',
+    });
+
+    // console.debug('\\GeniusApi\\addCondition\\condition', condition);
+
+    let response = await fetch('api/expert/condition', {
+      method: 'POST',
+      body: formData,
+    });
+
+    let responseText = await response.text();
+
+    // console.debug('\\GeniusApi\\addCondition\\responseText', responseText);
+
+    return +responseText; //unary operator
+  }
+
+  public static async getCondition(conditionId: number): Promise<IExpertCondition> {
+    const response = await fetch(
+      GeniusApi.BASE_EXPERT_GATEWAY + 'condition/' + conditionId,
+    );
+    const data = await response.json();
+
+    console.debug('\\GeniusApi\\getCondition\\data', data);
+
+    return await GeniusDataParser.fetchConditionObject(data);
   }
 
   public static async getConditionRelations(
@@ -389,16 +453,19 @@ export class GeniusApi {
     return GeniusDataParser.fetchRelationsObject(data);
   }
 
-  public static async getRelation(relationId: number): Promise<IExpertRelation> {
-    const response = await fetch(
-      GeniusApi.BASE_EXPERT_GATEWAY + 'relation/' + relationId,
-    );
-    const data = await response.json();
-
-    // console.debug('\\GeniusApi\\getRelation\\data', data);
-
-    return await GeniusDataParser.fetchRelationObject(data);
+  public static async updateCondition(condition: IExpertCondition): Promise<boolean> {
+    //TODO: TO DO
+    return false;
   }
+
+  public static async deleteCondition(conditionId: number): Promise<boolean> {
+    //TODO: TO DO
+    return false;
+  }
+
+  //#endregion
+
+  //#region RELATION ACTIONS
 
   public static async addRelation(relation: IExpertRelation): Promise<number> {
     const formData = GeniusDataParser.buildFormData({
@@ -421,6 +488,31 @@ export class GeniusApi {
 
     return +responseText; //unary operator
   }
+
+  public static async getRelation(relationId: number): Promise<IExpertRelation> {
+    const response = await fetch(
+      GeniusApi.BASE_EXPERT_GATEWAY + 'relation/' + relationId,
+    );
+    const data = await response.json();
+
+    // console.debug('\\GeniusApi\\getRelation\\data', data);
+
+    return await GeniusDataParser.fetchRelationObject(data);
+  }
+
+  public static async updateRelation(relation: IExpertRelation): Promise<boolean> {
+    //TODO: TO DO
+    return false;
+  }
+
+  public static async deleteRelation(relationId: number): Promise<boolean> {
+    //TODO: TO DO
+    return false;
+  }
+
+  //#endregion
+
+  //#region COMMON
 
   public static async importFromFile(
     importData: IImportRequest,
@@ -478,15 +570,5 @@ export class GeniusApi {
     return expertState;
   }
 
-  public static async getProductsByIds(productIds: number[]): Promise<IExpertProduct[]> {
-    let products: IExpertProduct[] = [];
-
-    await Promise.all(
-      productIds.map(async (item): Promise<void> => {
-        products.push(await this.getProduct(item));
-      }),
-    );
-
-    return products;
-  }
+  //#endregion
 }

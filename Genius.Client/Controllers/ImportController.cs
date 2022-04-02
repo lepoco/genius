@@ -29,7 +29,7 @@ namespace Genius.Client.Controllers
         public ImportController(ILogger<ExportController> logger, IChannel channel)
         {
             _logger = logger;
-            _grpcClient = new Expert.ExpertClient(channel.GetChannel());
+            _grpcClient = channel.GetClient<Expert.ExpertClient>();
         }
 
         [HttpPost]

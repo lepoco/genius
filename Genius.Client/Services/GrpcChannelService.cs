@@ -7,6 +7,7 @@ using Genius.Client.Interfaces;
 using Grpc.Net.Client;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 
@@ -21,6 +22,8 @@ namespace Genius.Client.Services
         private readonly ILogger<GrpcChannelService> _logger;
 
         private readonly GrpcChannel _channel;
+
+        private readonly Dictionary<int, object> _clients = new();
 
         public GrpcChannelService(ILogger<GrpcChannelService> logger)
         {
@@ -38,9 +41,18 @@ namespace Genius.Client.Services
             });
         }
 
-        /// <summary>
-        /// Takes the globally available gRPC channel.
-        /// </summary>
+        /// <inheritdoc />
+        public T GetClient<T>() where T : Grpc.Core.ClientBase
+        {
+            var hash = typeof(T).GetHashCode();
+
+            if (!_clients.ContainsKey(hash))
+                _clients.Add(hash, (T)Activator.CreateInstance(typeof(T), _channel));
+
+            return (T)_clients[hash];
+        }
+
+        /// <inheritdoc />
         public GrpcChannel GetChannel()
         {
             return _channel;

@@ -6,6 +6,11 @@
  */
 
 import { Component } from 'react';
+import {
+  CheckmarkStarburst16Regular,
+  ShieldError16Regular,
+  Comment16Regular,
+} from '@fluentui/react-icons';
 
 declare global {
   interface Window {
@@ -172,6 +177,52 @@ export class ToastContainer extends Component<
       return <></>;
     }
 
+    let typeIcon = <></>;
+
+    switch (currentToast.type) {
+      case ToastType.Error:
+        typeIcon = (
+          <ShieldError16Regular
+            color="#dc3545"
+            width={20}
+            height={20}
+            className="bd-placeholder-img rounded me-2"
+            aria-hidden={true}
+            preserveAspectRatio="xMidYMid slice"
+            focusable={false}
+          />
+        );
+        break;
+
+      case ToastType.Success:
+        typeIcon = (
+          <CheckmarkStarburst16Regular
+            color="#198754"
+            width={20}
+            height={20}
+            className="bd-placeholder-img rounded me-2"
+            aria-hidden={true}
+            preserveAspectRatio="xMidYMid slice"
+            focusable={false}
+          />
+        );
+        break;
+
+      default:
+        typeIcon = (
+          <Comment16Regular
+            color="#007aff"
+            width={20}
+            height={20}
+            className="bd-placeholder-img rounded me-2"
+            aria-hidden={true}
+            preserveAspectRatio="xMidYMid slice"
+            focusable={false}
+          />
+        );
+        break;
+    }
+
     return (
       <div
         key={index}
@@ -183,16 +234,7 @@ export class ToastContainer extends Component<
           this.hideToast(e, currentToast.timeout);
         }}>
         <div className="toast-header">
-          <svg
-            className="bd-placeholder-img rounded me-2"
-            width="20"
-            height="20"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
-            preserveAspectRatio="xMidYMid slice"
-            focusable="false">
-            <rect width="100%" height="100%" fill="#007aff"></rect>
-          </svg>
+          {typeIcon}
 
           <strong className="me-auto">{currentToast.name}</strong>
           <small>{this.renderDate()}</small>

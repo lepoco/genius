@@ -564,10 +564,18 @@ namespace Genius.Services
             _expertService.Context.Products.Update(product);
             await _expertService.Context.SaveChangesAsync();
 
-            return new ProductModel { Id = 0, SystemId = 0 };
+            return new ProductModel
+            {
+                Id = product.Id,
+                SystemId = product.SystemId,
+                Name = product.Name,
+                Description = product.Description,
+                Notes = product.Notes
+            };
         }
 
-        public override async Task<ProductRelationsModel> UpdateProductConditions(ProductConditionsModel request, ServerCallContext context)
+        public override async Task<ProductRelationsModel> UpdateProductConditions(ProductConditionsModel request,
+            ServerCallContext context)
         {
             if (request == null || request.Id < 1)
                 return new ProductRelationsModel { Id = 0, SystemId = 0 };
@@ -580,6 +588,8 @@ namespace Genius.Services
 
             _expertService.Context.Relations.RemoveRange(
                 _expertService.Context.Relations.Where(relation => relation.ProductId == product.Id));
+
+            await _expertService.Context.SaveChangesAsync();
 
             foreach (var singleConditionId in request.Confirming)
             {
@@ -634,7 +644,14 @@ namespace Genius.Services
                 .Select(rel => rel.Id)
                 .ToArrayAsync();
 
-            return new ProductRelationsModel { Id = product.Id, SystemId = 0, Confirming = { confirmingRelations }, Negating = { negatingRelations }, Indifferent = { indifferentRelations } };
+            return new ProductRelationsModel
+            {
+                Id = product.Id,
+                SystemId = 0,
+                Confirming = { confirmingRelations },
+                Negating = { negatingRelations },
+                Indifferent = { indifferentRelations }
+            };
         }
 
         public override async Task<ConditionModel> UpdateCondition(ConditionModel request, ServerCallContext context)
@@ -654,13 +671,69 @@ namespace Genius.Services
             _expertService.Context.Conditions.Update(condition);
             await _expertService.Context.SaveChangesAsync();
 
-            return new ConditionModel { Id = 0, SystemId = 0 };
+            return new ConditionModel
+            {
+                Id = condition.Id,
+                SystemId = condition.SystemId,
+                Name = condition.Name,
+                Description = condition.Description
+            };
         }
 
         public override async Task<RelationModel> UpdateRelation(RelationModel request, ServerCallContext context)
         {
             // TODO: Update relation, but with what rules?
             return new RelationModel { Id = 0, SystemId = 0 };
+        }
+
+        #endregion
+
+        #region DELETES
+
+        public override async Task<ProductLookupModel> DeleteProduct(ProductLookupModel request, ServerCallContext context)
+        {
+            if (request == null || request.Id < 1)
+                return new ProductLookupModel { Id = 0, SystemId = 0 };
+
+            var product = await _expertService.Context.Products.Where(prod => prod.Id == request.Id)
+                .FirstOrDefaultAsync<Data.Models.Expert.Product>();
+
+            if (product == null || product.Id < 1)
+                return new ProductLookupModel { Id = 0, SystemId = 0 };
+
+            _expertService.Context.Products.Remove(product);
+
+            // TODO: Remove conditions, products and relations
+
+            await _expertService.Context.SaveChangesAsync();
+
+            return new ProductLookupModel { Id = product.Id, SystemId = product.SystemId };
+        }
+
+        public override async Task<ConditionLookupModel> DeleteCondition(ConditionLookupModel request, ServerCallContext context)
+        {
+            if (request == null || request.Id < 1)
+                return new ConditionLookupModel { Id = 0, SystemId = 0 };
+
+            var condition = await _expertService.Context.Conditions.Where(con => con.Id == request.Id)
+                .FirstOrDefaultAsync<Data.Models.Expert.Condition>();
+
+            if (condition == null || condition.Id < 1)
+                return new ConditionLookupModel { Id = 0, SystemId = 0 };
+
+            var conditionRelations = await _expertService.Context.Relations
+                .Where(rel => rel.CondiotionId == condition.Id).CountAsync();
+
+            if (conditionRelations > 0)
+                return new ConditionLookupModel { Id = 0, SystemId = 0 };
+
+            _expertService.Context.Conditions.Remove(condition);
+
+            // TODO: Remove conditions, products and relations
+
+            await _expertService.Context.SaveChangesAsync();
+
+            return new ConditionLookupModel { Id = condition.Id, SystemId = condition.SystemId };
         }
 
         #endregion

@@ -18,6 +18,7 @@ import {
 } from '../../../genius/Genius';
 import Modal from '../../common/Modal';
 import Loader from '../../common/Loader';
+import { ToastProvider, ToastType } from '../../common/Toasts';
 
 /**
  * Represents the variables contained in the Component state.
@@ -65,6 +66,7 @@ export class Condition extends ORouter.PureComponent<IConditionState> {
 
     this.formOnSubmit = this.formOnSubmit.bind(this);
     this.buttonDeleteOnClick = this.buttonDeleteOnClick.bind(this);
+    this.buttonConfirmDeleteOnClick = this.buttonConfirmDeleteOnClick.bind(this);
   }
 
   /**
@@ -101,12 +103,27 @@ export class Condition extends ORouter.PureComponent<IConditionState> {
   private async formOnSubmit(event: React.FormEvent<HTMLFormElement>): Promise<boolean> {
     event.preventDefault();
 
-    // console.debug('\\Condition\\formOnSubmit\\event', event);
+    const updateConditionResponse: boolean = await Genius.Api.updateCondition(
+      this.state.selectedCondition,
+    );
+
+    if (updateConditionResponse) {
+      ToastProvider.show(
+        'Success!',
+        'Condition ' + this.state.selectedCondition.name + ' has been updated.',
+        5000,
+        ToastType.Success,
+      );
+    } else {
+      ToastProvider.show('Error!', 'Condition update failed.', 5000, ToastType.Error);
+    }
 
     return true;
   }
 
-  private async buttonDeleteOnClick(event): Promise<boolean> {
+  private async buttonDeleteOnClick(
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ): Promise<boolean> {
     event.preventDefault();
 
     if (this.deleteModal === null) {
@@ -114,6 +131,31 @@ export class Condition extends ORouter.PureComponent<IConditionState> {
     }
 
     this.deleteModal.show();
+
+    return true;
+  }
+
+  private async buttonConfirmDeleteOnClick(
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ): Promise<boolean> {
+    event.preventDefault();
+
+    if (this.deleteModal === null) {
+      return false;
+    }
+
+    this.deleteModal.show();
+
+    const geniusResponse = await Genius.Api.deleteCondition(
+      this.state.selectedCondition.id,
+    );
+
+    if (!geniusResponse) {
+      ToastProvider.show('Error!', 'Unable to delete condition!', 5000, ToastType.Error);
+      return false;
+    }
+
+    this.router.navigate('/dashboard/conditions/' + this.state.selectedSystemGuid);
 
     return true;
   }
@@ -213,7 +255,28 @@ export class Condition extends ORouter.PureComponent<IConditionState> {
   }
 
   private renderModalContent(): JSX.Element {
-    return <>Modal</>;
+    return (
+      <>
+        <p>
+          Are you sure you want to remove condition{' '}
+          <strong>{this.state.selectedCondition.name}</strong> completely?
+        </p>
+        <div>
+          <button
+            onClick={e => this.buttonConfirmDeleteOnClick(e)}
+            type="button"
+            className="btn btn-mobile btn-outline-danger -lg-mr-1">
+            Delete
+          </button>
+          <button
+            onClick={e => this.deleteModal?.hide()}
+            type="button"
+            className="btn btn-mobile btn-outline-dark -lg-mr-1">
+            Cancel
+          </button>
+        </div>
+      </>
+    );
   }
 
   /**

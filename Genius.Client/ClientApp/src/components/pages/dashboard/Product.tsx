@@ -8,6 +8,7 @@
 import { ORouter } from '../../../common/ORouter';
 import { Link } from 'react-router-dom';
 import { ConditionsInput } from '../../common/ConditionsInput';
+import { ToastProvider, ToastType } from '../../common/Toasts';
 import {
   Genius,
   ExpertSystem,
@@ -18,8 +19,8 @@ import {
   ExpertRelations,
   IExpertRelations,
 } from '../../../genius/Genius';
+import Modal from '../../common/Modal';
 import Loader from '../../common/Loader';
-import { ToastProvider, ToastType } from '../../common/Toasts';
 
 /**
  * Represents the variables contained in the Component state.
@@ -27,7 +28,7 @@ import { ToastProvider, ToastType } from '../../common/Toasts';
 interface IProductState {
   contentLoaded: boolean;
 
-  systemGUID: string;
+  selectedSystemGuid: string;
 
   productId: number;
 
@@ -36,8 +37,6 @@ interface IProductState {
   selectedProduct: IExpertProduct;
 
   selectedProductRelations: IExpertRelations;
-
-  selectedProductConditions: IExpertCondition[];
 }
 
 /**
@@ -49,6 +48,10 @@ export class Product extends ORouter.PureComponent<IProductState> {
    */
   public static displayName: string = Product.name;
 
+  private deleteModal: Modal | null = null;
+
+  private selectedConditions: IExpertCondition[];
+
   /**
    * Binds local methods, assigns properties, and defines the initial state.
    * @param props Properties passed by the router.
@@ -58,16 +61,18 @@ export class Product extends ORouter.PureComponent<IProductState> {
 
     this.state = {
       contentLoaded: false,
-      systemGUID: props.router.params?.guid ?? '',
+      selectedSystemGuid: props.router.params?.guid ?? '',
       productId: parseInt(props.router.params?.id ?? '0'),
-      selectedProductConditions: [],
       selectedSystem: new ExpertSystem(0, ''),
       selectedProduct: new ExpertProduct(0, 0),
       selectedProductRelations: new ExpertRelations(0, 0, [], [], []),
     };
 
+    this.selectedConditions = [];
+
     this.renderContent = this.renderContent.bind(this);
     this.buttonDeleteOnClick = this.buttonDeleteOnClick.bind(this);
+    this.buttonConfirmDeleteOnClick = this.buttonConfirmDeleteOnClick.bind(this);
     this.formOnSubmit = this.formOnSubmit.bind(this);
   }
 
@@ -83,7 +88,7 @@ export class Product extends ORouter.PureComponent<IProductState> {
    */
   private async populateData(): Promise<boolean> {
     const system = await Genius.Api.getSystemByGuid(
-      this.state.systemGUID,
+      this.state.selectedSystemGuid,
       true,
       true,
       true,
@@ -123,7 +128,7 @@ export class Product extends ORouter.PureComponent<IProductState> {
       }
 
       if (selectedConditionsFromRelations.includes(con.id)) {
-        selectedProductConditions.push(con);
+        this.selectedConditions.push(con);
       }
     });
 
@@ -131,36 +136,69 @@ export class Product extends ORouter.PureComponent<IProductState> {
       selectedSystem: system,
       selectedProduct: product,
       selectedProductRelations: productRelations,
-      selectedProductConditions: selectedProductConditions,
       contentLoaded: true,
     });
 
     return true;
   }
 
-  private conditionsInputOnUpdate(
-    selected: IExpertCondition[],
-    available: IExpertCondition[],
-  ): void {
-    this.setState({
-      selectedProductConditions: selected,
-    });
-  }
+  // private conditionsInputOnUpdate(
+  //   selected: IExpertCondition[],
+  //   available: IExpertCondition[],
+  // ): void {
+  //   this.selectedConditions = selected;
+  // }
 
   private async buttonDeleteOnClick(
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ): Promise<boolean> {
-    return false;
+    event.preventDefault();
+
+    if (this.deleteModal === null) {
+      return false;
+    }
+
+    this.deleteModal.show();
+
+    return true;
+  }
+
+  private async buttonConfirmDeleteOnClick(
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ): Promise<boolean> {
+    event.preventDefault();
+
+    if (this.deleteModal === null) {
+      return false;
+    }
+
+    this.deleteModal.show();
+
+    const geniusResponse = await Genius.Api.deleteProduct(this.state.selectedProduct.id);
+
+    if (!geniusResponse) {
+      ToastProvider.show('Error!', 'Unable to delete product!', 5000, ToastType.Error);
+      return false;
+    }
+
+    this.router.navigate('/dashboard/edit/' + this.state.selectedSystemGuid);
+
+    return true;
   }
 
   private async formOnSubmit(event: React.FormEvent<HTMLFormElement>): Promise<boolean> {
     event.preventDefault();
 
-    const apiResponse: boolean = await Genius.Api.updateProduct(
+    const updateProductResponse: boolean = await Genius.Api.updateProduct(
       this.state.selectedProduct,
     );
 
-    if (apiResponse) {
+    const updateConditionsResponse: boolean = await Genius.Api.updateProductConditions(
+      this.state.selectedProduct,
+      this.selectedConditions,
+    );
+
+    if (updateProductResponse && updateConditionsResponse) {
       ToastProvider.show(
         'Success!',
         'Product ' + this.state.selectedProduct.name + ' has been updated.',
@@ -170,8 +208,6 @@ export class Product extends ORouter.PureComponent<IProductState> {
     } else {
       ToastProvider.show('Error!', 'Product update failed.', 5000, ToastType.Error);
     }
-
-    // TODO: Update
 
     return true;
   }
@@ -273,8 +309,8 @@ export class Product extends ORouter.PureComponent<IProductState> {
             <ConditionsInput
               inputName="Conditions (confirming)"
               systemId={this.state.selectedSystem.id ?? 0}
-              conditionsSelected={this.state.selectedProductConditions ?? []}
-              onUpdate={this.conditionsInputOnUpdate}
+              conditionsSelected={this.selectedConditions}
+              onUpdate={(selected, available) => (this.selectedConditions = selected)}
             />
 
             <div className="-pb-2">
@@ -288,7 +324,7 @@ export class Product extends ORouter.PureComponent<IProductState> {
                 Delete
               </button>
               <Link
-                to={'/dashboard/edit/' + (this.state.systemGUID ?? '0')}
+                to={'/dashboard/edit/' + (this.state.selectedSystemGuid ?? '0')}
                 className="btn btn-outline-dark btn-mobile">
                 Return to system
               </Link>
@@ -296,6 +332,31 @@ export class Product extends ORouter.PureComponent<IProductState> {
           </form>
         </div>
       </div>
+    );
+  }
+
+  private renderModalContent(): JSX.Element {
+    return (
+      <>
+        <p>
+          Are you sure you want to remove product{' '}
+          <strong>{this.state.selectedProduct.name}</strong> completely?
+        </p>
+        <div>
+          <button
+            onClick={e => this.buttonConfirmDeleteOnClick(e)}
+            type="button"
+            className="btn btn-mobile btn-outline-danger -lg-mr-1">
+            Delete
+          </button>
+          <button
+            onClick={e => this.deleteModal?.hide()}
+            type="button"
+            className="btn btn-mobile btn-outline-dark -lg-mr-1">
+            Cancel
+          </button>
+        </div>
+      </>
     );
   }
 
@@ -314,6 +375,12 @@ export class Product extends ORouter.PureComponent<IProductState> {
 
           {!this.state.contentLoaded ? <Loader center={false} /> : this.renderContent()}
         </div>
+        <Modal
+          name="product-delete"
+          title="Delete product"
+          ref={e => (this.deleteModal = e)}>
+          {!this.state.contentLoaded ? <>Loading...</> : this.renderModalContent()}
+        </Modal>
       </>
     );
   }

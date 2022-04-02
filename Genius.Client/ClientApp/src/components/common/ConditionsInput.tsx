@@ -23,8 +23,8 @@ interface IConditionsInputState {
   contentLoaded: boolean;
   systemId: number;
   inputName: string;
-  conditionsAvailable: IExpertCondition[];
-  conditionsSelected: IExpertCondition[];
+  // conditionsAvailable: IExpertCondition[];
+  // conditionsSelected: IExpertCondition[];
 }
 
 /**
@@ -36,6 +36,9 @@ export class ConditionsInput extends Component<
 > {
   private onUpdate?: TagsUpdated<IExpertCondition[]>;
 
+  private conditionsAvailable: IExpertCondition[];
+  private conditionsSelected: IExpertCondition[];
+
   /**
    * Binds local methods, assigns properties, and defines the initial state.
    * @param props Properties passed by the router.
@@ -46,9 +49,12 @@ export class ConditionsInput extends Component<
       contentLoaded: false,
       inputName: props.inputName ?? 'Conditions',
       systemId: props.systemId ?? 0,
-      conditionsSelected: props.conditionsSelected ?? [],
-      conditionsAvailable: [],
+      // conditionsSelected: props.conditionsSelected ?? [],
+      // conditionsAvailable: [],
     };
+
+    this.conditionsAvailable = [];
+    this.conditionsSelected = props.conditionsSelected ?? [];
 
     if (props.onUpdate !== undefined) this.onUpdate = props.onUpdate;
 
@@ -62,7 +68,8 @@ export class ConditionsInput extends Component<
    * Resets selected conditions.
    */
   public clear(): void {
-    this.setState({ conditionsSelected: [] });
+    this.conditionsSelected = [];
+    this.invokeOnUpdate();
   }
 
   /**
@@ -80,10 +87,9 @@ export class ConditionsInput extends Component<
       return false;
     }
 
-    this.onUpdate(
-      this.state.conditionsSelected ?? [],
-      this.state.conditionsAvailable ?? [],
-    );
+    this.forceUpdate();
+
+    this.onUpdate(this.conditionsSelected ?? [], this.conditionsAvailable ?? []);
 
     return true;
   }
@@ -94,9 +100,10 @@ export class ConditionsInput extends Component<
   private async populateData(): Promise<boolean> {
     const systemConditions = await Genius.Api.getSystemConditions(this.state.systemId);
 
+    this.conditionsAvailable = systemConditions;
+
     this.setState({
       contentLoaded: true,
-      conditionsAvailable: systemConditions,
     });
 
     return true;
@@ -108,7 +115,7 @@ export class ConditionsInput extends Component<
     let existingCondition: IExpertCondition | null = null;
 
     // If condition already exist and have same name
-    this.state.conditionsAvailable.forEach(con => {
+    this.conditionsAvailable.forEach(con => {
       if (con.name === undefined) {
         return;
       }
@@ -119,10 +126,10 @@ export class ConditionsInput extends Component<
     });
 
     if (existingCondition !== null) {
-      let updatedList = this.state.conditionsSelected;
+      let updatedList = this.conditionsSelected;
       updatedList.push(existingCondition);
 
-      this.setState({ conditionsSelected: updatedList });
+      this.conditionsSelected = updatedList;
 
       // console.debug('\\ConditionsInput\\addCondition', 'This condition already exists.');
 
@@ -141,16 +148,14 @@ export class ConditionsInput extends Component<
 
     newCondition.id = newConditionId;
 
-    let updatedOptionsList = this.state.conditionsAvailable;
+    let updatedOptionsList = this.conditionsAvailable;
     updatedOptionsList.push(newCondition);
 
-    let updatedSelectedList = this.state.conditionsSelected;
+    let updatedSelectedList = this.conditionsSelected;
     updatedSelectedList.push(newCondition);
 
-    this.setState({
-      conditionsAvailable: updatedOptionsList,
-      conditionsSelected: updatedSelectedList,
-    });
+    this.conditionsAvailable = updatedOptionsList;
+    this.conditionsSelected = updatedSelectedList;
 
     return true;
   }
@@ -163,10 +168,11 @@ export class ConditionsInput extends Component<
 
     // console.debug('\\ConditionsInput\\buttonAddOnClick\\condition', condition);
 
-    let updatedList = this.state.conditionsSelected;
+    let updatedList = this.conditionsSelected;
     updatedList.push(condition);
 
-    this.setState({ conditionsSelected: updatedList });
+    this.conditionsSelected = updatedList;
+
     this.invokeOnUpdate();
 
     return true;
@@ -180,11 +186,13 @@ export class ConditionsInput extends Component<
 
     // console.debug('\\ConditionsInput\\buttonRemoveOnClick\\condition', condition);
 
-    const updatedList = this.state.conditionsSelected.filter(
+    const updatedList = this.conditionsSelected.filter(
       singleCondition => singleCondition.id !== condition.id,
     );
 
-    this.setState({ conditionsSelected: updatedList });
+    this.conditionsSelected = updatedList;
+
+    //this.setState({ conditionsSelected: updatedList });
     this.invokeOnUpdate();
 
     return true;
@@ -248,7 +256,7 @@ export class ConditionsInput extends Component<
   private renderSelectedConditions(): JSX.Element {
     return (
       <div className="floating-tags__list">
-        {this.state.conditionsSelected.map((singleOption, i) => {
+        {this.conditionsSelected.map((singleOption, i) => {
           return (
             <span
               key={singleOption.id ?? 0}
@@ -268,10 +276,10 @@ export class ConditionsInput extends Component<
   private renderAvailableConditions(): JSX.Element {
     return (
       <div className="floating-tags__list -add">
-        {this.state.conditionsAvailable.map((singleOption, i) => {
+        {this.conditionsAvailable.map((singleOption, i) => {
           let isSelected = false;
 
-          this.state.conditionsSelected.forEach(element => {
+          this.conditionsSelected.forEach(element => {
             if (element.id === singleOption.id) {
               isSelected = true;
             }

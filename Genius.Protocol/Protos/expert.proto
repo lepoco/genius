@@ -36,6 +36,8 @@ service Expert {
 
 	rpc UpdateCondition(ConditionModel) returns (ConditionModel);
 
+	rpc DeleteCondition(ConditionLookupModel) returns (ConditionLookupModel);
+
 	rpc AddProduct(ProductModel) returns (ProductModel);
 
 	rpc GetProduct(ProductLookupModel) returns (ProductModel);
@@ -43,6 +45,8 @@ service Expert {
 	rpc GetProductRelations(ProductLookupModel) returns (ProductRelationsModel);
 
 	rpc UpdateProduct(ProductModel) returns (ProductModel);
+
+	rpc DeleteProduct(ProductLookupModel) returns (ProductLookupModel);
 
 	rpc UpdateProductConditions(ProductConditionsModel) returns (ProductRelationsModel);
 

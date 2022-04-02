@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Genius.Client.Controllers
@@ -172,12 +173,12 @@ namespace Genius.Client.Controllers
 
         [HttpPost]
         [Route("product/{id}/update")]
-        public async Task<IActionResult> UpdateProduct([FromRoute] int productId)
+        public async Task<IActionResult> UpdateProduct([FromRoute] int id)
         {
-            if (productId < 1)
+            if (id < 1)
                 return StatusCode(422, "Unknown product");
 
-            var product = await _grpcClient.GetProductAsync(new ProductLookupModel { Id = productId });
+            var product = await _grpcClient.GetProductAsync(new ProductLookupModel { Id = id });
 
             if (product == null || product.Id < 1)
                 return StatusCode(422, "Unknown product");
@@ -191,11 +192,69 @@ namespace Genius.Client.Controllers
 
             var updatedProduct = await _grpcClient.UpdateProductAsync(new ProductModel
             {
-                Id = productId,
+                Id = id,
                 SystemId = product.SystemId,
                 Name = productName,
                 Description = productDescription,
                 Notes = productNotes,
+            });
+
+            return StatusCode(200, updatedProduct?.Id ?? 0);
+        }
+
+        [HttpPost]
+        [Route("product/{id}/delete")]
+        public async Task<IActionResult> DeleteProduct([FromRoute] int id)
+        {
+            if (id < 1)
+                return StatusCode(422, "Unknown product");
+
+            var product = await _grpcClient.GetProductAsync(new ProductLookupModel { Id = id });
+
+            if (product == null || product.Id < 1)
+                return StatusCode(422, "Unknown product");
+
+            var deletedProduct = await _grpcClient.DeleteProductAsync(new ProductLookupModel
+            {
+                Id = product.Id,
+                SystemId = product.SystemId,
+            });
+
+            return StatusCode(200, deletedProduct?.Id ?? 0);
+        }
+
+        [HttpPost]
+        [Route("product/{id}/conditions")]
+        public async Task<IActionResult> UpdateProductConditions([FromRoute] int id)
+        {
+            if (id < 1)
+                return StatusCode(422, "Unknown product");
+
+            var product = await _grpcClient.GetProductAsync(new ProductLookupModel { Id = id });
+
+            if (product == null || product.Id < 1)
+                return StatusCode(422, "Unknown product");
+
+            var productConfirmingConditions = HttpContext.Request.Form["confirming"].ToString().Trim().Split(",")
+                .Select(s => new { Success = int.TryParse(s, out var value), value })
+                .Where(pair => pair.Success)
+                .Select(pair => pair.value).ToArray();
+            var rawProductNegatingConditions = HttpContext.Request.Form["negating"].ToString().Trim().Split(",")
+                .Select(s => new { Success = int.TryParse(s, out var value), value })
+                .Where(pair => pair.Success)
+                .Select(pair => pair.value).ToArray();
+            var rawProductIndifferentConditions = HttpContext.Request.Form["indifferent"].ToString().Trim().Split(",")
+                .Select(s => new { Success = int.TryParse(s, out var value), value })
+                .Where(pair => pair.Success)
+                .Select(pair => pair.value).ToArray();
+
+            var updatedProduct = await _grpcClient.UpdateProductConditionsAsync(new ProductConditionsModel
+            {
+                Id = id,
+                SystemId = product.SystemId,
+                Confirming = { productConfirmingConditions },
+                Negating = { rawProductNegatingConditions },
+                Indifferent = { rawProductIndifferentConditions },
             });
 
             return StatusCode(200, updatedProduct?.Id ?? 0);
@@ -238,12 +297,12 @@ namespace Genius.Client.Controllers
 
         [HttpPost]
         [Route("condition/{id}/update")]
-        public async Task<IActionResult> UpdateCondition([FromRoute] int conditionId)
+        public async Task<IActionResult> UpdateCondition([FromRoute] int id)
         {
-            if (conditionId < 1)
+            if (id < 1)
                 return StatusCode(422, "Unknown condition");
 
-            var condition = await _grpcClient.GetConditionAsync(new ConditionLookupModel { Id = conditionId });
+            var condition = await _grpcClient.GetConditionAsync(new ConditionLookupModel { Id = id });
 
             if (condition == null || condition.Id < 1)
                 return StatusCode(422, "Unknown condition");
@@ -256,7 +315,7 @@ namespace Genius.Client.Controllers
 
             var updatedCondition = await _grpcClient.UpdateConditionAsync(new ConditionModel
             {
-                Id = conditionId,
+                Id = id,
                 SystemId = condition.SystemId,
                 Name = conditionName,
                 Description = conditionDescription,
@@ -270,6 +329,27 @@ namespace Genius.Client.Controllers
         public async Task<ConditionModel> GetSingleCondition([FromRoute] int id)
         {
             return await _grpcClient.GetConditionAsync(new ConditionLookupModel { Id = id });
+        }
+
+        [HttpPost]
+        [Route("condition/{id}/delete")]
+        public async Task<IActionResult> DeleteCondition([FromRoute] int id)
+        {
+            if (id < 1)
+                return StatusCode(422, "Unknown condition");
+
+            var condition = await _grpcClient.GetConditionAsync(new ConditionLookupModel { Id = id });
+
+            if (condition == null || condition.Id < 1)
+                return StatusCode(422, "Unknown condition");
+
+            var deletedCondition = await _grpcClient.DeleteConditionAsync(new ConditionLookupModel
+            {
+                Id = condition.Id,
+                SystemId = condition.SystemId,
+            });
+
+            return StatusCode(200, deletedCondition?.Id ?? 0);
         }
 
         [HttpGet]
@@ -331,7 +411,8 @@ namespace Genius.Client.Controllers
                 if (currentCondition < 1)
                     continue;
 
-                var dbCondition = await _grpcClient.GetConditionAsync(new ConditionLookupModel { Id = currentCondition });
+                var dbCondition =
+                    await _grpcClient.GetConditionAsync(new ConditionLookupModel { Id = currentCondition });
 
                 if (dbCondition?.Id > 0 || dbCondition?.SystemId == systemId)
                 {

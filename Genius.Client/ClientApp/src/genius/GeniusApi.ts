@@ -292,7 +292,6 @@ export class GeniusApi {
     if (product.id < 1) {
       return false;
     }
-
     const formData = GeniusDataParser.buildFormData({
       id: product.id ?? 0,
       systemId: product.systemId ?? 0,
@@ -310,7 +309,7 @@ export class GeniusApi {
 
     console.debug('\\GeniusApi\\updateProduct\\responseText', responseText);
 
-    return false;
+    return parseInt(responseText) > 0;
   }
 
   public static async deleteProduct(productId: number): Promise<boolean> {
@@ -322,7 +321,7 @@ export class GeniusApi {
 
     console.debug('\\GeniusApi\\deleteProduct\\responseText', responseText);
 
-    return false;
+    return parseInt(responseText) > 0;
   }
 
   public static async addProductWithConditions(
@@ -366,7 +365,7 @@ export class GeniusApi {
 
     const responseText = await response.text();
 
-    console.debug('\\GeniusApi\\addProductWithConditions\\responseText', +responseText);
+    console.debug('\\GeniusApi\\addProductWithConditions\\responseText', responseText);
 
     return +responseText;
   }
@@ -397,6 +396,34 @@ export class GeniusApi {
     );
 
     return products;
+  }
+
+  public static async updateProductConditions(
+    product: IExpertProduct,
+    confirming: IExpertCondition[] = [],
+    negating: IExpertCondition[] = [],
+    indifferent: IExpertCondition[] = [],
+  ): Promise<boolean> {
+    if (product.id < 0) {
+      return false;
+    }
+
+    const formData = GeniusDataParser.buildFormData({
+      id: product.id,
+      systemId: product.systemId,
+      confirming: confirming.map(e => e.id),
+      negating: negating.map(e => e.id),
+      indifferent: indifferent.map(e => e.id),
+    });
+
+    const response = await fetch('api/expert/product/' + product.id + '/conditions', {
+      method: 'POST',
+      body: formData,
+    });
+
+    const responseText = await response.text();
+
+    return parseInt(responseText) > 0;
   }
 
   //#endregion
@@ -454,13 +481,39 @@ export class GeniusApi {
   }
 
   public static async updateCondition(condition: IExpertCondition): Promise<boolean> {
-    //TODO: TO DO
-    return false;
+    if (condition.id < 1) {
+      return false;
+    }
+
+    const formData = GeniusDataParser.buildFormData({
+      id: condition.id ?? 0,
+      systemId: condition.systemId ?? 0,
+      name: condition.name,
+      description: condition.description,
+    });
+
+    const response = await fetch('api/expert/condition/' + condition.id + '/update', {
+      method: 'POST',
+      body: formData,
+    });
+
+    const responseText = await response.text();
+
+    console.debug('\\GeniusApi\\updateCondition\\responseText', responseText);
+
+    return parseInt(responseText) > 0;
   }
 
   public static async deleteCondition(conditionId: number): Promise<boolean> {
-    //TODO: TO DO
-    return false;
+    const response = await fetch('api/expert/condition/' + conditionId + '/delete', {
+      method: 'POST',
+    });
+
+    const responseText = await response.text();
+
+    console.debug('\\GeniusApi\\deleteCondition\\responseText', responseText);
+
+    return parseInt(responseText) > 0;
   }
 
   //#endregion

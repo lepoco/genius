@@ -28,7 +28,7 @@ jobs:
         run: msbuild Genius.sln -p:Configuration=Release -m
 
       - name: Publish net60
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         id: publish_net6
         with:
           name: genius-net6
@@ -36,7 +36,7 @@ jobs:
             Genius/bin/Release/net6.0
 
       - name: Publish client net60
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         id: publish_client_net6
         with:
           name: genius-client-net6

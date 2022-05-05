@@ -14,7 +14,7 @@ updates:
 
   # Maintain dependencies for npm
   - package-ecosystem: "npm"
-    directory: "Genius.Client/ClientApp/"
+    directory: "src/Genius.Client/ClientApp/"
     schedule:
       interval: "daily"
 

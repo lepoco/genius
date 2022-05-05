@@ -57,6 +57,45 @@ Use Visual Studio 2022 and invoke the .sln.
 **Visual Studio**  
 Genius is an Open Source project. You are entitled to download and use the freely available Visual Studio Community Edition to build, run or develop for Genius. As per the Visual Studio Community Edition license, this applies regardless of whether you are an individual or a corporate user.
 
+## Data flow
+```mermaid
+sequenceDiagram
+    participant Genius.Client
+    participant Genius.Client.Controller
+    participant Genius.OAuth [Optional]
+    participant Genius
+    Genius.Client->>Genius.Client.Controller: Request token
+    activate Genius.Client.Controller
+    Genius.Client.Controller->>Genius.OAuth [Optional]: Request token
+    activate Genius.OAuth [Optional]
+    Genius.OAuth [Optional]-->>Genius.Client.Controller: Respond with token
+    deactivate Genius.OAuth [Optional]
+    Genius.Client.Controller-->>Genius.Client: Respond with token
+    deactivate Genius.Client.Controller
+    Genius.Client->>Genius.Client.Controller: Frontend API Request
+    activate Genius.Client.Controller
+    Genius.Client.Controller->>Genius.Client.Controller: Data validation
+    Genius.Client.Controller->>Genius.OAuth [Optional]: Request token validation
+    activate Genius.OAuth [Optional]
+    Genius.OAuth [Optional]-->>Genius.Client.Controller: Respond with token validation
+    deactivate Genius.OAuth [Optional]
+    Genius.Client.Controller->>Genius: gRPC API Request
+    activate Genius
+    Genius->>Genius: Data validation
+    loop Selecting products
+        Genius->>Genius: Finding matching products
+    end
+    loop Selecting conditions
+        Genius->>Genius: Finding matching conditions
+    end
+    Note left of Genius: Validation and sorting occurs after the data is found
+    Genius-->>Genius.Client.Controller: gRPC API Response
+    deactivate Genius
+    Genius.Client.Controller-->>Genius.Client: JSON data
+    deactivate Genius.Client.Controller
+```
+
+
 ## Code of Conduct
 This project has adopted the code of conduct defined by the Contributor Covenant to clarify expected behavior in our community.
 

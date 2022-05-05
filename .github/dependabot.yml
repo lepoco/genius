@@ -20,16 +20,6 @@ updates:
 
   # Maintain dependencies for nuget
   - package-ecosystem: "nuget"
-    directory: "Genius/"
-    schedule:
-      interval: "daily"
-
-  - package-ecosystem: "nuget"
-    directory: "Genius.Protocol/"
-    schedule:
-      interval: "daily"
-
-  - package-ecosystem: "nuget"
-    directory: "Genius.Client/"
+    directory: "/"
     schedule:
       interval: "daily"

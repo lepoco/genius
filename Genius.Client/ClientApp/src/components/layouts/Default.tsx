@@ -5,15 +5,27 @@
  * All Rights Reserved.
  */
 
-import { PureComponent } from 'react';
+import { PureComponent, ReactNode } from 'react';
 import { ToastContainer, ToastProvider } from '../common/Toasts';
 import NavMenu from '../common/NavMenu';
 import Footer from '../common/Footer';
 
 /**
+ * Represents the values passed as Component attributes.
+ */
+interface IDefaultProps {
+  children?: ReactNode;
+}
+
+/**
+ * Represents the variables contained in the Component state.
+ */
+interface IDefaultState {}
+
+/**
  * The default application layout Component.
  */
-export class Default extends PureComponent {
+export class Default extends PureComponent<IDefaultProps, IDefaultState> {
   /**
    * The display name of the Component.
    */
@@ -34,7 +46,7 @@ export class Default extends PureComponent {
       <>
         <NavMenu />
         <section className="main">
-          <div className="container">{this.props.children}</div>
+          <div className="container">{this.props?.children ?? <></>}</div>
         </section>
         <ToastContainer ref={e => ToastProvider.bind(e)} />
         <Footer />

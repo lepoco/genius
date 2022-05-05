@@ -5,7 +5,7 @@
  * All Rights Reserved.
  */
 
-import { Component } from 'react';
+import { Component, ReactNode } from 'react';
 
 /**
  * Represents the values passed as Component attributes.
@@ -13,6 +13,7 @@ import { Component } from 'react';
 interface IModalProps {
   name?: string;
   title?: string;
+  children?: ReactNode;
 }
 
 /**
@@ -126,7 +127,7 @@ export default class Modal extends Component<IModalProps, IModalState> {
                 data-bs-dismiss="modal"
                 aria-label="Close"></button>
             </div>
-            <div className="modal-body">{this.props.children}</div>
+            <div className="modal-body">{this.props?.children ?? <></>}</div>
           </div>
         </div>
       </div>

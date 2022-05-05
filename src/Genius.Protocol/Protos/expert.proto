@@ -1,0 +1,156 @@
+﻿// This Source Code Form is subject to the terms of the GNU GPL-3.0 License.
+// If a copy of the GPL-3.0 was not distributed with this file, You can obtain one at https://www.gnu.org/licenses/gpl-3.0.en.html.
+// Copyright (C) 2022 Leszek Pomianowski.
+// All Rights Reserved.
+
+syntax = "proto3";
+
+option csharp_namespace = "GeniusProtocol";
+
+package GeniusProtocol;
+
+service Expert {
+	rpc Create(ExpertModel) returns (ExpertResponseModel);
+
+	rpc Update(ExpertModel) returns (ExpertResponseModel);
+
+	rpc Get(ExpertLookupModel) returns (ExpertModel);
+
+	rpc GetAbout(ExpertLookupModel) returns (ExpertAboutModel);
+
+	rpc GetAll(ExpertEmptyModel) returns (stream ExpertModel);
+
+	rpc Delete(ExpertLookupModel) returns (ExpertResponseModel);
+
+	rpc GetSystemConditions(ExpertLookupModel) returns (stream ConditionModel);
+
+	rpc GetSystemProducts(ExpertLookupModel) returns (stream ProductModel);
+
+	rpc GetSystemRelations(ExpertLookupModel) returns (stream RelationModel);
+
+	rpc AddCondition(ConditionModel) returns (ConditionModel);
+
+	rpc GetCondition(ConditionLookupModel) returns (ConditionModel);
+
+	rpc GetConditionRelations(ConditionLookupModel) returns (ConditionRelationsModel);
+
+	rpc UpdateCondition(ConditionModel) returns (ConditionModel);
+
+	rpc DeleteCondition(ConditionLookupModel) returns (ConditionLookupModel);
+
+	rpc AddProduct(ProductModel) returns (ProductModel);
+
+	rpc GetProduct(ProductLookupModel) returns (ProductModel);
+
+	rpc GetProductRelations(ProductLookupModel) returns (ProductRelationsModel);
+
+	rpc UpdateProduct(ProductModel) returns (ProductModel);
+
+	rpc DeleteProduct(ProductLookupModel) returns (ProductLookupModel);
+
+	rpc UpdateProductConditions(ProductConditionsModel) returns (ProductRelationsModel);
+
+	rpc AddRelation(RelationModel) returns (RelationModel);
+
+	rpc GetRelation(RelationLookupModel) returns (RelationModel);
+
+	rpc UpdateRelation(RelationModel) returns (RelationModel);
+}
+
+enum RelationType {
+	COMPILANCE = 0;
+	CONTRADICTION = 1;
+	DISREGARD = 2;
+}
+
+message ExpertModel {
+	int32 id = 1;
+	string version = 2;
+	string guid = 3;
+	string name = 4;
+	string description = 5;
+	string question = 6;
+	string created_at = 7;
+	string updated_at = 8;
+}
+
+message ExpertAboutModel {
+	int32 id = 1;
+	int32 products = 2;
+	int32 conditions = 3;
+	int32 relations = 4;
+}
+
+message ProductModel {
+	int32 id = 1;
+	int32 system_id = 2;
+	string name = 3;
+	string description = 4;
+	string notes = 5;
+}
+
+message ProductRelationsModel {
+	int32 id = 1;
+	int32 system_id = 2;
+	repeated int32 confirming = 3;
+	repeated int32 negating = 4;
+	repeated int32 indifferent = 5;
+}
+
+message ProductConditionsModel{
+	int32 id = 1;
+	int32 system_id = 2;
+	repeated int32 confirming = 3;
+	repeated int32 negating = 4;
+	repeated int32 indifferent = 5;
+}
+
+message ConditionModel {
+	int32 id = 1;
+	int32 system_id = 2;
+	string name = 3;
+	string description = 4;
+}
+
+message ConditionRelationsModel {
+	int32 id = 1;
+	int32 system_id = 2;
+	repeated int32 confirming = 3;
+	repeated int32 negating = 4;
+	repeated int32 indifferent = 5;
+}
+
+message RelationModel {
+	int32 id = 1;
+	int32 system_id = 2;
+	int32 product_id = 3;
+	int32 condition_id = 4;
+	int32 weight = 5;
+	RelationType type = 6;
+}
+
+message ExpertEmptyModel {}
+
+message ExpertLookupModel {
+	int32 id = 1;
+	string guid = 2;
+}
+
+message ConditionLookupModel {
+	int32 id = 1;
+	int32 system_id = 2;
+}
+
+message ProductLookupModel {
+	int32 id = 1;
+	int32 system_id = 2;
+}
+
+message RelationLookupModel {
+	int32 id = 1;
+	int32 system_id = 2;
+}
+
+message ExpertResponseModel {
+	int32 id = 1;
+}

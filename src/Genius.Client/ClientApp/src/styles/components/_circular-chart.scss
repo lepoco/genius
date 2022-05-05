@@ -1,0 +1,68 @@
+/**
+ * Copyright (c) 2022 by Sergio Pedercini (https://codepen.io/sergiopedercini/pen/jmKdbj)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+ * and associated documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the Software is furnished
+ * to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included in all copies or substantial
+ * portions of the Software.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+ * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+@keyframes circularChartProgress {
+  0% {
+    stroke-dasharray: 0 100;
+  }
+}
+
+.single-chart {
+  width: 33%;
+  min-width: 10rem;
+  justify-content: space-around;
+
+  .circular-chart {
+    display: block;
+    max-width: 80%;
+    max-height: 250px;
+    margin: 10px auto;
+
+    &.orange .circle {
+      stroke: #ff9f00;
+    }
+
+    &.green .circle {
+      stroke: #4cc790;
+    }
+
+    &.blue .circle {
+      stroke: #3c9ee5;
+    }
+
+    .percentage {
+      font-family: $f-primary;
+      font-size: 0.5em;
+      font-weight: 500;
+      fill: #666;
+      text-anchor: middle;
+    }
+
+    .circle-bg {
+      fill: none;
+      stroke: #eee;
+      stroke-width: 3.8;
+    }
+
+    .circle {
+      fill: none;
+      stroke-width: 2.8;
+      stroke-linecap: round;
+      animation: circularChartProgress 1s ease-out forwards;
+    }
+  }
+}

@@ -25,7 +25,7 @@ jobs:
         run: nuget restore Genius.sln
 
       - name: Build
-        run: msbuild Genius.sln -p:Configuration=Release -m
+        run: src/msbuild Genius.sln -p:Configuration=Release -m
 
       - name: Publish net60
         uses: actions/upload-artifact@v2
@@ -33,7 +33,7 @@ jobs:
         with:
           name: genius-net6
           path: |
-            Genius/bin/Release/net6.0
+            src/Genius/bin/Release/net6.0
 
       - name: Publish client net60
         uses: actions/upload-artifact@v2
@@ -41,4 +41,4 @@ jobs:
         with:
           name: genius-client-net6
           path: |
-            Genius.Client/bin/Release/net6.0
+            src/Genius.Client/bin/Release/net6.0

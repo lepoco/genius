@@ -4,6 +4,7 @@
 // All Rights Reserved.
 
 using System.Collections.Generic;
+using Genius.Client.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -18,9 +19,15 @@ public class UserController : ControllerBase
 {
     private readonly ILogger<UserController> _logger;
 
-    public UserController(ILogger<UserController> logger)
+    private readonly Genius.Protocol.User.UserClient _userClient;
+
+    private readonly Genius.Protocol.OAuth.OAuthClient _oAuthClient;
+
+    public UserController(ILogger<UserController> logger, IChannel channel)
     {
         _logger = logger;
+        _userClient = new Genius.Protocol.User.UserClient(channel.GetOAuthChannel());
+        _oAuthClient = new Genius.Protocol.OAuth.OAuthClient(channel.GetOAuthChannel());
     }
 
     [HttpGet]

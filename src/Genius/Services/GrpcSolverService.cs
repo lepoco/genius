@@ -9,12 +9,12 @@ using Genius.Expert;
 using Genius.Expert.Interfaces;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
-using SolverQuestion = GeniusProtocol.SolverQuestion;
-using SolverResponse = GeniusProtocol.SolverResponse;
+using SolverQuestion = Genius.Protocol.SolverQuestion;
+using SolverResponse = Genius.Protocol.SolverResponse;
 
 namespace Genius.Services;
 
-public class GrpcSolverService : GeniusProtocol.Solver.SolverBase
+public class GrpcSolverService : Genius.Protocol.Solver.SolverBase
 {
     private readonly ILogger<GrpcSolverService> _logger;
 

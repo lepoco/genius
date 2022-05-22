@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Genius.Client.Interfaces;
-using GeniusProtocol;
+using Genius.Protocol;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -28,7 +28,7 @@ public class SolverController : ControllerBase
     public SolverController(ILogger<SolverController> logger, IChannel channel)
     {
         _logger = logger;
-        _grpcClient = new Solver.SolverClient(channel.GetChannel());
+        _grpcClient = new Solver.SolverClient(channel.GetGeniusChannel());
     }
 
     [HttpGet]

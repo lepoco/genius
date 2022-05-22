@@ -5,9 +5,9 @@
 
 syntax = "proto3";
 
-option csharp_namespace = "GeniusProtocol";
+option csharp_namespace = "Genius.Protocol";
 
-package GeniusProtocol;
+package Genius.Protocol;
 
 service Cache {
     rpc Push(CacheModel) returns (CacheLookupModel);

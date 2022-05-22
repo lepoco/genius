@@ -6,8 +6,8 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Genius.Protocol;
 using Genius.Statistics.Data.Contexts;
-using GeniusProtocol;
 using Grpc.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -42,9 +42,9 @@ public class GrpcStatisticsService : Statistic.StatisticBase
         // Consider writing reflection
         var statisticType = request.Type switch
         {
-            GeniusProtocol.StatisticType.User => Data.Models.StatisticType.User,
-            GeniusProtocol.StatisticType.System => Data.Models.StatisticType.System,
-            GeniusProtocol.StatisticType.Event => Data.Models.StatisticType.Event,
+            Genius.Protocol.StatisticType.User => Data.Models.StatisticType.User,
+            Genius.Protocol.StatisticType.System => Data.Models.StatisticType.System,
+            Genius.Protocol.StatisticType.Event => Data.Models.StatisticType.Event,
             _ => Data.Models.StatisticType.Unknown
         };
 
@@ -97,10 +97,10 @@ public class GrpcStatisticsService : Statistic.StatisticBase
 
         var statisticType = entry.Type switch
         {
-            Data.Models.StatisticType.User => GeniusProtocol.StatisticType.User,
-            Data.Models.StatisticType.System => GeniusProtocol.StatisticType.System,
-            Data.Models.StatisticType.Event => GeniusProtocol.StatisticType.Event,
-            _ => GeniusProtocol.StatisticType.Unknown
+            Data.Models.StatisticType.User => Genius.Protocol.StatisticType.User,
+            Data.Models.StatisticType.System => Genius.Protocol.StatisticType.System,
+            Data.Models.StatisticType.Event => Genius.Protocol.StatisticType.Event,
+            _ => Genius.Protocol.StatisticType.Unknown
         };
 
         return new StatisticModel
@@ -122,9 +122,9 @@ public class GrpcStatisticsService : Statistic.StatisticBase
 
         var lookupType = request.Type switch
         {
-            GeniusProtocol.StatisticType.User => Data.Models.StatisticType.User,
-            GeniusProtocol.StatisticType.System => Data.Models.StatisticType.System,
-            GeniusProtocol.StatisticType.Event => Data.Models.StatisticType.Event,
+            Genius.Protocol.StatisticType.User => Data.Models.StatisticType.User,
+            Genius.Protocol.StatisticType.System => Data.Models.StatisticType.System,
+            Genius.Protocol.StatisticType.Event => Data.Models.StatisticType.Event,
             _ => Data.Models.StatisticType.Unknown
         };
 
@@ -136,10 +136,10 @@ public class GrpcStatisticsService : Statistic.StatisticBase
         {
             var statisticType = singleEntry.Type switch
             {
-                Data.Models.StatisticType.User => GeniusProtocol.StatisticType.User,
-                Data.Models.StatisticType.System => GeniusProtocol.StatisticType.System,
-                Data.Models.StatisticType.Event => GeniusProtocol.StatisticType.Event,
-                _ => GeniusProtocol.StatisticType.Unknown
+                Data.Models.StatisticType.User => Genius.Protocol.StatisticType.User,
+                Data.Models.StatisticType.System => Genius.Protocol.StatisticType.System,
+                Data.Models.StatisticType.Event => Genius.Protocol.StatisticType.Event,
+                _ => Genius.Protocol.StatisticType.Unknown
             };
 
             await responseStream.WriteAsync(new StatisticModel
@@ -170,9 +170,9 @@ public class GrpcStatisticsService : Statistic.StatisticBase
         {
             var lookupType = request.Type switch
             {
-                GeniusProtocol.StatisticType.User => Data.Models.StatisticType.User,
-                GeniusProtocol.StatisticType.System => Data.Models.StatisticType.System,
-                GeniusProtocol.StatisticType.Event => Data.Models.StatisticType.Event,
+                Genius.Protocol.StatisticType.User => Data.Models.StatisticType.User,
+                Genius.Protocol.StatisticType.System => Data.Models.StatisticType.System,
+                Genius.Protocol.StatisticType.Event => Data.Models.StatisticType.Event,
                 _ => Data.Models.StatisticType.Unknown
             };
 
@@ -187,10 +187,10 @@ public class GrpcStatisticsService : Statistic.StatisticBase
         {
             var statisticType = singleEntry.Type switch
             {
-                Data.Models.StatisticType.User => GeniusProtocol.StatisticType.User,
-                Data.Models.StatisticType.System => GeniusProtocol.StatisticType.System,
-                Data.Models.StatisticType.Event => GeniusProtocol.StatisticType.Event,
-                _ => GeniusProtocol.StatisticType.Unknown
+                Data.Models.StatisticType.User => Genius.Protocol.StatisticType.User,
+                Data.Models.StatisticType.System => Genius.Protocol.StatisticType.System,
+                Data.Models.StatisticType.Event => Genius.Protocol.StatisticType.Event,
+                _ => Genius.Protocol.StatisticType.Unknown
             };
 
             await responseStream.WriteAsync(new StatisticModel

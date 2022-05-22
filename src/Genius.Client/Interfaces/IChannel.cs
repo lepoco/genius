@@ -8,23 +8,33 @@ using Grpc.Net.Client;
 namespace Genius.Client.Interfaces;
 
 /// <summary>
-/// Describes a universal connection with the Genius microservice available to other gRPC services.
+/// Describes a universal connection with the Genius micro-services available to other gRPC services.
 /// </summary>
 public interface IChannel
 {
     /// <summary>
-    /// The address of the microservice to which the class should connect.
+    /// The address of the micro-service to which the class should connect.
     /// </summary>
     public string ChannelAddress { get; set; }
 
     /// <summary>
-    /// Takes the globally available gRPC channel.
+    /// Takes the globally available Genius gRPC channel.
     /// </summary>
-    public GrpcChannel GetChannel();
+    public GrpcChannel GetGeniusChannel();
 
     /// <summary>
-    /// Gets or creates a gRPC client instance of specified type.
+    /// Takes the globally available OAuth gRPC channel.
     /// </summary>
-    public T GetClient<T>() where T : Grpc.Core.ClientBase;
+    public GrpcChannel GetOAuthChannel();
+
+    /// <summary>
+    /// Takes the globally available statistics gRPC channel.
+    /// </summary>
+    public GrpcChannel GetStatisticsChannel();
+
+    /// <summary>
+    /// Gets or creates a Genius gRPC client instance of specified type.
+    /// </summary>
+    public T GetGeniusClient<T>() where T : Grpc.Core.ClientBase;
 }
 

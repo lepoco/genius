@@ -5,7 +5,7 @@
 
 using System.Threading.Tasks;
 using Genius.OAuth.Data.Contexts;
-using GeniusProtocol;
+using Genius.Protocol;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
 

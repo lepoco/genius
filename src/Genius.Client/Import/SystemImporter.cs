@@ -5,7 +5,7 @@
 
 using System.Threading.Tasks;
 using Genius.Client.Export;
-using GeniusProtocol;
+using Genius.Protocol;
 
 namespace Genius.Client.Import;
 

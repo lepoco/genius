@@ -5,13 +5,13 @@
 
 using System.Threading.Tasks;
 using Genius.OAuth.Data.Contexts;
-using GeniusProtocol;
+using Genius.Protocol;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
 
 namespace Genius.OAuth.Services;
 
-public class GrpcOAuthService : GeniusProtocol.OAuth.OAuthBase
+public class GrpcOAuthService : Genius.Protocol.OAuth.OAuthBase
 {
     private readonly ILogger<GrpcOAuthService> _logger;
 

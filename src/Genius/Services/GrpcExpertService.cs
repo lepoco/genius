@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Genius.Data.Models.Expert;
 using Genius.Expert.Interfaces;
-using GeniusProtocol;
+using Genius.Protocol;
 using Grpc.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -16,7 +16,7 @@ using RelationType = Genius.Data.Models.Expert.RelationType;
 
 namespace Genius.Services;
 
-public class GrpcExpertService : GeniusProtocol.Expert.ExpertBase
+public class GrpcExpertService : Genius.Protocol.Expert.ExpertBase
 {
     private readonly ILogger<GrpcExpertService> _logger;
 

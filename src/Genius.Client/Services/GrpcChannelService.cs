@@ -76,10 +76,16 @@ public class GrpcChannelService : IChannel
     }
 
     /// <inheritdoc />
-    public GrpcChannel GetChannel() => _expertGrpcChannel;
+    public GrpcChannel GetGeniusChannel() => _expertGrpcChannel;
 
     /// <inheritdoc />
-    public T GetClient<T>() where T : Grpc.Core.ClientBase
+    public GrpcChannel GetOAuthChannel() => _authorizationGrpcChannel;
+
+    /// <inheritdoc />
+    public GrpcChannel GetStatisticsChannel() => _statisticsGrpcChannel;
+
+    /// <inheritdoc />
+    public T GetGeniusClient<T>() where T : Grpc.Core.ClientBase
     {
         var type = typeof(T);
 

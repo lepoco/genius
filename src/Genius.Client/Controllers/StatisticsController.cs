@@ -4,6 +4,7 @@
 // All Rights Reserved.
 
 using System.Collections.Generic;
+using Genius.Client.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -18,9 +19,12 @@ public class StatisticsController : ControllerBase
 {
     private readonly ILogger<StatisticsController> _logger;
 
-    public StatisticsController(ILogger<StatisticsController> logger)
+    private readonly Genius.Protocol.Statistic.StatisticClient _grpcClient;
+
+    public StatisticsController(ILogger<StatisticsController> logger, IChannel channel)
     {
         _logger = logger;
+        _grpcClient = new Genius.Protocol.Statistic.StatisticClient(channel.GetStatisticsChannel());
     }
 
     [HttpGet]

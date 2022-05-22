@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Genius.Client.Interfaces;
-using GeniusProtocol;
+using Genius.Protocol;
 using Grpc.Core;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -29,7 +29,7 @@ public class ExpertController : ControllerBase
     public ExpertController(ILogger<ExpertController> logger, IChannel channel)
     {
         _logger = logger;
-        _grpcClient = channel.GetClient<Expert.ExpertClient>();
+        _grpcClient = channel.GetGeniusClient<Expert.ExpertClient>();
     }
 
     [HttpGet]

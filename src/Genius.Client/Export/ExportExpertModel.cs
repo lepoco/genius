@@ -11,8 +11,8 @@ namespace Genius.Client.Export;
 [Serializable]
 public class ExportExpertModel
 {
-    public GeniusProtocol.ExpertModel System { get; set; }
-    public IEnumerable<GeniusProtocol.RelationModel> Relations { get; set; }
-    public IEnumerable<GeniusProtocol.ProductModel> Products { get; set; }
-    public IEnumerable<GeniusProtocol.ConditionModel> Conditions { get; set; }
+    public Genius.Protocol.ExpertModel System { get; set; }
+    public IEnumerable<Genius.Protocol.RelationModel> Relations { get; set; }
+    public IEnumerable<Genius.Protocol.ProductModel> Products { get; set; }
+    public IEnumerable<Genius.Protocol.ConditionModel> Conditions { get; set; }
 }

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using Genius.Client.Export;
 using Genius.Client.Import;
 using Genius.Client.Interfaces;
-using GeniusProtocol;
+using Genius.Protocol;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -32,7 +32,7 @@ public class ImportController : ControllerBase
     public ImportController(ILogger<ExportController> logger, IChannel channel)
     {
         _logger = logger;
-        _grpcClient = channel.GetClient<Expert.ExpertClient>();
+        _grpcClient = channel.GetGeniusClient<Expert.ExpertClient>();
     }
 
     [HttpPost]

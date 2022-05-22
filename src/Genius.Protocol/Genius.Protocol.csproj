@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <Sdk Name="Microsoft.Build.CentralPackageVersions" Version="2.1.3" />
 
   <PropertyGroup>
@@ -8,14 +8,15 @@
   <ItemGroup>
     <None Remove="Protos\cache.proto" />
     <None Remove="Protos\expert.proto" />
+    <None Remove="Protos\oauth.proto" />
     <None Remove="Protos\solver.proto" />
     <None Remove="Protos\statistic.proto" />
     <None Remove="Protos\user.proto" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Google.Protobuf"/>
-    <PackageReference Include="Grpc.Net.Common"/>
+    <PackageReference Include="Google.Protobuf" />
+    <PackageReference Include="Grpc.Net.Common" />
     <PackageReference Include="Grpc.Tools">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -27,6 +28,7 @@
     <Protobuf Include="Protos\expert.proto" />
     <Protobuf Include="Protos\cache.proto" />
     <Protobuf Include="Protos\statistic.proto" />
+    <Protobuf Include="Protos\oauth.proto" />
     <Protobuf Include="Protos\user.proto" />
   </ItemGroup>
 

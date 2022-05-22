@@ -1,11 +1,6 @@
-﻿// This Source Code Form is subject to the terms of the GNU GPL-3.0 License.
-// If a copy of the GPL-3.0 was not distributed with this file, You can obtain one at https://www.gnu.org/licenses/gpl-3.0.en.html.
-// Copyright (C) 2022 Leszek Pomianowski.
-// All Rights Reserved.
-
-using System;
-using Genius.OAuth.Data.Contexts;
-using Genius.OAuth.Services;
+﻿using System;
+using Genius.Statistics.Data.Contexts;
+using Genius.Statistics.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -14,11 +9,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Genius.OAuth;
+namespace Genius.Statistics;
 
 public class Startup
 {
-    public string DbSystemPath { get; internal set; }
+    public const string DatabaseName = "GeniusStatistics.db";
+
+    public string DbStatisticsPath { get; internal set; }
 
     public Startup(IConfiguration configuration)
     {
@@ -27,26 +24,26 @@ public class Startup
 
     public void SetupDatabase(IConfiguration configuration)
     {
-        string systemDatabasePath = configuration.GetConnectionString("SystemDatabase");
+        string expertDatabasePath = configuration.GetConnectionString("StatisticsDatabase");
 
-        if (String.IsNullOrEmpty(systemDatabasePath))
+        if (String.IsNullOrEmpty(expertDatabasePath))
         {
             var folder = Environment.SpecialFolder.LocalApplicationData;
             var path = Environment.GetFolderPath(folder);
 
-            systemDatabasePath = System.IO.Path.Join(path, "GeniusSystem.db");
+            expertDatabasePath = System.IO.Path.Join(path, DatabaseName);
         }
 
-        DbSystemPath = systemDatabasePath;
+        DbStatisticsPath = expertDatabasePath;
     }
 
     // This method gets called by the runtime. Use this method to add services to the container.
     // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddDbContext<SystemContext>(options =>
+        services.AddDbContext<StatisticsContext>(options =>
         {
-            options.UseSqlite($"Data Source={DbSystemPath}");
+            options.UseSqlite($"Data Source={DbStatisticsPath}");
         });
 
         services.AddGrpc();
@@ -56,20 +53,17 @@ public class Startup
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
         if (env.IsDevelopment())
-        {
             app.UseDeveloperExceptionPage();
-        }
 
         app.UseRouting();
 
         app.UseEndpoints(endpoints =>
         {
-            endpoints.MapGrpcService<GrpcUserService>();
-            endpoints.MapGrpcService<GrpcStatisticsServer>();
+            endpoints.MapGrpcService<GrpcStatisticsService>();
 
             endpoints.MapGet("/", async context =>
             {
-                await context.Response.WriteAsync("Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
+                await context.Response.WriteAsync("Communication with gRPC endpoints must be made through a gRPC client.");
             });
         });
     }

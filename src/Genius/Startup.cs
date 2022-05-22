@@ -19,6 +19,8 @@ namespace Genius;
 
 public class Startup
 {
+    public const string DatabaseName = "GeniusExpert.db";
+
     public string DbExpertPath { get; internal set; }
 
     public Startup(IConfiguration configuration)
@@ -35,7 +37,7 @@ public class Startup
             var folder = Environment.SpecialFolder.LocalApplicationData;
             var path = Environment.GetFolderPath(folder);
 
-            expertDatabasePath = System.IO.Path.Join(path, "GeniusExpert.db");
+            expertDatabasePath = System.IO.Path.Join(path, DatabaseName);
         }
 
         DbExpertPath = expertDatabasePath;

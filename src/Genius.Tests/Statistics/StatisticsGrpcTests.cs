@@ -23,22 +23,24 @@ public class StatisticsGrpcTests
     }
 
     [Test]
-    public void StatisticsAcceptPush()
+    public async Task StatisticsAcceptPush()
     {
         // Arrange
         var mockLogger = new Mock<ILogger<Genius.Statistics.Services.GrpcStatisticsService>>();
         var mockContext = new Mock<Grpc.Core.ServerCallContext>();
-        var mockDatabase = _databaseContext;
+        var mockDatabaseOptions = new DbContextOptionsBuilder<Genius.Statistics.Data.Contexts.StatisticsContext>()
+            .UseInMemoryDatabase(databaseName: $"StatisticsDatabase_{nameof(StatisticsAcceptPush)}")
+            .Options;
+        var mockDatabase = new Genius.Statistics.Data.Contexts.StatisticsContext(mockDatabaseOptions);
 
         // Initialize
         var service = new Genius.Statistics.Services.GrpcStatisticsService(mockLogger.Object, mockDatabase);
 
         // Act
         var response =
-            service.Push(
+            await service.Push(
                 new Genius.Protocol.StatisticModel
                 {
-                    Id = 0,
                     Context = "system.export.2",
                     Type = Genius.Protocol.StatisticType.System,
                     CreatedAt = DateTime.Now.ToShortDateString()

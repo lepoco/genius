@@ -3,8 +3,10 @@
 // Copyright (C) 2022 Leszek Pomianowski.
 // All Rights Reserved.
 
-using System.Collections.Generic;
+using System;
+using System.Threading.Tasks;
 using Genius.Client.Interfaces;
+using Genius.Protocol;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -19,17 +21,34 @@ public class StatisticsController : ControllerBase
 {
     private readonly ILogger<StatisticsController> _logger;
 
-    private readonly Genius.Protocol.Statistic.StatisticClient _grpcClient;
+    private readonly IStatistics _statistics;
 
-    public StatisticsController(ILogger<StatisticsController> logger, IChannel channel)
+    public StatisticsController(ILogger<StatisticsController> logger, IStatistics statistics)
     {
         _logger = logger;
-        _grpcClient = new Genius.Protocol.Statistic.StatisticClient(channel.GetStatisticsChannel());
+        _statistics = statistics;
     }
 
-    [HttpGet]
-    public IEnumerable<int> Get()
+    [HttpPost]
+    [Route("add")]
+    public async Task<IActionResult> Add([FromRoute] int type, [FromRoute] string context)
     {
-        return new List<int> { 1, 2, 3, 4 };
+        if (type < 0)
+            return StatusCode(400, "Unknown type");
+
+        if (String.IsNullOrWhiteSpace(context))
+            return StatusCode(400, "Context cannot be empty");
+
+        var statisticType = type switch
+        {
+            1 => StatisticType.User,
+            2 => StatisticType.System,
+            3 => StatisticType.Event,
+            _ => StatisticType.Unknown
+        };
+
+        var newEntry = _statistics.AddAsync(statisticType, context);
+
+        return StatusCode(200, $"Entry {newEntry.Id} added");
     }
 }

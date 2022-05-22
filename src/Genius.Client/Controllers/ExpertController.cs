@@ -44,6 +44,8 @@ public class ExpertController : ControllerBase
     {
         var expertSystems = new List<ExpertModel>();
 
+        _logger.LogInformation($"List of all systems requested using {typeof(ExpertController)}.");
+
         using var call = _grpcClient.GetAll(new ExpertEmptyModel());
 
         while (await call.ResponseStream.MoveNext())
@@ -66,6 +68,8 @@ public class ExpertController : ControllerBase
         if (String.IsNullOrEmpty(newSystem.Name) || String.IsNullOrEmpty(newSystem.Question))
             return StatusCode(200, false);
 
+        _logger.LogInformation($"Systems {newSystem.Name} inserted using {typeof(ExpertController)}.");
+
         var newSystemId = (await _grpcClient.CreateAsync(newSystem))?.Id ?? 0;
 
         return StatusCode(200, newSystemId > 0 ? "success" : "error");
@@ -75,6 +79,8 @@ public class ExpertController : ControllerBase
     [Route("system/guid/{guid}")]
     public async Task<ExpertModel> GetSingleSystemByGuid([FromRoute] string guid)
     {
+        _logger.LogInformation($"System with GUID {guid} requested using {typeof(ExpertController)}.");
+
         return await _grpcClient.GetAsync(new ExpertLookupModel { Guid = guid });
     }
 
@@ -82,6 +88,8 @@ public class ExpertController : ControllerBase
     [Route("system/{id}")]
     public async Task<ExpertModel> GetSingleSystemById([FromRoute] int id)
     {
+        _logger.LogInformation($"System with ID {id} requested using {typeof(ExpertController)}.");
+
         return await _grpcClient.GetAsync(new ExpertLookupModel { Id = id });
     }
 
@@ -89,6 +97,8 @@ public class ExpertController : ControllerBase
     [Route("system/{id}/about")]
     public async Task<ExpertAboutModel> GetSystemAbout([FromRoute] int id)
     {
+        _logger.LogInformation($"System model with ID {id} requested using {typeof(ExpertController)}.");
+
         return await _grpcClient.GetAboutAsync(new ExpertLookupModel { Id = id });
     }
 
@@ -102,6 +112,8 @@ public class ExpertController : ControllerBase
         var system = await _grpcClient.DeleteAsync(new ExpertLookupModel { Id = id });
         var isDeleted = system != null && system.Id > 0;
 
+        _logger.LogInformation($"System with ID {id} deleted using {typeof(ExpertController)}.");
+
         return StatusCode(200, isDeleted ? "success" : "error");
     }
 
@@ -112,6 +124,8 @@ public class ExpertController : ControllerBase
         var systemConditions = new List<ConditionModel>();
 
         using var call = _grpcClient.GetSystemConditions(new ExpertLookupModel { Id = systemId });
+
+        _logger.LogInformation($"Conditions of the system with ID {systemId} requested using {typeof(ExpertController)}.");
 
         while (await call.ResponseStream.MoveNext())
             systemConditions.Add(call.ResponseStream.Current);
@@ -127,6 +141,8 @@ public class ExpertController : ControllerBase
 
         using var call = _grpcClient.GetSystemProducts(new ExpertLookupModel { Id = systemId });
 
+        _logger.LogInformation($"Products of the system with ID {systemId} requested using {typeof(ExpertController)}.");
+
         while (await call.ResponseStream.MoveNext())
             systemProducts.Add(call.ResponseStream.Current);
 
@@ -140,6 +156,8 @@ public class ExpertController : ControllerBase
         var systemRelations = new List<RelationModel>();
 
         using var call = _grpcClient.GetSystemRelations(new ExpertLookupModel { Id = systemId });
+
+        _logger.LogInformation($"Relations of the system with ID {systemId} requested using {typeof(ExpertController)}.");
 
         while (await call.ResponseStream.MoveNext())
             systemRelations.Add(call.ResponseStream.Current);
@@ -170,6 +188,8 @@ public class ExpertController : ControllerBase
 
         if (newProductId > 0 && !String.IsNullOrEmpty(rawConditionsList))
             await AddProductConditions(systemId, newProductId, rawConditionsList);
+
+        _logger.LogInformation($"Product {newProduct.Name} added to system {systemId}, using {typeof(ExpertController)}.");
 
         return StatusCode(200, newProductId);
     }
@@ -202,6 +222,8 @@ public class ExpertController : ControllerBase
             Notes = productNotes,
         });
 
+        _logger.LogInformation($"Product {productName} updated in the system {product.SystemId}, using {typeof(ExpertController)}.");
+
         return StatusCode(200, updatedProduct?.Id ?? 0);
     }
 
@@ -222,6 +244,8 @@ public class ExpertController : ControllerBase
             Id = product.Id,
             SystemId = product.SystemId,
         });
+
+        _logger.LogInformation($"Product {product.Name} deleted from the system {product.SystemId}, using {typeof(ExpertController)}.");
 
         return StatusCode(200, deletedProduct?.Id ?? 0);
     }
@@ -260,6 +284,8 @@ public class ExpertController : ControllerBase
             Indifferent = { rawProductIndifferentConditions },
         });
 
+        _logger.LogInformation($"Conditions of the product {product.Name} from the system {product.SystemId} updated, using {typeof(ExpertController)}.");
+
         return StatusCode(200, updatedProduct?.Id ?? 0);
     }
 
@@ -267,6 +293,8 @@ public class ExpertController : ControllerBase
     [Route("product/{id}")]
     public async Task<ProductModel> GetSingleProduct([FromRoute] int id)
     {
+        _logger.LogInformation($"Product with id {id} requested, using {typeof(ExpertController)}.");
+
         return await _grpcClient.GetProductAsync(new ProductLookupModel { Id = id });
     }
 
@@ -274,6 +302,8 @@ public class ExpertController : ControllerBase
     [Route("product/{id}/relations")]
     public async Task<ProductRelationsModel> GetProductRelations([FromRoute] int id)
     {
+        _logger.LogInformation($"Relation with id {id} requested, using {typeof(ExpertController)}.");
+
         return await _grpcClient.GetProductRelationsAsync(new ProductLookupModel { Id = id });
     }
 

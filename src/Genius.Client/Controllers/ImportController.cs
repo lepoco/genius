@@ -29,10 +29,13 @@ public class ImportController : ControllerBase
 
     private readonly Expert.ExpertClient _grpcClient;
 
-    public ImportController(ILogger<ExportController> logger, IChannel channel)
+    private readonly IStatistics _statistics;
+
+    public ImportController(ILogger<ExportController> logger, IChannel channel, IStatistics statistics)
     {
         _logger = logger;
         _grpcClient = channel.GetGeniusClient<Expert.ExpertClient>();
+        _statistics = statistics;
     }
 
     [HttpPost]
@@ -55,15 +58,22 @@ public class ImportController : ControllerBase
         if (String.IsNullOrEmpty(fileContent))
             return BadRequest("File empty.");
 
-        var exportedData = TryToParseFile(fileContent);
+        var importedData = TryToParseFile(fileContent);
 
-        if (exportedData?.System?.Id < 1)
+        if (importedData == null)
             return BadRequest("Serialization failed.");
 
-        var mergeStatus = await SystemImporter.MergeSystems(_grpcClient, iSystemId, exportedData);
+        if (importedData?.System?.Id < 1)
+            return BadRequest("Serialization failed.");
+
+        var mergeStatus = await SystemImporter.MergeSystems(_grpcClient, iSystemId, importedData);
 
         if (!mergeStatus)
             return BadRequest("Merging failed.");
+
+        _logger.LogInformation($"Import of the system {importedData.System?.Name} finished.");
+
+        await _statistics.AddAsync(Genius.Protocol.StatisticType.System, $"import.system.{systemId}");
 
         return Ok("Success");
     }

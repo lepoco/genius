@@ -3,8 +3,12 @@
 // Copyright (C) 2022 Leszek Pomianowski.
 // All Rights Reserved.
 
+using System;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using NLog;
+using NLog.Web;
 
 namespace Genius.Client;
 
@@ -12,13 +16,30 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        CreateHostBuilder(args).Build().Run();
+        var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+
+        try
+        {
+            CreateHostBuilder(args).Build().Run();
+        }
+        catch (Exception exception)
+        {
+            //NLog: catch setup errors
+            logger.Error(exception, "Stopped program because of exception");
+            throw;
+        }
+        finally
+        {
+            LogManager.Shutdown();
+        }
     }
 
     public static IHostBuilder CreateHostBuilder(string[] args) =>
-        Host.CreateDefaultBuilder(args)
-            .ConfigureWebHostDefaults(webBuilder =>
+        Host.CreateDefaultBuilder(args).ConfigureLogging(logging =>
             {
-                webBuilder.UseStartup<Startup>();
-            });
+                logging.ClearProviders();
+                logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Debug);
+            })
+            .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); })
+            .UseNLog();
 }

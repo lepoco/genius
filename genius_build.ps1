@@ -95,7 +95,7 @@ function Invoke-Build {
     Remove-Item $Output -Force -Recurse
   }
 
-  & $env:BUILDCOMMAND build --nologo "$Script:Source\Genius\Genius.csproj" -property:Configuration=$Configuration --output "$($Output)\Genius"
+  & $env:BUILDCOMMAND build --nologo "$Script:Source\Genius.Core\Genius.Core.csproj" -property:Configuration=$Configuration --output "$($Output)\Genius.Core"
   & $env:BUILDCOMMAND build --nologo "$Script:Source\Genius.Client\Genius.Client.csproj" -property:Configuration=$Configuration --output "$($Output)\Genius.Client"
   & $env:BUILDCOMMAND build --nologo "$Script:Source\Genius.OAuth\Genius.OAuth.csproj" -property:Configuration=$Configuration --output "$($Output)\Genius.OAuth"
   & $env:BUILDCOMMAND build --nologo "$Script:Source\Genius.Statistics\Genius.Statistics.csproj" -property:Configuration=$Configuration --output "$($Output)\Genius.Statistics"
@@ -120,7 +120,7 @@ function Invoke-DatabaseUpdate {
 
   Write-Log -Message "Invoke-DatabaseUpdate: Started" -Type "empty"
 
-  & $env:BUILDCOMMAND ef database update --project "$($Script:Source)Genius" --context ExpertContext
+  & $env:BUILDCOMMAND ef database update --project "$($Script:Source)Genius.Core" --context ExpertContext
   & $env:BUILDCOMMAND ef database update --project "$($Script:Source)Genius.OAuth" --context SystemContext
   & $env:BUILDCOMMAND ef database update --project "$($Script:Source)Genius.Statistics" --context StatisticsContext
 

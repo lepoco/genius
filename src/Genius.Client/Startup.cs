@@ -32,6 +32,7 @@ public class Startup
     {
         services.Configure<ServicesSettings>(Configuration.GetSection("Services"));
         services.AddSingleton<IChannel, GrpcChannelService>();
+        services.AddScoped<IStatistics, GrpcStatisticsService>();
         services.AddControllersWithViews();
 
         // In production, the React files will be served from this directory

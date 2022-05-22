@@ -25,12 +25,15 @@ public class ExportController : ControllerBase
 
     private readonly Expert.ExpertClient _grpcClient;
 
+    private readonly IStatistics _statistics;
+
     //private readonly GrpcExpertClientService _expertClient;
 
-    public ExportController(ILogger<ExportController> logger, IChannel channel)
+    public ExportController(ILogger<ExportController> logger, IChannel channel, IStatistics statistics)
     {
         _logger = logger;
         _grpcClient = channel.GetGeniusClient<Expert.ExpertClient>();
+        _statistics = statistics;
     }
 
     [HttpGet]
@@ -76,6 +79,9 @@ public class ExportController : ControllerBase
             Products = systemProducts,
             Conditions = systemConditions,
         };
+
+        _logger.LogInformation($"Export of the system {expertData.Name} ({expertData.Id}) finished.");
+        await _statistics.AddAsync(Genius.Protocol.StatisticType.System, $"export.system.{expertData.Id}");
 
         return new SystemToFileResult(exportModel);
     }

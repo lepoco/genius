@@ -73,6 +73,10 @@ public class GrpcChannelService : IChannel
                 EnableMultipleHttp2Connections = true
             }
         });
+
+        _logger.LogInformation($"Core gRPC channel created, path: {servicesSettings.Value.Genius}");
+        _logger.LogInformation($"OAuth gRPC channel created, path: {servicesSettings.Value.OAuth}");
+        _logger.LogInformation($"Statistics gRPC channel created, path: {servicesSettings.Value.Statistics}");
     }
 
     /// <inheritdoc />

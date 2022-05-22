@@ -25,10 +25,13 @@ public class SolverController : ControllerBase
 
     private readonly Solver.SolverClient _grpcClient;
 
-    public SolverController(ILogger<SolverController> logger, IChannel channel)
+    private readonly IStatistics _statistics;
+
+    public SolverController(ILogger<SolverController> logger, IChannel channel, IStatistics statistics)
     {
         _logger = logger;
         _grpcClient = new Solver.SolverClient(channel.GetGeniusChannel());
+        _statistics = statistics;
     }
 
     [HttpGet]
@@ -47,6 +50,7 @@ public class SolverController : ControllerBase
             return new SolverResponse
             { IsSolved = false, Multiple = true, NextCondition = 0, Products = { }, Status = 0, SystemId = 0 };
 
+        _logger.LogInformation($"New question asked to {typeof(SolverController)}", $"SYS: {systemId}");
 
         IEnumerable<int> idsConfirming = FetchRawArray(HttpContext.Request.Form["confirming"]);
         IEnumerable<int> idsNegating = FetchRawArray(HttpContext.Request.Form["negating"]);

@@ -53,7 +53,7 @@ function Initialize-Dotnet {
 }
 
 function Invoke-Migration {
-    & $env:DOTNET ef migrations add InitialCreate --project "$($Script:Source)Genius" -o 'Data\Migrations\'
+    & $env:DOTNET ef migrations add InitialCreate --project "$($Script:Source)Genius.Core" -o 'Data\Migrations\'
     & $env:DOTNET ef migrations add InitialCreate --project "$($Script:Source)Genius.OAuth" -o 'Data\Migrations\'
     & $env:DOTNET ef migrations add InitialCreate --project "$($Script:Source)Genius.Statistics" -o 'Data\Migrations\'
 }

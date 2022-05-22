@@ -91,11 +91,14 @@ function Invoke-Restore
 function Invoke-Build {
   Write-Log -Message "Invoke-Build: Started" -Type "empty"
 
-  if (Test-Path -Path $buildPath) {
-    Remove-Item $buildPath -Force -Recurse
+  if (Test-Path -Path $Output) {
+    Remove-Item $Output -Force -Recurse
   }
 
-  & $env:BUILDCOMMAND build --nologo $Script:Source$Script:Solution -property:Configuration=$Configuration --output $Output
+  & $env:BUILDCOMMAND build --nologo "$Script:Source\Genius\Genius.csproj" -property:Configuration=$Configuration --output "$($Output)\Genius"
+  & $env:BUILDCOMMAND build --nologo "$Script:Source\Genius.Client\Genius.Client.csproj" -property:Configuration=$Configuration --output "$($Output)\Genius.Client"
+  & $env:BUILDCOMMAND build --nologo "$Script:Source\Genius.OAuth\Genius.OAuth.csproj" -property:Configuration=$Configuration --output "$($Output)\Genius.OAuth"
+  & $env:BUILDCOMMAND build --nologo "$Script:Source\Genius.Statistics\Genius.Statistics.csproj" -property:Configuration=$Configuration --output "$($Output)\Genius.Statistics"
 
   if ($lastexitcode -eq 0) {
     Write-Log -Message "Invoke-Build: Completed" -Type "success"
@@ -148,11 +151,10 @@ function Invoke-BuildNpm {
 function Invoke-CloneNpm {
   Write-Log -Message "Invoke-CloneNpm: Started" -Type "empty"
 
-  $buildPath = Resolve-Path "$($Script:Source)$($Script:ClientApp)build/" | select -ExpandProperty Path
-  $rootPath = Resolve-Path "$($Output)wwwroot/" | select -ExpandProperty Path
+  $buildPath = Resolve-Path "$($Script:Source)$($Script:ClientApp)build\" | select -ExpandProperty Path
 
   if (Test-Path -Path $buildPath) {
-    Write-Log -Message "Clonning $($buildPath) to $($rootPath)" -Type "empty"
+    Write-Log -Message "Clonning $($buildPath) to $($Output)\Genius.Client\wwwroot\" -Type "empty"
   } else {
     Write-Log -Message "Invoke-CloneNpm: Failed" -Type "error"
     Write-Log -Message "Build path does not exist!" -Type "error"
@@ -161,7 +163,7 @@ function Invoke-CloneNpm {
     exit
   }
 
-  Copy-Item -Path $buildPath -Destination $rootPath -Recurse -Force
+  Copy-Item -Path $buildPath -Destination "$($Output)\Genius.Client\wwwroot\" -Recurse -Force
 
   Write-Log -Message "Invoke-BuildNpm: Completed" -Type "success"
 }

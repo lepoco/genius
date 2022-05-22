@@ -5,6 +5,7 @@
 
 using Genius.Client.Interfaces;
 using Genius.Client.Services;
+using Genius.Client.Settings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
@@ -16,12 +17,12 @@ namespace Genius.Client;
 
 public class Startup
 {
+    public IConfiguration Configuration { get; }
+
     public Startup(IConfiguration configuration)
     {
         Configuration = configuration;
     }
-
-    public IConfiguration Configuration { get; }
 
     /// <summary>
     /// This method gets called by the runtime. Use this method to add services to the container.
@@ -29,6 +30,7 @@ public class Startup
     /// <param name="services"></param>
     public void ConfigureServices(IServiceCollection services)
     {
+        services.Configure<ServicesSettings>(Configuration.GetSection("Services"));
         services.AddSingleton<IChannel, GrpcChannelService>();
         services.AddControllersWithViews();
 

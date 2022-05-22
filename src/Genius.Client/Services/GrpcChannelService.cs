@@ -8,8 +8,10 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using Genius.Client.Interfaces;
+using Genius.Client.Settings;
 using Grpc.Net.Client;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Genius.Client.Services;
 
@@ -24,15 +26,44 @@ public class GrpcChannelService : IChannel
 
     private readonly ILogger<GrpcChannelService> _logger;
 
-    private readonly GrpcChannel _channel;
+    private readonly IOptions<ServicesSettings> _services;
+
+    private readonly GrpcChannel _expertGrpcChannel;
+
+    private readonly GrpcChannel _authorizationGrpcChannel;
+
+    private readonly GrpcChannel _statisticsGrpcChannel;
 
     private readonly Dictionary<Type, object> _clients = new();
 
-    public GrpcChannelService(ILogger<GrpcChannelService> logger)
+    public GrpcChannelService(ILogger<GrpcChannelService> logger, IOptions<ServicesSettings> servicesSettings)
     {
         _logger = logger;
+        _services = servicesSettings;
 
-        _channel = GrpcChannel.ForAddress(ChannelAddress, new GrpcChannelOptions
+        _expertGrpcChannel = GrpcChannel.ForAddress(servicesSettings.Value.Genius, new GrpcChannelOptions
+        {
+            HttpHandler = new SocketsHttpHandler
+            {
+                PooledConnectionIdleTimeout = Timeout.InfiniteTimeSpan,
+                KeepAlivePingDelay = TimeSpan.FromSeconds(60),
+                KeepAlivePingTimeout = TimeSpan.FromSeconds(30),
+                EnableMultipleHttp2Connections = true
+            }
+        });
+
+        _authorizationGrpcChannel = GrpcChannel.ForAddress(servicesSettings.Value.OAuth, new GrpcChannelOptions
+        {
+            HttpHandler = new SocketsHttpHandler
+            {
+                PooledConnectionIdleTimeout = Timeout.InfiniteTimeSpan,
+                KeepAlivePingDelay = TimeSpan.FromSeconds(60),
+                KeepAlivePingTimeout = TimeSpan.FromSeconds(30),
+                EnableMultipleHttp2Connections = true
+            }
+        });
+
+        _statisticsGrpcChannel = GrpcChannel.ForAddress(servicesSettings.Value.Statistics, new GrpcChannelOptions
         {
             HttpHandler = new SocketsHttpHandler
             {
@@ -45,7 +76,7 @@ public class GrpcChannelService : IChannel
     }
 
     /// <inheritdoc />
-    public GrpcChannel GetChannel() => _channel;
+    public GrpcChannel GetChannel() => _expertGrpcChannel;
 
     /// <inheritdoc />
     public T GetClient<T>() where T : Grpc.Core.ClientBase
@@ -57,7 +88,7 @@ public class GrpcChannelService : IChannel
         if (clientObject != null)
             return (T)clientObject;
 
-        clientObject = Activator.CreateInstance(type, _channel);
+        clientObject = Activator.CreateInstance(type, _expertGrpcChannel);
 
         _clients.Add(type, clientObject);
 

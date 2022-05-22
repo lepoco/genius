@@ -16,7 +16,7 @@
 
   <ItemGroup>
     <PackageReference Include="Grpc.Net.Client" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions"/>
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" />
   </ItemGroup>
 
   <ItemGroup>

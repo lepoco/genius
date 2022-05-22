@@ -3,7 +3,6 @@
   "version": "2.0.0",
   "description": "Client app for the Genius Expert Systems creator",
   "keywords": "genius lepo ml expert systems science",
-  "homepage": "https://github.com/lepoco/genius",
   "license": "GNU GENERAL PUBLIC LICENSE, Version 3",
   "author": "Pomianowski Leszek (https://dev.lepo.co/)",
   "private": true,

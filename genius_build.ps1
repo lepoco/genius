@@ -8,15 +8,19 @@ Param(
   [Parameter(Mandatory = $true)]
   [ValidateSet("Debug", "Release")]
   [Alias("c")]
-  [System.String] $Configuration = "Debug"
+  [System.String] $Configuration = "Debug",
+
+  [Alias("o")]
+  [System.String] $Output = ".\build"
 )
 
 $env:BUILDCOMMAND = "dotnet"
 $env:NPMCOMMAND = "npm"
 
+$Script:Path = (Get-Item .).FullName
 $Script:Source = ".\src\"
 $Script:Solution = "Genius.sln"
-$Script:ClientApp = "GeniusClient\ClientApp\"
+$Script:ClientApp = "Genius.Client\ClientApp\"
 
 Write-Host "======================="
 Write-Host "Genius - Expert Systems" -ForegroundColor Green
@@ -87,7 +91,11 @@ function Invoke-Restore
 function Invoke-Build {
   Write-Log -Message "Invoke-Build: Started" -Type "empty"
 
-  & $env:BUILDCOMMAND build --nologo $Script:Source$Script:Solution -property:Configuration=$Configuration
+  if (Test-Path -Path $buildPath) {
+    Remove-Item $buildPath -Force -Recurse
+  }
+
+  & $env:BUILDCOMMAND build --nologo $Script:Source$Script:Solution -property:Configuration=$Configuration --output $Output
 
   if ($lastexitcode -eq 0) {
     Write-Log -Message "Invoke-Build: Completed" -Type "success"
@@ -98,22 +106,6 @@ function Invoke-Build {
 
     exit
   }
-}
-
-function Invoke-BuildNpm {
-  Write-Log -Message "Invoke-BuildNpm: Started" -Type "empty"
-
-  #$ npm install -WorkingDirectory "$Script:Source$Script:ClientApp"
-
-  # if ($lastexitcode -eq 0) {
-  #   Write-Log -Message "Invoke-BuildNpm: Completed" -Type "success"
-  # }
-  # else {
-  #   Write-Log -Message "Invoke-BuildNpm: Failed" -Type "error"
-  #   Write-Log -Message "Terminating..." -Type "error"
-
-  #   exit
-  # }
 }
 
 function Invoke-DatabaseUpdate {
@@ -140,11 +132,46 @@ function Invoke-DatabaseUpdate {
   }
 }
 
+function Invoke-BuildNpm {
+  Write-Log -Message "Invoke-BuildNpm: Started" -Type "empty"
+
+  node --version
+
+  $clientAppPath = Resolve-Path "$($Script:Source)$($Script:ClientApp)" | select -ExpandProperty Path
+
+  Start-Process 'npm' -ArgumentList "install", "--force" -WorkingDirectory $clientAppPath -NoNewWindow -Wait
+  Start-Process 'npm' -ArgumentList "run", "build" -WorkingDirectory $clientAppPath -NoNewWindow -Wait
+
+  Write-Log -Message "Invoke-BuildNpm: Completed" -Type "success"
+}
+
+function Invoke-CloneNpm {
+  Write-Log -Message "Invoke-CloneNpm: Started" -Type "empty"
+
+  $buildPath = Resolve-Path "$($Script:Source)$($Script:ClientApp)build/" | select -ExpandProperty Path
+  $rootPath = Resolve-Path "$($Output)wwwroot/" | select -ExpandProperty Path
+
+  if (Test-Path -Path $buildPath) {
+    Write-Log -Message "Clonning $($buildPath) to $($rootPath)" -Type "empty"
+  } else {
+    Write-Log -Message "Invoke-CloneNpm: Failed" -Type "error"
+    Write-Log -Message "Build path does not exist!" -Type "error"
+    Write-Log -Message "Terminating..." -Type "error"
+
+    exit
+  }
+
+  Copy-Item -Path $buildPath -Destination $rootPath -Recurse -Force
+
+  Write-Log -Message "Invoke-BuildNpm: Completed" -Type "success"
+}
+
 Initialize-BuildCommand
 Invoke-Restore
 Invoke-Build
 Invoke-DatabaseUpdate
 Initialize-NpmCommand
 Invoke-BuildNpm
+Invoke-CloneNpm
 
 Write-Log -Message "Script operation completed" -Type "success"

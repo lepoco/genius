@@ -3,6 +3,7 @@
 // Copyright (C) 2022 Leszek Pomianowski.
 // All Rights Reserved.
 
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -21,4 +22,7 @@ public class Token
 
     [Required]
     public string PrivateToken { get; set; }
+
+    [Required]
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
 }

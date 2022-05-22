@@ -17,7 +17,8 @@ namespace Genius.OAuth.Data.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     UserId = table.Column<string>(type: "TEXT", nullable: false),
                     PublicToken = table.Column<string>(type: "TEXT", nullable: false),
-                    PrivateToken = table.Column<string>(type: "TEXT", nullable: false)
+                    PrivateToken = table.Column<string>(type: "TEXT", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {

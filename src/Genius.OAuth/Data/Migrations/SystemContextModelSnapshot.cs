@@ -23,6 +23,9 @@ namespace Genius.OAuth.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("PrivateToken")
                         .IsRequired()
                         .HasColumnType("TEXT");

@@ -6,14 +6,13 @@
 using System;
 using System.Collections.Generic;
 
-namespace Genius.Client.Export
+namespace Genius.Client.Export;
+
+[Serializable]
+public class ExportExpertModel
 {
-    [Serializable]
-    public class ExportExpertModel
-    {
-        public GeniusProtocol.ExpertModel System { get; set; }
-        public IEnumerable<GeniusProtocol.RelationModel> Relations { get; set; }
-        public IEnumerable<GeniusProtocol.ProductModel> Products { get; set; }
-        public IEnumerable<GeniusProtocol.ConditionModel> Conditions { get; set; }
-    }
+    public GeniusProtocol.ExpertModel System { get; set; }
+    public IEnumerable<GeniusProtocol.RelationModel> Relations { get; set; }
+    public IEnumerable<GeniusProtocol.ProductModel> Products { get; set; }
+    public IEnumerable<GeniusProtocol.ConditionModel> Conditions { get; set; }
 }

@@ -3,14 +3,14 @@
 // Copyright (C) 2022 Leszek Pomianowski.
 // All Rights Reserved.
 
-namespace Genius.Data.Models.Expert
+namespace Genius.Data.Models.Expert;
+
+public enum RelationType
 {
-    public enum RelationType
-    {
-        Compliance,
+    Compliance,
 
-        Contradiction,
+    Contradiction,
 
-        Disregard
-    }
+    Disregard
 }
+

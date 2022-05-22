@@ -3,24 +3,23 @@
 // Copyright (C) 2022 Leszek Pomianowski.
 // All Rights Reserved.
 
+using System.Threading.Tasks;
 using Genius.Client.Export;
 using GeniusProtocol;
-using System.Threading.Tasks;
 
-namespace Genius.Client.Import
+namespace Genius.Client.Import;
+
+/// <summary>
+/// Set of tools for importing.
+/// </summary>
+public static class SystemImporter
 {
     /// <summary>
-    /// Set of tools for importing.
+    /// Tries to add data from <see cref="ExportExpertModel"/> to selected Expert System.
     /// </summary>
-    public static class SystemImporter
+    public static async Task<bool> MergeSystems(Expert.ExpertClient grpcClient, int systemId, ExportExpertModel expertModel)
     {
-        /// <summary>
-        /// Tries to add data from <see cref="ExportExpertModel"/> to selected Expert System.
-        /// </summary>
-        public static async Task<bool> MergeSystems(Expert.ExpertClient grpcClient, int systemId, ExportExpertModel expertModel)
-        {
-            // TODO: Well, we need to import it
-            return false;
-        }
+        // TODO: Well, we need to import it
+        return false;
     }
 }

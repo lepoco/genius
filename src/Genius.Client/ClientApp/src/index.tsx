@@ -36,8 +36,9 @@ import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
 import './styles/app.scss';
 
-const baseUrl: string =
-  document.getElementsByTagName('base')[0].getAttribute('href') ?? '';
+// const baseUrl: string =
+//   document.getElementsByTagName('base')[0].getAttribute('href') ?? '';
+const baseUrl: string = '';
 
 ReactDOM.render(
   <BrowserRouter basename={baseUrl}>

@@ -3,54 +3,53 @@
 // Copyright (C) 2022 Leszek Pomianowski.
 // All Rights Reserved.
 
-using Genius.Data.Contexts;
-using Genius.Expert.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Genius.Data.Contexts;
+using Genius.Expert.Interfaces;
 
-namespace Genius.Services
+namespace Genius.Services;
+
+public class GeniusService : IExpertService
 {
-    public class GeniusService : IExpertService
+    /// <summary>
+    /// Scoped list of used solvers.
+    /// </summary>
+    private readonly List<ISolver> _solvers = new();
+
+    public IExpertContext Context { get; }
+
+    public GeniusService(IExpertContext expertContext)
     {
-        /// <summary>
-        /// Scoped list of used solvers.
-        /// </summary>
-        private readonly List<ISolver> _solvers = new();
+        Context = expertContext;
+    }
 
-        public IExpertContext Context { get; }
+    public async Task<ISolverResponse> Solve<T>(ISolverQuestion question)
+    {
+        return await (GetSolver<T>() as ISolver)!.Solve(question);
+    }
 
-        public GeniusService(IExpertContext expertContext)
+    public T GetSolver<T>()
+    {
+        if (!typeof(ISolver).IsAssignableFrom(typeof(T)))
+            throw new InvalidCastException();
+
+        if (!_solvers.OfType<T>().Any())
         {
-            Context = expertContext;
+            var solverObject = (T)Activator.CreateInstance(typeof(T)) as ISolver;
+
+            if (solverObject == null)
+                throw new ArgumentNullException($"Creating new solver of type {typeof(T)} failed.");
+
+            solverObject.SetContext(Context);
+
+            _solvers.Add(solverObject);
         }
 
-        public async Task<ISolverResponse> Solve<T>(ISolverQuestion question)
-        {
-            return await (GetSolver<T>() as ISolver)!.Solve(question);
-        }
+        var solverInstance = _solvers.First(solver => solver.GetType() == typeof(T));
 
-        public T GetSolver<T>()
-        {
-            if (!typeof(ISolver).IsAssignableFrom(typeof(T)))
-                throw new InvalidCastException();
-
-            if (!_solvers.OfType<T>().Any())
-            {
-                var solverObject = (T)Activator.CreateInstance(typeof(T)) as ISolver;
-
-                if (solverObject == null)
-                    throw new ArgumentNullException($"Creating new solver of type {typeof(T)} failed.");
-
-                solverObject.SetContext(Context);
-
-                _solvers.Add(solverObject);
-            }
-
-            var solverInstance = _solvers.First(solver => solver.GetType() == typeof(T));
-
-            return (T)solverInstance;
-        }
+        return (T)solverInstance;
     }
 }

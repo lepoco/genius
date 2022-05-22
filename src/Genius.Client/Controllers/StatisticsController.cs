@@ -3,27 +3,29 @@
 // Copyright (C) 2022 Leszek Pomianowski.
 // All Rights Reserved.
 
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
 
-namespace Genius.Client.Controllers
+namespace Genius.Client.Controllers;
+
+/// <summary>
+/// Provides API for collecting telemetry.
+/// </summary>
+[ApiController]
+[Route("api/[controller]")]
+public class StatisticsController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class StatisticsController : ControllerBase
+    private readonly ILogger<StatisticsController> _logger;
+
+    public StatisticsController(ILogger<StatisticsController> logger)
     {
-        private readonly ILogger<StatisticsController> _logger;
+        _logger = logger;
+    }
 
-        public StatisticsController(ILogger<StatisticsController> logger)
-        {
-            _logger = logger;
-        }
-
-        [HttpGet]
-        public IEnumerable<int> Get()
-        {
-            return new List<int> { 1, 2, 3, 4 };
-        }
+    [HttpGet]
+    public IEnumerable<int> Get()
+    {
+        return new List<int> { 1, 2, 3, 4 };
     }
 }

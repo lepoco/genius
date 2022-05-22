@@ -5,29 +5,28 @@
 
 using Genius.Expert.Interfaces;
 
-namespace Genius.Expert
+namespace Genius.Expert;
+
+/// <summary>
+/// Represents the <see cref="ISolver"/> response.
+/// </summary>
+public class SolverResponse : ISolverResponse
 {
-    /// <summary>
-    /// Represents the <see cref="ISolver"/> response.
-    /// </summary>
-    public class SolverResponse : ISolverResponse
-    {
-        /// <inheritdoc />
-        public int SystemId { get; set; } = 0;
+    /// <inheritdoc />
+    public int SystemId { get; set; } = 0;
 
-        /// <inheritdoc />
-        public bool IsMultiple { get; set; } = false;
+    /// <inheritdoc />
+    public bool IsMultiple { get; set; } = false;
 
-        /// <inheritdoc />
-        public bool IsSolved { get; set; } = false;
+    /// <inheritdoc />
+    public bool IsSolved { get; set; } = false;
 
-        /// <inheritdoc />
-        public SolverStatus Status { get; set; } = SolverStatus.Unknown;
+    /// <inheritdoc />
+    public SolverStatus Status { get; set; } = SolverStatus.Unknown;
 
-        /// <inheritdoc />
-        public int[] NextConditions { get; set; } = { };
+    /// <inheritdoc />
+    public int[] NextConditions { get; set; } = { };
 
-        /// <inheritdoc />
-        public int[] ResultingProducts { get; set; } = { };
-    }
+    /// <inheritdoc />
+    public int[] ResultingProducts { get; set; } = { };
 }

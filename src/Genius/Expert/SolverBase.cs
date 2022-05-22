@@ -3,28 +3,27 @@
 // Copyright (C) 2022 Leszek Pomianowski.
 // All Rights Reserved.
 
+using System.Threading.Tasks;
 using Genius.Data.Contexts;
 using Genius.Expert.Interfaces;
-using System.Threading.Tasks;
 
-namespace Genius.Expert
+namespace Genius.Expert;
+
+/// <summary>
+/// Solver is responsible for finding the next <see cref="Data.Models.Expert.Condition"/> or <see cref="Data.Models.Expert.Product"/>.
+/// <para>This abstract implementation defines the underlying body methods that repeat themselves.</para>
+/// </summary>
+public abstract class SolverBase : ISolver
 {
     /// <summary>
-    /// Solver is responsible for finding the next <see cref="Data.Models.Expert.Condition"/> or <see cref="Data.Models.Expert.Product"/>.
-    /// <para>This abstract implementation defines the underlying body methods that repeat themselves.</para>
+    /// Contains the database context for expert systems.
     /// </summary>
-    public abstract class SolverBase : ISolver
+    protected IExpertContext ExpertContext;
+
+    public void SetContext(IExpertContext context)
     {
-        /// <summary>
-        /// Contains the database context for expert systems.
-        /// </summary>
-        protected IExpertContext ExpertContext;
-
-        public void SetContext(IExpertContext context)
-        {
-            ExpertContext = context;
-        }
-
-        public abstract Task<ISolverResponse> Solve(ISolverQuestion question);
+        ExpertContext = context;
     }
+
+    public abstract Task<ISolverResponse> Solve(ISolverQuestion question);
 }

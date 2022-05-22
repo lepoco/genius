@@ -3,41 +3,40 @@
 // Copyright (C) 2022 Leszek Pomianowski.
 // All Rights Reserved.
 
-namespace Genius.Expert.Interfaces
+namespace Genius.Expert.Interfaces;
+
+/// <summary>
+/// Represents the <see cref="ISolver"/> question.
+/// </summary>
+public interface ISolverQuestion
 {
     /// <summary>
-    /// Represents the <see cref="ISolver"/> question.
+    /// The system to which the question is asked.
     /// </summary>
-    public interface ISolverQuestion
-    {
-        /// <summary>
-        /// The system to which the question is asked.
-        /// </summary>
-        public int SystemId { get; set; }
+    public int SystemId { get; set; }
 
-        /// <summary>
-        /// Is multiple results possible.
-        /// </summary>
-        public bool IsMultiple { get; set; }
+    /// <summary>
+    /// Is multiple results possible.
+    /// </summary>
+    public bool IsMultiple { get; set; }
 
-        /// <summary>
-        /// <see cref="Data.Models.Expert.Condition"/>'s that confirm the <see cref="Data.Models.Expert.Product"/> you are looking for.
-        /// </summary>
-        public int[] Confirming { get; set; }
+    /// <summary>
+    /// <see cref="Data.Models.Expert.Condition"/>'s that confirm the <see cref="Data.Models.Expert.Product"/> you are looking for.
+    /// </summary>
+    public int[] Confirming { get; set; }
 
-        /// <summary>
-        /// <see cref="Data.Models.Expert.Condition"/>'s that negate the <see cref="Data.Models.Expert.Product"/> you are looking for.
-        /// </summary>
-        public int[] Negating { get; set; }
+    /// <summary>
+    /// <see cref="Data.Models.Expert.Condition"/>'s that negate the <see cref="Data.Models.Expert.Product"/> you are looking for.
+    /// </summary>
+    public int[] Negating { get; set; }
 
-        /// <summary>
-        /// <see cref="Data.Models.Expert.Condition"/>'s that are irrelevant to the <see cref="Data.Models.Expert.Product"/> you are looking for.
-        /// </summary>
-        public int[] Indifferent { get; set; }
+    /// <summary>
+    /// <see cref="Data.Models.Expert.Condition"/>'s that are irrelevant to the <see cref="Data.Models.Expert.Product"/> you are looking for.
+    /// </summary>
+    public int[] Indifferent { get; set; }
 
-        /// <summary>
-        /// Indicates whether all the question <see cref="Data.Models.Expert.Condition"/>'s are empty.
-        /// </summary>
-        public bool IsEmpty();
-    }
+    /// <summary>
+    /// Indicates whether all the question <see cref="Data.Models.Expert.Condition"/>'s are empty.
+    /// </summary>
+    public bool IsEmpty();
 }

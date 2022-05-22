@@ -6,28 +6,27 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Genius.Data.Models.Expert
+namespace Genius.Data.Models.Expert;
+
+public class Relation
 {
-    public class Relation
-    {
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        [Required]
-        [ForeignKey("System")]
-        public int SystemId { get; set; }
+    [Required]
+    [ForeignKey("System")]
+    public int SystemId { get; set; }
 
-        [Required]
-        [ForeignKey("Condition")]
-        public int CondiotionId { get; set; }
+    [Required]
+    [ForeignKey("Condition")]
+    public int CondiotionId { get; set; }
 
-        [Required]
-        [ForeignKey("Product")]
-        public int ProductId { get; set; }
+    [Required]
+    [ForeignKey("Product")]
+    public int ProductId { get; set; }
 
-        [Required]
-        [Range(0, 100)]
-        public int Weight { get; set; }
+    [Required]
+    [Range(0, 100)]
+    public int Weight { get; set; }
 
-        [Required] public RelationType Type { get; set; } = RelationType.Compliance;
-    }
+    [Required] public RelationType Type { get; set; } = RelationType.Compliance;
 }

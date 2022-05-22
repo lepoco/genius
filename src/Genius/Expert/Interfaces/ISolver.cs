@@ -3,27 +3,26 @@
 // Copyright (C) 2022 Leszek Pomianowski.
 // All Rights Reserved.
 
-using Genius.Data.Contexts;
 using System.Threading.Tasks;
+using Genius.Data.Contexts;
 
-namespace Genius.Expert.Interfaces
+namespace Genius.Expert.Interfaces;
+
+/// <summary>
+/// Solver is responsible for finding the next <see cref="Data.Models.Expert.Condition"/> or <see cref="Data.Models.Expert.Product"/>.
+/// </summary>
+public interface ISolver
 {
     /// <summary>
-    /// Solver is responsible for finding the next <see cref="Data.Models.Expert.Condition"/> or <see cref="Data.Models.Expert.Product"/>.
+    /// Defines the database context.
     /// </summary>
-    public interface ISolver
-    {
-        /// <summary>
-        /// Defines the database context.
-        /// </summary>
-        /// <param name="context">Database context.</param>
-        public void SetContext(IExpertContext context);
+    /// <param name="context">Database context.</param>
+    public void SetContext(IExpertContext context);
 
-        /// <summary>
-        /// Tries to solve the expert system, finding the next condition for the question or returning products that match.
-        /// </summary>
-        /// <param name="question">Local question instance to solver.</param>
-        /// <returns>Solver solution as <see cref="ISolverResponse"/>.</returns>
-        public Task<ISolverResponse> Solve(ISolverQuestion question);
-    }
+    /// <summary>
+    /// Tries to solve the expert system, finding the next condition for the question or returning products that match.
+    /// </summary>
+    /// <param name="question">Local question instance to solver.</param>
+    /// <returns>Solver solution as <see cref="ISolverResponse"/>.</returns>
+    public Task<ISolverResponse> Solve(ISolverQuestion question);
 }

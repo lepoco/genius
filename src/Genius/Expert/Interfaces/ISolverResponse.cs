@@ -3,42 +3,41 @@
 // Copyright (C) 2022 Leszek Pomianowski.
 // All Rights Reserved.
 
-namespace Genius.Expert.Interfaces
+namespace Genius.Expert.Interfaces;
+
+/// <summary>
+/// Represents the <see cref="ISolver"/> response.
+/// </summary>
+public interface ISolverResponse
 {
     /// <summary>
-    /// Represents the <see cref="ISolver"/> response.
+    /// Identifier of the expert system to which the question is asked.
     /// </summary>
-    public interface ISolverResponse
-    {
-        /// <summary>
-        /// Identifier of the expert system to which the question is asked.
-        /// </summary>
-        public int SystemId { get; set; }
+    public int SystemId { get; set; }
 
-        /// <summary>
-        /// Is multiple results possible.
-        /// </summary>
-        public bool IsMultiple { get; set; }
+    /// <summary>
+    /// Is multiple results possible.
+    /// </summary>
+    public bool IsMultiple { get; set; }
 
-        /// <summary>
-        /// Whether the system was resolved.
-        /// </summary>
-        public bool IsSolved { get; set; }
+    /// <summary>
+    /// Whether the system was resolved.
+    /// </summary>
+    public bool IsSolved { get; set; }
 
-        /// <summary>
-        /// Current response status.
-        /// </summary>
-        public SolverStatus Status { get; set; }
+    /// <summary>
+    /// Current response status.
+    /// </summary>
+    public SolverStatus Status { get; set; }
 
-        /// <summary>
-        /// The IDs of the <see cref="Data.Models.Expert.Condition"/> to be queried next.
-        /// </summary>
-        public int[] NextConditions { get; set; }
+    /// <summary>
+    /// The IDs of the <see cref="Data.Models.Expert.Condition"/> to be queried next.
+    /// </summary>
+    public int[] NextConditions { get; set; }
 
-        /// <summary>
-        /// <see cref="Data.Models.Expert.Product"/> IDs that are <see cref="ISolver"/> results.
-        /// </summary>
-        public int[] ResultingProducts { get; set; }
+    /// <summary>
+    /// <see cref="Data.Models.Expert.Product"/> IDs that are <see cref="ISolver"/> results.
+    /// </summary>
+    public int[] ResultingProducts { get; set; }
 
-    }
 }

@@ -3,51 +3,50 @@
 // Copyright (C) 2022 Leszek Pomianowski.
 // All Rights Reserved.
 
+using System.Linq;
+using System.Threading.Tasks;
 using Genius.Expert;
 using Genius.Expert.Interfaces;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
-using System.Linq;
-using System.Threading.Tasks;
 using SolverQuestion = GeniusProtocol.SolverQuestion;
 using SolverResponse = GeniusProtocol.SolverResponse;
 
-namespace Genius.Services
+namespace Genius.Services;
+
+public class GrpcSolverService : GeniusProtocol.Solver.SolverBase
 {
-    public class GrpcSolverService : GeniusProtocol.Solver.SolverBase
+    private readonly ILogger<GrpcSolverService> _logger;
+
+    private readonly IExpertService _genius;
+
+    public GrpcSolverService(ILogger<GrpcSolverService> logger, IExpertService genius)
     {
-        private readonly ILogger<GrpcSolverService> _logger;
+        _logger = logger;
+        _genius = genius;
+    }
 
-        private readonly IExpertService _genius;
+    public override async Task<SolverResponse> Ask(SolverQuestion solverQuestion, ServerCallContext context)
+    {
+        // TODO: If ES types differ, change solver
 
-        public GrpcSolverService(ILogger<GrpcSolverService> logger, IExpertService genius)
+        var response = await _genius.Solve<ConditionalSolver>(new Expert.SolverQuestion
         {
-            _logger = logger;
-            _genius = genius;
-        }
+            IsMultiple = solverQuestion?.Multiple ?? true,
+            SystemId = solverQuestion?.SystemId ?? 0,
+            Confirming = solverQuestion?.Confirming.ToArray() ?? new int[] { },
+            Negating = solverQuestion?.Negating.ToArray() ?? new int[] { },
+            Indifferent = solverQuestion?.Indifferent.ToArray() ?? new int[] { }
+        });
 
-        public override async Task<SolverResponse> Ask(SolverQuestion solverQuestion, ServerCallContext context)
+        return new SolverResponse
         {
-            // TODO: If ES types differ, change solver
-
-            var response = await _genius.Solve<ConditionalSolver>(new Expert.SolverQuestion
-            {
-                IsMultiple = solverQuestion?.Multiple ?? true,
-                SystemId = solverQuestion?.SystemId ?? 0,
-                Confirming = solverQuestion?.Confirming.ToArray() ?? new int[] { },
-                Negating = solverQuestion?.Negating.ToArray() ?? new int[] { },
-                Indifferent = solverQuestion?.Indifferent.ToArray() ?? new int[] { }
-            });
-
-            return new SolverResponse
-            {
-                SystemId = response.SystemId,
-                IsSolved = response.IsSolved,
-                Multiple = response.IsMultiple,
-                Status = (int)response.Status,
-                NextCondition = response.NextConditions.FirstOrDefault(0),
-                Products = { response.ResultingProducts }
-            };
-        }
+            SystemId = response.SystemId,
+            IsSolved = response.IsSolved,
+            Multiple = response.IsMultiple,
+            Status = (int)response.Status,
+            NextCondition = response.NextConditions.FirstOrDefault(0),
+            Products = { response.ResultingProducts }
+        };
     }
 }

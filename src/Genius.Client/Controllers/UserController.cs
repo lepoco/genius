@@ -3,27 +3,29 @@
 // Copyright (C) 2022 Leszek Pomianowski.
 // All Rights Reserved.
 
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
 
-namespace Genius.Client.Controllers
+namespace Genius.Client.Controllers;
+
+/// <summary>
+/// Provides API for managing the users.
+/// </summary>
+[ApiController]
+[Route("api/[controller]")]
+public class UserController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class UserController : ControllerBase
+    private readonly ILogger<UserController> _logger;
+
+    public UserController(ILogger<UserController> logger)
     {
-        private readonly ILogger<UserController> _logger;
+        _logger = logger;
+    }
 
-        public UserController(ILogger<UserController> logger)
-        {
-            _logger = logger;
-        }
-
-        [HttpGet]
-        public IEnumerable<int> Get()
-        {
-            return new List<int> { 1, 2, 3, 4 };
-        }
+    [HttpGet]
+    public IEnumerable<int> Get()
+    {
+        return new List<int> { 1, 2, 3, 4 };
     }
 }

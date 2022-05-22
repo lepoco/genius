@@ -5,29 +5,28 @@
 
 using Genius.Expert.Interfaces;
 
-namespace Genius.Expert
+namespace Genius.Expert;
+
+/// <summary>
+/// Represents the <see cref="ISolver"/> question.
+/// </summary>
+public class SolverQuestion : ISolverQuestion
 {
-    /// <summary>
-    /// Represents the <see cref="ISolver"/> question.
-    /// </summary>
-    public class SolverQuestion : ISolverQuestion
-    {
-        /// <inheritdoc />
-        public int SystemId { get; set; } = 0;
+    /// <inheritdoc />
+    public int SystemId { get; set; } = 0;
 
-        /// <inheritdoc />
-        public bool IsMultiple { get; set; } = true;
+    /// <inheritdoc />
+    public bool IsMultiple { get; set; } = true;
 
-        /// <inheritdoc />
-        public int[] Confirming { get; set; } = { };
+    /// <inheritdoc />
+    public int[] Confirming { get; set; } = { };
 
-        /// <inheritdoc />
-        public int[] Negating { get; set; } = { };
+    /// <inheritdoc />
+    public int[] Negating { get; set; } = { };
 
-        /// <inheritdoc />
-        public int[] Indifferent { get; set; } = { };
+    /// <inheritdoc />
+    public int[] Indifferent { get; set; } = { };
 
-        /// <inheritdoc />
-        public bool IsEmpty() => Confirming.Length == 0 && Negating.Length == 0 && Indifferent.Length == 0;
-    }
+    /// <inheritdoc />
+    public bool IsEmpty() => Confirming.Length == 0 && Negating.Length == 0 && Indifferent.Length == 0;
 }

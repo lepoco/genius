@@ -6,19 +6,18 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Genius.Data.Models.Expert
+namespace Genius.Data.Models.Expert;
+
+public class Condition
 {
-    public class Condition
-    {
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        [Required]
-        [ForeignKey("System")]
-        public int SystemId { get; set; }
+    [Required]
+    [ForeignKey("System")]
+    public int SystemId { get; set; }
 
-        [Required]
-        public string Name { get; set; }
+    [Required]
+    public string Name { get; set; }
 
-        public string Description { get; set; }
-    }
+    public string Description { get; set; }
 }

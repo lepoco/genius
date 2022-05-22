@@ -3,41 +3,43 @@
 // Copyright (C) 2022 Leszek Pomianowski.
 // All Rights Reserved.
 
-using Microsoft.AspNetCore.Mvc;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Genius.Client.Export
+namespace Genius.Client.Export;
+
+/// <summary>
+/// Converts <see cref="ExportExpertModel"/> to file stream.
+/// </summary>
+public class SystemToFileResult : FileResult
 {
-    public class SystemToFileResult : FileResult
+    private static string ExporterVersion = "1.0.0";
+
+    private readonly ExportExpertModel _exportModel;
+
+    public SystemToFileResult(ExportExpertModel exportModel) : base("text/genius")
     {
-        private static string ExporterVersion = "1.0.0";
+        FileDownloadName = exportModel.System.Guid + ".genius";
+        _exportModel = exportModel;
+    }
 
-        private readonly ExportExpertModel _exportModel;
+    public override async Task ExecuteResultAsync(ActionContext context)
+    {
+        var response = context.HttpContext.Response;
+        context.HttpContext.Response.Headers.Add("Content-Disposition",
+            new[] { "attachment; filename=" + FileDownloadName });
 
-        public SystemToFileResult(ExportExpertModel exportModel) : base("text/genius")
-        {
-            FileDownloadName = exportModel.System.Guid + ".genius";
-            _exportModel = exportModel;
-        }
+        await using var streamWriter = new StreamWriter(response.Body);
 
-        public override async Task ExecuteResultAsync(ActionContext context)
-        {
-            var response = context.HttpContext.Response;
-            context.HttpContext.Response.Headers.Add("Content-Disposition",
-                new[] { "attachment; filename=" + FileDownloadName });
+        await streamWriter.WriteLineAsync(
+            JsonSerializer.Serialize(_exportModel, typeof(ExportExpertModel), new JsonSerializerOptions
+            {
+                WriteIndented = true,
+            })
+        );
 
-            await using var streamWriter = new StreamWriter(response.Body);
-
-            await streamWriter.WriteLineAsync(
-                JsonSerializer.Serialize(_exportModel, typeof(ExportExpertModel), new JsonSerializerOptions
-                {
-                    WriteIndented = true,
-                })
-            );
-
-            await streamWriter.FlushAsync();
-        }
+        await streamWriter.FlushAsync();
     }
 }

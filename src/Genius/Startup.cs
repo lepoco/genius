@@ -3,6 +3,7 @@
 // Copyright (C) 2022 Leszek Pomianowski.
 // All Rights Reserved.
 
+using System;
 using Genius.Data.Contexts;
 using Genius.Expert.Interfaces;
 using Genius.Services;
@@ -13,64 +14,61 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
 
-namespace Genius
+namespace Genius;
+
+public class Startup
 {
-    public class Startup
+    public string DbExpertPath { get; internal set; }
+
+    public Startup(IConfiguration configuration)
     {
+        SetupDatabase(configuration);
+    }
 
-        public string DbExpertPath { get; internal set; }
+    public void SetupDatabase(IConfiguration configuration)
+    {
+        string expertDatabasePath = configuration.GetConnectionString("ExpertDatabase");
 
-        public Startup(IConfiguration configuration)
+        if (String.IsNullOrEmpty(expertDatabasePath))
         {
-            SetupDatabase(configuration);
+            var folder = Environment.SpecialFolder.LocalApplicationData;
+            var path = Environment.GetFolderPath(folder);
+
+            expertDatabasePath = System.IO.Path.Join(path, "GeniusExpert.db");
         }
 
-        public void SetupDatabase(IConfiguration configuration)
+        DbExpertPath = expertDatabasePath;
+    }
+
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddDbContext<IExpertContext, ExpertContext>(options =>
         {
-            string expertDatabasePath = configuration.GetConnectionString("ExpertDatabase");
+            options.UseSqlite($"Data Source={DbExpertPath}");
+        });
 
-            if (String.IsNullOrEmpty(expertDatabasePath))
-            {
-                var folder = Environment.SpecialFolder.LocalApplicationData;
-                var path = Environment.GetFolderPath(folder);
+        services.AddScoped<IExpertService, GeniusService>();
 
-                expertDatabasePath = System.IO.Path.Join(path, "GeniusExpert.db");
-            }
+        services.AddGrpc();
+    }
 
-            DbExpertPath = expertDatabasePath;
-        }
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        if (env.IsDevelopment())
+            app.UseDeveloperExceptionPage();
 
-        public void ConfigureServices(IServiceCollection services)
+        app.UseRouting();
+
+        app.UseEndpoints(endpoints =>
         {
-            services.AddDbContext<IExpertContext, ExpertContext>(options =>
+            endpoints.MapGrpcService<GrpcExpertService>();
+            endpoints.MapGrpcService<GrpcSolverService>();
+
+            endpoints.MapGet("/", async context =>
             {
-                options.UseSqlite($"Data Source={DbExpertPath}");
+                await context.Response.WriteAsync("Communication with gRPC endpoints must be made through a gRPC client.");
             });
-
-            services.AddScoped<IExpertService, GeniusService>();
-
-            services.AddGrpc();
-        }
-
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            if (env.IsDevelopment())
-                app.UseDeveloperExceptionPage();
-
-            app.UseRouting();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapGrpcService<GrpcExpertService>();
-                endpoints.MapGrpcService<GrpcSolverService>();
-
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync("Communication with gRPC endpoints must be made through a gRPC client.");
-                });
-            });
-        }
+        });
     }
 }

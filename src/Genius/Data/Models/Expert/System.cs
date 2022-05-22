@@ -6,35 +6,61 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Genius.Data.Models.Expert
+namespace Genius.Data.Models.Expert;
+
+/// <summary>
+/// Represents an expert system.
+/// </summary>
+public class System
 {
     /// <summary>
-    /// Represents an expert system.
+    /// Unique system identifier.
     /// </summary>
-    public class System
-    {
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        [Required]
-        public string Version { get; set; } = "1.0.0";
+    /// <summary>
+    /// Version of the Genius service, at which the system was created.
+    /// </summary>
+    [Required]
+    public string Version { get; set; } = "1.0.0";
 
-        [Required]
-        public string Name { get; set; } = "";
+    /// <summary>
+    /// Name of the expert system.
+    /// </summary>
+    [Required]
+    public string Name { get; set; } = "";
 
-        [Required]
-        public string Description { get; set; } = "";
+    /// <summary>
+    /// Description of the expert system.
+    /// </summary>
+    [Required]
+    public string Description { get; set; } = "";
 
-        [Required]
-        public string Guid { get; set; } = "";
+    /// <summary>
+    /// Unique GUID of the system.
+    /// </summary>
+    [Required]
+    public string Guid { get; set; } = "";
 
-        [Required]
-        public string Question { get; set; } = "";
+    /// <summary>
+    /// Question to ask by system.
+    /// </summary>
+    [Required]
+    public string Question { get; set; } = "";
 
-        [Required]
-        public SystemType Type { get; set; } = SystemType.Conditional;
+    /// <summary>
+    /// Type of the expert system, based on which the solver is choosen.
+    /// </summary>
+    [Required]
+    public SystemType Type { get; set; } = SystemType.Conditional;
 
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+    /// <summary>
+    /// Date of creation.
+    /// </summary>
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-        public DateTime UpdatedAt { get; set; } = DateTime.Now;
-    }
+    /// <summary>
+    /// Date of update.
+    /// </summary>
+    public DateTime UpdatedAt { get; set; } = DateTime.Now;
 }

@@ -3,26 +3,26 @@
 // Copyright (C) 2022 Leszek Pomianowski.
 // All Rights Reserved.
 
-namespace Genius.Data.Models.Expert
+namespace Genius.Data.Models.Expert;
+
+/// <summary>
+/// Represents a method of solving a question in a given expert system.
+/// </summary>
+public enum SystemType
 {
     /// <summary>
-    /// Represents a method of solving a question in a given expert system.
+    /// The easiest solution, based on AND, OR, OR logic.
     /// </summary>
-    public enum SystemType
-    {
-        /// <summary>
-        /// The easiest solution, based on AND, OR, OR logic.
-        /// </summary>
-        Conditional,
+    Conditional,
 
-        /// <summary>
-        /// Each relationship meets the condition to some extent, on a scale from 0 to 100.
-        /// </summary>
-        FuzzyScore,
+    /// <summary>
+    /// Each relationship meets the condition to some extent, on a scale from 0 to 100.
+    /// </summary>
+    FuzzyScore,
 
-        /// <summary>
-        /// Relationships are dependent on other relationships as well as belonging on a scale of 0 to 100
-        /// </summary>
-        FuzzyMultiValue
-    }
+    /// <summary>
+    /// Relationships are dependent on other relationships as well as belonging on a scale of 0 to 100
+    /// </summary>
+    FuzzyMultiValue
 }
+

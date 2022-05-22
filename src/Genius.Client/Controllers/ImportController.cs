@@ -3,6 +3,11 @@
 // Copyright (C) 2022 Leszek Pomianowski.
 // All Rights Reserved.
 
+using System;
+using System.IO;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
 using Genius.Client.Export;
 using Genius.Client.Import;
 using Genius.Client.Interfaces;
@@ -10,86 +15,83 @@ using GeniusProtocol;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.IO;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 
-namespace Genius.Client.Controllers
+namespace Genius.Client.Controllers;
+
+/// <summary>
+/// Provised API for importing the files.
+/// </summary>
+[ApiController]
+[Route("api/import")]
+public class ImportController : ControllerBase
 {
-    [ApiController]
-    [Route("api/import")]
-    public class ImportController : ControllerBase
+    private readonly ILogger<ExportController> _logger;
+
+    private readonly Expert.ExpertClient _grpcClient;
+
+    public ImportController(ILogger<ExportController> logger, IChannel channel)
     {
-        private readonly ILogger<ExportController> _logger;
+        _logger = logger;
+        _grpcClient = channel.GetClient<Expert.ExpertClient>();
+    }
 
-        private readonly Expert.ExpertClient _grpcClient;
+    [HttpPost]
+    [Route("")]
+    public async Task<IActionResult> ImportSystem([FromForm] string systemId, [FromForm] IFormFile file)
+    {
+        if (String.IsNullOrEmpty(systemId))
+            return BadRequest("System not found.");
 
-        public ImportController(ILogger<ExportController> logger, IChannel channel)
+        Int32.TryParse(systemId, out int iSystemId);
+
+        if (iSystemId < 1)
+            return BadRequest("System not found.");
+
+        if (file == null)
+            return BadRequest("File not found.");
+
+        var fileContent = await ReadFileContent(file);
+
+        if (String.IsNullOrEmpty(fileContent))
+            return BadRequest("File empty.");
+
+        var exportedData = TryToParseFile(fileContent);
+
+        if (exportedData?.System?.Id < 1)
+            return BadRequest("Serialization failed.");
+
+        var mergeStatus = await SystemImporter.MergeSystems(_grpcClient, iSystemId, exportedData);
+
+        if (!mergeStatus)
+            return BadRequest("Merging failed.");
+
+        return Ok("Success");
+    }
+
+    private async Task<string> ReadFileContent(IFormFile file)
+    {
+        var result = new StringBuilder();
+        using var reader = new StreamReader(file.OpenReadStream());
+
+        while (reader.Peek() >= 0)
+            result.AppendLine(await reader.ReadLineAsync());
+
+        reader.Close();
+
+        return result.ToString().Trim();
+    }
+
+    private ExportExpertModel TryToParseFile(string rawData)
+    {
+        try
         {
-            _logger = logger;
-            _grpcClient = channel.GetClient<Expert.ExpertClient>();
+            var data = JsonSerializer.Deserialize<ExportExpertModel>(rawData);
+
+            return data;
         }
-
-        [HttpPost]
-        [Route("")]
-        public async Task<IActionResult> ImportSystem([FromForm] string systemId, [FromForm] IFormFile file)
+        catch (Exception e)
         {
-            if (String.IsNullOrEmpty(systemId))
-                return BadRequest("System not found.");
-
-            Int32.TryParse(systemId, out int iSystemId);
-
-            if (iSystemId < 1)
-                return BadRequest("System not found.");
-
-            if (file == null)
-                return BadRequest("File not found.");
-
-            var fileContent = await ReadFileContent(file);
-
-            if (String.IsNullOrEmpty(fileContent))
-                return BadRequest("File empty.");
-
-            var exportedData = TryToParseFile(fileContent);
-
-            if (exportedData?.System?.Id < 1)
-                return BadRequest("Serialization failed.");
-
-            var mergeStatus = await SystemImporter.MergeSystems(_grpcClient, iSystemId, exportedData);
-
-            if (!mergeStatus)
-                return BadRequest("Merging failed.");
-
-            return Ok("Success");
-        }
-
-        private async Task<string> ReadFileContent(IFormFile file)
-        {
-            var result = new StringBuilder();
-            using var reader = new StreamReader(file.OpenReadStream());
-
-            while (reader.Peek() >= 0)
-                result.AppendLine(await reader.ReadLineAsync());
-
-            reader.Close();
-
-            return result.ToString().Trim();
-        }
-
-        private ExportExpertModel TryToParseFile(string rawData)
-        {
-            try
-            {
-                var data = JsonSerializer.Deserialize<ExportExpertModel>(rawData);
-
-                return data;
-            }
-            catch (Exception e)
-            {
-                return new ExportExpertModel { };
-            }
+            return new ExportExpertModel { };
         }
     }
 }

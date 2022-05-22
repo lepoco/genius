@@ -3,16 +3,15 @@
 // Copyright (C) 2022 Leszek Pomianowski.
 // All Rights Reserved.
 
-namespace Genius.Expert
+namespace Genius.Expert;
+
+public enum SolverStatus
 {
-    public enum SolverStatus
-    {
-        Unknown,
+    Unknown,
 
-        Solved,
+    Solved,
 
-        NewQuestion,
+    NewQuestion,
 
-        RepeatQuestion
-    }
+    RepeatQuestion
 }

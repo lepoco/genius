@@ -10,35 +10,21 @@ on:
 
 jobs:
   build:
-    runs-on: windows-2022
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet-version: ['6.0.x' ]
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: microsoft/setup-msbuild@v1.1
+      - uses: actions/checkout@v3
+      - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v2
         with:
-          msbuild-architecture: x64
-      - uses: nuget/setup-nuget@v1
-        with:
-          nuget-version: 'latest'
-
-      - name: NuGet restore
-        run: nuget restore Genius.sln
-
+          dotnet-version: ${{ matrix.dotnet-version }}
+      - name: Install dependencies
+        run: dotnet restore src/Genius.sln
       - name: Build
-        run: src/msbuild Genius.sln -p:Configuration=Release -m
-
-      - name: Publish net60
-        uses: actions/upload-artifact@v2
-        id: publish_net6
-        with:
-          name: genius-net6
-          path: |
-            src/Genius/bin/Release/net6.0
-
-      - name: Publish client net60
-        uses: actions/upload-artifact@v2
-        id: publish_client_net6
-        with:
-          name: genius-client-net6
-          path: |
-            src/Genius.Client/bin/Release/net6.0
+        run: dotnet build src/Genius.sln --configuration Release --no-restore
+      - name: Test
+        run: dotnet test src/Genius.sln --no-restore --verbosity normal

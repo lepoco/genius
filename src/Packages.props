@@ -5,9 +5,9 @@
     <PackageReference Update="Google.Protobuf" Version="3.20.1" />
     <PackageReference Update="Grpc.Tools" Version="2.46.1" />
     <PackageReference Update="Grpc.Net.Common" Version="2.46.0" />
-    <PackageReference Update="Grpc.Net.Client" Version="2.45.0" />
+    <PackageReference Update="Grpc.Net.Client" Version="2.46.0" />
     <PackageReference Update="Grpc.AspNetCore.Server.ClientFactory" Version="2.46.0" />
-    <PackageReference Update="Microsoft.AspNetCore.SpaServices.Extensions" Version="6.0.4" />
+    <PackageReference Update="Microsoft.AspNetCore.SpaServices.Extensions" Version="6.0.5" />
     <PackageReference Update="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.5" />
     <PackageReference Update="Microsoft.EntityFrameworkCore.Tools" Version="6.0.5" />
   </ItemGroup>

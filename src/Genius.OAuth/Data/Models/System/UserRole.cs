@@ -3,16 +3,15 @@
 // Copyright (C) 2022 Leszek Pomianowski.
 // All Rights Reserved.
 
-namespace Genius.OAuth.Data.Models.System
+namespace Genius.OAuth.Data.Models.System;
+
+public enum UserRole
 {
-    public enum UserRole
-    {
-        Default,
+    Default,
 
-        Analyst,
+    Analyst,
 
-        Moderator,
+    Moderator,
 
-        Admin
-    }
+    Admin
 }

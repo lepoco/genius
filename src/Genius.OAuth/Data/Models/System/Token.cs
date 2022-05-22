@@ -3,28 +3,22 @@
 // Copyright (C) 2022 Leszek Pomianowski.
 // All Rights Reserved.
 
-using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Genius.OAuth.Data.Models.System;
 
-public class User
+public class Token
 {
     public int Id { get; set; }
 
     [Required]
-    public string Name { get; set; }
+    [ForeignKey("User")]
+    public string UserId { get; set; }
 
     [Required]
-    public string Email { get; set; }
+    public string PublicToken { get; set; }
 
     [Required]
-    public string Password { get; set; }
-
-    [Required]
-    public UserRole Role { get; set; }
-
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
-
-    public DateTime UpdatedAt { get; set; } = DateTime.Now;
+    public string PrivateToken { get; set; }
 }

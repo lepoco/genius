@@ -6,21 +6,20 @@
 using Genius.OAuth.Data.Models.System;
 using Microsoft.EntityFrameworkCore;
 
-namespace Genius.OAuth.Data.Contexts
+namespace Genius.OAuth.Data.Contexts;
+
+/// <summary>
+/// Represents the database responsible for the application logic.
+/// </summary>
+/// Add-Migration InitialCreate -OutputDir Data/Migrations/System -Context SystemContext
+/// Update-Database -Context SystemContext
+public class SystemContext : DbContext
 {
-    /// <summary>
-    /// Represents the database responsible for the application logic.
-    /// </summary>
-    /// Add-Migration InitialCreate -OutputDir Data/Migrations/System -Context SystemContext
-    /// Update-Database -Context SystemContext
-    public class SystemContext : DbContext
+    public DbSet<User> Users { get; set; }
+
+    public DbSet<Token> Tokens { get; set; }
+
+    public SystemContext(DbContextOptions<SystemContext> options) : base(options)
     {
-        public DbSet<User> Users { get; set; }
-
-        public DbSet<Statistic> Statistics { get; set; }
-
-        public SystemContext(DbContextOptions<SystemContext> options) : base(options)
-        {
-        }
     }
 }

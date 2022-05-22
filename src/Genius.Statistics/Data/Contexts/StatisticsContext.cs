@@ -14,5 +14,9 @@ public class StatisticsContext : DbContext
 {
     /// Entries in the database.
     public DbSet<Models.StatisticEntry> Entries { get; set; }
+
+    public StatisticsContext(DbContextOptions<StatisticsContext> options) : base(options)
+    {
+    }
 }
 

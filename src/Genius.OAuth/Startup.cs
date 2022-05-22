@@ -18,6 +18,8 @@ namespace Genius.OAuth;
 
 public class Startup
 {
+    public const string DatabaseName = "GeniusOAuth.db";
+
     public string DbSystemPath { get; internal set; }
 
     public Startup(IConfiguration configuration)
@@ -34,7 +36,7 @@ public class Startup
             var folder = Environment.SpecialFolder.LocalApplicationData;
             var path = Environment.GetFolderPath(folder);
 
-            systemDatabasePath = System.IO.Path.Join(path, "GeniusSystem.db");
+            systemDatabasePath = System.IO.Path.Join(path, DatabaseName);
         }
 
         DbSystemPath = systemDatabasePath;
@@ -56,16 +58,13 @@ public class Startup
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
         if (env.IsDevelopment())
-        {
             app.UseDeveloperExceptionPage();
-        }
 
         app.UseRouting();
 
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapGrpcService<GrpcUserService>();
-            endpoints.MapGrpcService<GrpcStatisticsServer>();
 
             endpoints.MapGet("/", async context =>
             {

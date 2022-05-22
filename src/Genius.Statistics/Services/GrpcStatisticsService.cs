@@ -108,6 +108,8 @@ public class GrpcStatisticsService : Statistic.StatisticBase
             _ => Data.Models.StatisticType.Unknown
         };
 
+        // TODO: Datetime
+
         var savedEntries = _context.Entries.Where(entry => entry.Type == lookupType);
 
         foreach (Data.Models.StatisticEntry singleEntry in savedEntries)
@@ -139,6 +141,8 @@ public class GrpcStatisticsService : Statistic.StatisticBase
             return;
 
         var entryContext = request.Context.Trim();
+
+        // TODO: Datetime
 
         IQueryable<Data.Models.StatisticEntry> savedEntries;
 

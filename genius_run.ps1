@@ -19,6 +19,9 @@ Write-Host "======================="
 Write-Host "Configuration: $Configuration"
 Write-Host ""
 
+$Script:Source = ".\src\"
+$Script:Solution = "Genius.sln"
+
 function Write-Log([string]$message, [string]$type) {
   Write-Host "[" -NoNewline
 

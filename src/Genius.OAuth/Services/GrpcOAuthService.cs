@@ -4,6 +4,7 @@
 // All Rights Reserved.
 
 using System.Threading.Tasks;
+using Genius.OAuth.Data.Contexts;
 using GeniusProtocol;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
@@ -14,9 +15,12 @@ public class GrpcOAuthService : GeniusProtocol.OAuth.OAuthBase
 {
     private readonly ILogger<GrpcOAuthService> _logger;
 
-    public GrpcOAuthService(ILogger<GrpcOAuthService> logger)
+    private readonly SystemContext _context;
+
+    public GrpcOAuthService(ILogger<GrpcOAuthService> logger, SystemContext context)
     {
         _logger = logger;
+        _context = context;
     }
 
     public override Task<TokenModel> GetAccessToken(AccessTokenLookup request, ServerCallContext context)

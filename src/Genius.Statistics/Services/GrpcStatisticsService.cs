@@ -62,6 +62,26 @@ public class GrpcStatisticsService : Statistic.StatisticBase
         return new StatisticResponseModel { Id = insertedEntry?.Id ?? 0 };
     }
 
+    public override async Task<StatisticResponseModel> Delete(StatisticLookupModel request, ServerCallContext context)
+    {
+        if (request == null)
+            return new StatisticResponseModel { Id = 0 };
+
+        if (request.Id < 1)
+            return new StatisticResponseModel { Id = 0 };
+
+        var entry = await _context.Entries.Where(entry => entry.Id == request.Id).FirstOrDefaultAsync();
+
+        if (entry == null || entry.Id < 1)
+            return new StatisticResponseModel { Id = 0 };
+
+        _context.Entries.Remove(entry);
+
+        await _context.SaveChangesAsync();
+
+        return new StatisticResponseModel { Id = request.Id };
+    }
+
     public override async Task<StatisticModel> GetSingle(StatisticLookupModel request, ServerCallContext context)
     {
         if (request == null)

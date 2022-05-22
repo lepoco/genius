@@ -12,6 +12,8 @@ package GeniusProtocol;
 service Statistic {
     rpc Push(StatisticModel) returns (StatisticResponseModel);
 
+    rpc Delete(StatisticLookupModel) returns (StatisticResponseModel);
+
     rpc GetSingle(StatisticLookupModel) returns (StatisticModel);
 
     rpc GetRange(StatisticRangeLookupModel) returns (stream StatisticModel);

@@ -22,6 +22,12 @@ public class User
     public string Password { get; set; }
 
     [Required]
+    public string ProfilePicture { get; set; }
+
+    [Required]
+    public UserLanguage Language { get; set; }
+
+    [Required]
     public UserRole Role { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.Now;

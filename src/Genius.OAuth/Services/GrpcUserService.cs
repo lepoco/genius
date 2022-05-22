@@ -3,10 +3,11 @@
 // Copyright (C) 2022 Leszek Pomianowski.
 // All Rights Reserved.
 
+using System.Threading.Tasks;
+using Genius.OAuth.Data.Contexts;
 using GeniusProtocol;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
 
 namespace Genius.OAuth.Services
 {
@@ -14,9 +15,12 @@ namespace Genius.OAuth.Services
     {
         private readonly ILogger<GrpcUserService> _logger;
 
-        public GrpcUserService(ILogger<GrpcUserService> logger)
+        private readonly SystemContext _context;
+
+        public GrpcUserService(ILogger<GrpcUserService> logger, SystemContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
         public override Task<UserResponseModel> Register(UserModel request, ServerCallContext context)
@@ -24,9 +28,19 @@ namespace Genius.OAuth.Services
             return base.Register(request, context);
         }
 
+        public override Task<UserModel> Update(UserModel request, ServerCallContext context)
+        {
+            return base.Update(request, context);
+        }
+
         public override Task<UserResponseModel> Get(UserLookupModel request, ServerCallContext context)
         {
             return base.Get(request, context);
+        }
+
+        public override Task<UserResponseModel> Delete(UserModel request, ServerCallContext context)
+        {
+            return base.Delete(request, context);
         }
     }
 }

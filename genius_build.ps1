@@ -12,7 +12,11 @@ Param(
 )
 
 $env:BUILDCOMMAND = "dotnet"
-$env:NPMCOMMAND = "dotnet"
+$env:NPMCOMMAND = "npm"
+
+$Script:Source = ".\src\"
+$Script:Solution = "Genius.sln"
+$Script:ClientApp = "GeniusClient\ClientApp\"
 
 Write-Host "======================="
 Write-Host "Genius - Expert Systems" -ForegroundColor Green
@@ -67,7 +71,7 @@ function Invoke-Restore
 {
   Write-Log -Message "Invoke-Restore: Started" -Type "empty"
 
-  dotnet restore --nologo Genius.sln
+  & $env:BUILDCOMMAND restore --nologo $Script:Source$Script:Solution
 
   if ($lastexitcode -eq 0) {
     Write-Log -Message "Invoke-Restore: Completed" -Type "success"
@@ -83,7 +87,7 @@ function Invoke-Restore
 function Invoke-Build {
   Write-Log -Message "Invoke-Build: Started" -Type "empty"
 
-  dotnet msbuild --nologo Genius.sln -property:Configuration=$Configuration
+  & $env:BUILDCOMMAND build --nologo $Script:Source$Script:Solution -property:Configuration=$Configuration
 
   if ($lastexitcode -eq 0) {
     Write-Log -Message "Invoke-Build: Completed" -Type "success"
@@ -99,7 +103,7 @@ function Invoke-Build {
 function Invoke-BuildNpm {
   Write-Log -Message "Invoke-BuildNpm: Started" -Type "empty"
 
-  # Start-Process npm install -WorkingDirectory "./Genius.Client/bin/$Configuration/net6.0/ClientApp/"
+  #$ npm install -WorkingDirectory "$Script:Source$Script:ClientApp"
 
   # if ($lastexitcode -eq 0) {
   #   Write-Log -Message "Invoke-BuildNpm: Completed" -Type "success"
@@ -121,8 +125,9 @@ function Invoke-DatabaseUpdate {
 
   Write-Log -Message "Invoke-DatabaseUpdate: Started" -Type "empty"
 
-  dotnet ef database update --project Genius --context ExpertContext
-  dotnet ef database update --project Genius --context SystemContext
+  & $env:BUILDCOMMAND ef database update --project "$($Script:Source)Genius" --context ExpertContext
+  & $env:BUILDCOMMAND ef database update --project "$($Script:Source)Genius.OAuth" --context SystemContext
+  & $env:BUILDCOMMAND ef database update --project "$($Script:Source)Genius.Statistics" --context StatisticsContext
 
   if ($lastexitcode -eq 0) {
     Write-Log -Message "Invoke-DatabaseUpdate: Completed" -Type "success"

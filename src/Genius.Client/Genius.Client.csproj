@@ -5,6 +5,9 @@
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="Genius.Tests" />
+  </ItemGroup>
 
   <PropertyGroup>
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
@@ -17,7 +20,7 @@
   <ItemGroup>
     <PackageReference Include="Grpc.Net.Client" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" />
-    <PackageReference Include="NLog.Web.AspNetCore"/>
+    <PackageReference Include="NLog.Web.AspNetCore" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,6 +32,10 @@
 
   <ItemGroup>
     <Content Remove="nlog.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove=".gitignore" />
   </ItemGroup>
 
   <ItemGroup>

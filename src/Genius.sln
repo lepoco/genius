@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Genius", "Genius\Genius.csproj", "{004C3C15-F01A-4B92-B9DD-67DACCA92A6E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Genius.Core", "Genius\Genius.Core.csproj", "{004C3C15-F01A-4B92-B9DD-67DACCA92A6E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Genius.Client", "Genius.Client\Genius.Client.csproj", "{A6DC536E-CBFD-420D-87D0-20A15BF4B901}"
 EndProject
@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Genius.Protocol", "Genius.P
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Genius.OAuth", "Genius.OAuth\Genius.OAuth.csproj", "{65BA37E6-AACC-4559-A18B-23A420282B37}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Genius.Statistics", "Genius.Statistics\Genius.Statistics.csproj", "{5DFF53B6-34ED-47DB-BC92-4521DBD0132F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Genius.Statistics", "Genius.Statistics\Genius.Statistics.csproj", "{5DFF53B6-34ED-47DB-BC92-4521DBD0132F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

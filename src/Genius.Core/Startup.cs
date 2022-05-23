@@ -4,9 +4,9 @@
 // All Rights Reserved.
 
 using System;
-using Genius.Data.Contexts;
-using Genius.Expert.Interfaces;
-using Genius.Services;
+using Genius.Core.Data.Contexts;
+using Genius.Core.Expert.Interfaces;
+using Genius.Core.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -15,7 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Genius;
+namespace Genius.Core;
 
 public class Startup
 {

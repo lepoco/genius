@@ -7,10 +7,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Genius.Data.Contexts;
-using Genius.Expert.Interfaces;
+using Genius.Core.Data.Contexts;
+using Genius.Core.Expert.Interfaces;
 
-namespace Genius.Services;
+namespace Genius.Core.Services;
 
 public class GeniusService : IExpertService
 {

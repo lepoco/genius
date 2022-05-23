@@ -6,15 +6,14 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Genius.Data.Models.Expert;
-using Genius.Expert.Interfaces;
+using Genius.Core.Expert.Interfaces;
 using Genius.Protocol;
 using Grpc.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using RelationType = Genius.Data.Models.Expert.RelationType;
+using RelationType = Genius.Core.Data.Models.Expert.RelationType;
 
-namespace Genius.Services;
+namespace Genius.Core.Services;
 
 public class GrpcExpertService : Genius.Protocol.Expert.ExpertBase
 {
@@ -49,10 +48,13 @@ public class GrpcExpertService : Genius.Protocol.Expert.ExpertBase
             Name = request.Name,
             Description = request.Description,
             Question = request.Question ?? "",
+            Author = String.Empty,
+            DataSource = String.Empty,
             CreatedAt = DateTime.Now,
             UpdatedAt = DateTime.Now,
             Version = "1.0.0",
-            Type = SystemType.Conditional,
+            Confidence = 256,
+            Type = Genius.Core.Data.Models.Expert.SystemType.Conditional,
             Guid = Guid.NewGuid().ToString()
         };
 
@@ -300,7 +302,7 @@ public class GrpcExpertService : Genius.Protocol.Expert.ExpertBase
         {
             SystemId = expertSystem.Id,
             ProductId = databaseProduct.Id,
-            CondiotionId = databaseCondition.Id,
+            ConditionId = databaseCondition.Id,
             Weight = request.Weight
         };
 
@@ -361,13 +363,13 @@ public class GrpcExpertService : Genius.Protocol.Expert.ExpertBase
 
         var databaseRelation =
             await _expertService.Context.Relations.Where(rel => rel.Id == request.Id).FirstOrDefaultAsync() ??
-            new Data.Models.Expert.Relation { Id = 0, SystemId = 0, CondiotionId = 0, ProductId = 0 };
+            new Data.Models.Expert.Relation { Id = 0, SystemId = 0, ConditionId = 0, ProductId = 0 };
 
         return new RelationModel
         {
             Id = databaseRelation.Id,
             SystemId = databaseRelation.SystemId,
-            ConditionId = databaseRelation.CondiotionId,
+            ConditionId = databaseRelation.ConditionId,
             ProductId = databaseRelation.ProductId
         };
     }
@@ -431,7 +433,7 @@ public class GrpcExpertService : Genius.Protocol.Expert.ExpertBase
             {
                 Id = singleRelation.Id,
                 SystemId = singleRelation.SystemId,
-                ConditionId = singleRelation.CondiotionId,
+                ConditionId = singleRelation.ConditionId,
                 ProductId = singleRelation.ProductId,
                 Weight = singleRelation.Weight
             });
@@ -524,15 +526,15 @@ public class GrpcExpertService : Genius.Protocol.Expert.ExpertBase
             };
 
         var confirming = await _expertService.Context.Relations
-            .Where(rel => rel.CondiotionId == request.Id && rel.Type == RelationType.Compliance)
+            .Where(rel => rel.ConditionId == request.Id && rel.Type == RelationType.Compliance)
             .Select(rel => rel.Id)
             .ToArrayAsync();
         var negating = await _expertService.Context.Relations
-            .Where(rel => rel.CondiotionId == request.Id && rel.Type == RelationType.Contradiction)
+            .Where(rel => rel.ConditionId == request.Id && rel.Type == RelationType.Contradiction)
             .Select(rel => rel.Id)
             .ToArrayAsync();
         var indifferent = await _expertService.Context.Relations
-            .Where(rel => rel.CondiotionId == request.Id && rel.Type == RelationType.Disregard)
+            .Where(rel => rel.ConditionId == request.Id && rel.Type == RelationType.Disregard)
             .Select(rel => rel.Id)
             .ToArrayAsync();
 
@@ -623,7 +625,7 @@ public class GrpcExpertService : Genius.Protocol.Expert.ExpertBase
             {
                 SystemId = request.SystemId,
                 ProductId = product.Id,
-                CondiotionId = singleConditionId,
+                ConditionId = singleConditionId,
                 Weight = 100,
                 Type = RelationType.Compliance
             });
@@ -635,7 +637,7 @@ public class GrpcExpertService : Genius.Protocol.Expert.ExpertBase
             {
                 SystemId = product.SystemId,
                 ProductId = product.Id,
-                CondiotionId = singleConditionId,
+                ConditionId = singleConditionId,
                 Weight = 100,
                 Type = RelationType.Contradiction
             });
@@ -647,7 +649,7 @@ public class GrpcExpertService : Genius.Protocol.Expert.ExpertBase
             {
                 SystemId = product.SystemId,
                 ProductId = product.Id,
-                CondiotionId = singleConditionId,
+                ConditionId = singleConditionId,
                 Weight = 100,
                 Type = RelationType.Disregard
             });
@@ -748,7 +750,7 @@ public class GrpcExpertService : Genius.Protocol.Expert.ExpertBase
             return new ConditionLookupModel { Id = 0, SystemId = 0 };
 
         var conditionRelations = await _expertService.Context.Relations
-            .Where(rel => rel.CondiotionId == condition.Id).CountAsync();
+            .Where(rel => rel.ConditionId == condition.Id).CountAsync();
 
         if (conditionRelations > 0)
             return new ConditionLookupModel { Id = 0, SystemId = 0 };

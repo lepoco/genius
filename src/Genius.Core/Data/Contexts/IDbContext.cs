@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 // TODO: It's not a complete EF Core context abstraction, but provides suitable methods.
 
-namespace Genius.Data.Contexts;
+namespace Genius.Core.Data.Contexts;
 
 /// <summary>
 ///     <para>

@@ -3,10 +3,10 @@
 // Copyright (C) 2022 Leszek Pomianowski.
 // All Rights Reserved.
 
-using Genius.Data.Models.Expert;
+using Genius.Core.Data.Models.Expert;
 using Microsoft.EntityFrameworkCore;
 
-namespace Genius.Data.Contexts;
+namespace Genius.Core.Data.Contexts;
 
 /// <summary>
 /// Abstraction of the database context.

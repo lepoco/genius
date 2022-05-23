@@ -3,7 +3,7 @@
 // Copyright (C) 2022 Leszek Pomianowski.
 // All Rights Reserved.
 
-namespace Genius.Expert;
+namespace Genius.Core.Expert;
 
 public enum SolverStatus
 {

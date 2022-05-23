@@ -3,7 +3,7 @@
 // Copyright (C) 2022 Leszek Pomianowski.
 // All Rights Reserved.
 
-namespace Genius.Expert.Interfaces;
+namespace Genius.Core.Expert.Interfaces;
 
 /// <summary>
 /// Represents the <see cref="ISolver"/> question.

@@ -3,9 +3,9 @@
 // Copyright (C) 2022 Leszek Pomianowski.
 // All Rights Reserved.
 
-using Genius.Expert.Interfaces;
+using Genius.Core.Expert.Interfaces;
 
-namespace Genius.Expert;
+namespace Genius.Core.Expert;
 
 /// <summary>
 /// Represents the <see cref="ISolver"/> response.

@@ -5,14 +5,14 @@
 
 using System.Linq;
 using System.Threading.Tasks;
-using Genius.Expert;
-using Genius.Expert.Interfaces;
+using Genius.Core.Expert;
+using Genius.Core.Expert.Interfaces;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
 using SolverQuestion = Genius.Protocol.SolverQuestion;
 using SolverResponse = Genius.Protocol.SolverResponse;
 
-namespace Genius.Services;
+namespace Genius.Core.Services;
 
 public class GrpcSolverService : Genius.Protocol.Solver.SolverBase
 {

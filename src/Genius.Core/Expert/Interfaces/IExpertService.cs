@@ -4,9 +4,9 @@
 // All Rights Reserved.
 
 using System.Threading.Tasks;
-using Genius.Data.Contexts;
+using Genius.Core.Data.Contexts;
 
-namespace Genius.Expert.Interfaces;
+namespace Genius.Core.Expert.Interfaces;
 
 /// <summary>
 /// Stores the solver status and databases in a given scope.

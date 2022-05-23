@@ -5,11 +5,11 @@
 
 using System.Linq;
 using System.Threading.Tasks;
-using Genius.Data.Models.Expert;
-using Genius.Expert.Interfaces;
+using Genius.Core.Data.Models.Expert;
+using Genius.Core.Expert.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace Genius.Expert;
+namespace Genius.Core.Expert;
 
 /// <summary>
 /// Solves questions on the basis of the provided <see cref="Condition"/>'s by searching for a suitable <see cref="Product"/> or by returning the next <see cref="Condition"/> to ask.
@@ -66,19 +66,19 @@ public class ConditionalSolver : SolverBase
         // Remove all relations that already occurs as confirming
         if (_question.Confirming.Any())
             filteredAvailableRelations = filteredAvailableRelations
-                .Where(relation => !_question.Confirming.Contains(relation.CondiotionId))
+                .Where(relation => !_question.Confirming.Contains(relation.ConditionId))
                 .ToArray();
 
         // Remove all relations that already occurs as negating
         if (_question.Negating.Any())
             filteredAvailableRelations = filteredAvailableRelations
-                .Where(relation => !_question.Negating.Contains(relation.CondiotionId))
+                .Where(relation => !_question.Negating.Contains(relation.ConditionId))
                 .ToArray();
 
         // Group relations by condition and order them by most common
         // and remove all which count is equal for products count, so condition occurs for every product
         var availableConditionsIds = filteredAvailableRelations
-            .GroupBy(relation => relation.CondiotionId)
+            .GroupBy(relation => relation.ConditionId)
             .OrderByDescending(group => group.Count())
             .Where(group => group.Count() < availableProductsId.Length)
             .Select(group => group.Key)
@@ -107,13 +107,13 @@ public class ConditionalSolver : SolverBase
         // If there are confirming conditions, get groups that contain it
         if (_question.Confirming.Any())
             relationGroups = relationGroups
-                .Where(group => group.Any(rel => _question.Confirming.Contains(rel.CondiotionId)))
+                .Where(group => group.Any(rel => _question.Confirming.Contains(rel.ConditionId)))
                 .ToArray();
 
         // If there are negating conditions, remove groups that contain it
         if (_question.Negating.Any())
             relationGroups = relationGroups
-                .Where(group => !group.Any(rel => _question.Negating.Contains(rel.CondiotionId)))
+                .Where(group => !group.Any(rel => _question.Negating.Contains(rel.ConditionId)))
                 .ToArray();
 
         // Order by groups with the most conditions and select product IDs.
@@ -129,7 +129,7 @@ public class ConditionalSolver : SolverBase
         // Get all system conditions and group them by most popular
         var mostCommonConditions = await ExpertContext.Relations
             .Where(relation => relation.SystemId == _question.SystemId)
-            .GroupBy(q => q.CondiotionId)
+            .GroupBy(q => q.ConditionId)
             .OrderByDescending(gp => gp.Count())
             .Select(g => g.Key) // Key of the group, i.e. the key by which it is grouped
             .ToArrayAsync();
@@ -141,7 +141,7 @@ public class ConditionalSolver : SolverBase
         // If all Products are related to the most common condition, skip it.
         foreach (var singleConditionId in mostCommonConditions)
         {
-            if (await ExpertContext.Relations.Where(rel => rel.CondiotionId == singleConditionId).CountAsync() >=
+            if (await ExpertContext.Relations.Where(rel => rel.ConditionId == singleConditionId).CountAsync() >=
                 productsCount)
                 continue;
 

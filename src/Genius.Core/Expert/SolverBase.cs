@@ -4,10 +4,10 @@
 // All Rights Reserved.
 
 using System.Threading.Tasks;
-using Genius.Data.Contexts;
-using Genius.Expert.Interfaces;
+using Genius.Core.Data.Contexts;
+using Genius.Core.Expert.Interfaces;
 
-namespace Genius.Expert;
+namespace Genius.Core.Expert;
 
 /// <summary>
 /// Solver is responsible for finding the next <see cref="Data.Models.Expert.Condition"/> or <see cref="Data.Models.Expert.Product"/>.

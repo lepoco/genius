@@ -33,8 +33,4 @@
     <ProjectReference Include="..\Genius.Protocol\Genius.Protocol.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Data\Migrations\" />
-  </ItemGroup>
-
 </Project>

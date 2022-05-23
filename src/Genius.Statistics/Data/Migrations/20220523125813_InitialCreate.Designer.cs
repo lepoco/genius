@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Genius.Statistics.Data.Migrations
 {
     [DbContext(typeof(StatisticsContext))]
-    [Migration("20220522151257_InitialCreate")]
+    [Migration("20220523125813_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -22,6 +22,7 @@ namespace Genius.Statistics.Data.Migrations
             modelBuilder.Entity("Genius.Statistics.Data.Models.StatisticEntry", b =>
                 {
                     b.Property<int>("Id")
+                        .IsConcurrencyToken()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
@@ -31,6 +32,11 @@ namespace Genius.Statistics.Data.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
+
+                    b.Property<byte[]>("Timestamp")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("BLOB");
 
                     b.Property<int>("Type")
                         .HasColumnType("INTEGER");

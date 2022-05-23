@@ -20,6 +20,7 @@ namespace Genius.Statistics.Data.Migrations
             modelBuilder.Entity("Genius.Statistics.Data.Models.StatisticEntry", b =>
                 {
                     b.Property<int>("Id")
+                        .IsConcurrencyToken()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
@@ -29,6 +30,11 @@ namespace Genius.Statistics.Data.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
+
+                    b.Property<byte[]>("Timestamp")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("BLOB");
 
                     b.Property<int>("Type")
                         .HasColumnType("INTEGER");

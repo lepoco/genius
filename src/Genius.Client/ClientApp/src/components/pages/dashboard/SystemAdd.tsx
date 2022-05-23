@@ -41,6 +41,7 @@ export class SystemAdd extends ORouter.PureComponent<ISystemAddState> {
 
     this.formOnSubmit = this.formOnSubmit.bind(this);
     this.inputOnChange = this.inputOnChange.bind(this);
+    this.buttonImportOnClick = this.buttonImportOnClick.bind(this);
   }
 
   private async inputOnChange(
@@ -60,6 +61,12 @@ export class SystemAdd extends ORouter.PureComponent<ISystemAddState> {
     });
 
     return true;
+  }
+
+  private async buttonImportOnClick(event: React.MouseEvent<HTMLButtonElement, MouseEvent>): Promise<boolean> {
+    event.preventDefault();
+
+    return false;
   }
 
   private async formOnSubmit(event: React.FormEvent<HTMLFormElement>): Promise<boolean> {
@@ -134,8 +141,14 @@ export class SystemAdd extends ORouter.PureComponent<ISystemAddState> {
                   value={this.state.systemQuestion}
                   onChange={e => this.inputOnChange(e)}>
                   <option value="relational">Relation based</option>
+                  <option disabled value="relational_non_confident">
+                    Relation with confidence score
+                  </option>
                   <option disabled value="fuzzy">
                     Fuzzy set method (weight)
+                  </option>
+                  <option disabled value="fuzy_multi_value">
+                    Fuzzy set method and multi value
                   </option>
                 </select>
                 <label htmlFor="systemType">Type</label>
@@ -173,9 +186,12 @@ export class SystemAdd extends ORouter.PureComponent<ISystemAddState> {
                 <button type="submit" className="btn btn-dark btn-mobile -lg-mr-1">
                   Create
                 </button>
-                <Link to="/dashboard" className="btn btn-outline-dark btn-mobile">
+                <Link to="/dashboard" className="btn btn-outline-dark btn-mobile -lg-mr-1">
                   Cancel
                 </Link>
+                <button type="button" className="btn btn-outline-dark btn-mobile" onClick={e => this.buttonImportOnClick(e)}>
+                  Import from file
+                </button>
               </div>
             </form>
           </div>

@@ -79,9 +79,13 @@ public class GrpcExpertService : Genius.Protocol.Expert.ExpertBase
                 Guid = singleSystem.Guid,
                 Name = singleSystem.Name,
                 Description = singleSystem.Description,
+                Author = singleSystem.Author,
+                Source = singleSystem.DataSource,
                 Question = singleSystem.Question,
-                CreatedAt = singleSystem.CreatedAt.ToString(),
-                UpdatedAt = singleSystem.UpdatedAt.ToString()
+                Confidence = singleSystem.Confidence,
+                //Type = singleSystem.Type,
+                CreatedAt = singleSystem.CreatedAt.ToShortDateString(),
+                UpdatedAt = singleSystem.UpdatedAt.ToShortDateString()
             });
         }
     }
@@ -111,8 +115,12 @@ public class GrpcExpertService : Genius.Protocol.Expert.ExpertBase
             Name = expertSystem.Name,
             Description = expertSystem.Description,
             Question = expertSystem.Question,
-            CreatedAt = expertSystem.CreatedAt.ToString(),
-            UpdatedAt = expertSystem.UpdatedAt.ToString()
+            Author = expertSystem.Author,
+            Source = expertSystem.DataSource,
+            Confidence = expertSystem.Confidence,
+            //Type = expertSystem.Type,
+            CreatedAt = expertSystem.CreatedAt.ToShortDateString(),
+            UpdatedAt = expertSystem.UpdatedAt.ToShortDateString()
         };
     }
 

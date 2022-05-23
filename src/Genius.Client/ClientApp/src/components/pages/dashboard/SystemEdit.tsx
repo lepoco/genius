@@ -330,7 +330,7 @@ class SystemEdit extends ORouter.PureComponent<ISystemEditState> {
           </div>
           <div className="-reveal">
             <span>Creation date:</span>
-            <h5 className="-font-secondary -fw-700 -pb-3">
+            <h5 className="-font-secondary -fw-700">
               {this.state.currentSystem.createdAt ?? '__unknown'}
             </h5>
           </div>
@@ -339,7 +339,7 @@ class SystemEdit extends ORouter.PureComponent<ISystemEditState> {
             this.state.currentSystem.author !== '' ? (
               <>
                 <span>Author:</span>
-                <h5 className="-font-secondary -fw-700 -pb-3">
+                <h5 className="-font-secondary -fw-700">
                   {this.state.currentSystem.author ?? '__unknown'}
                 </h5>
               </>
@@ -352,7 +352,7 @@ class SystemEdit extends ORouter.PureComponent<ISystemEditState> {
             this.state.currentSystem.source !== '' ? (
               <>
                 <span>Source of the data:</span>
-                <h5 className="-font-secondary -fw-700 -pb-3">
+                <h5 className="-font-secondary -fw-700">
                   {this.state.currentSystem.source ?? '__unknown'}
                 </h5>
               </>
@@ -360,6 +360,7 @@ class SystemEdit extends ORouter.PureComponent<ISystemEditState> {
               <></>
             )}
           </div>
+          <div class="-mb-3"></div>
 
           <div className="-mb-3">
             <a

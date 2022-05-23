@@ -3,7 +3,7 @@
 // Copyright (C) 2022 Leszek Pomianowski.
 // All Rights Reserved.
 
-global using Microsoft.AspNetCore.Mvc.Testing;
+global using Grpc.Core;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Logging;
 global using Moq;

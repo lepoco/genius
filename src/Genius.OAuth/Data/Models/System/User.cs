@@ -10,15 +10,19 @@ namespace Genius.OAuth.Data.Models.System;
 
 public class User
 {
+    [Key]
     public int Id { get; set; }
 
     [Required]
+    [ConcurrencyCheck]
     public string Name { get; set; }
 
     [Required]
+    [ConcurrencyCheck]
     public string Email { get; set; }
 
     [Required]
+    [ConcurrencyCheck]
     public string Password { get; set; }
 
     [Required]
@@ -33,4 +37,10 @@ public class User
     public DateTime CreatedAt { get; set; } = DateTime.Now;
 
     public DateTime UpdatedAt { get; set; } = DateTime.Now;
+
+    /// <summary>
+    /// Timestamp used for concurrency validation.
+    /// </summary>
+    [Timestamp]
+    public byte[] Timestamp { get; set; }
 }

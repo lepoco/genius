@@ -11,6 +11,7 @@ namespace Genius.OAuth.Data.Models.System;
 
 public class Token
 {
+    [Key]
     public int Id { get; set; }
 
     [Required]
@@ -18,11 +19,19 @@ public class Token
     public string UserId { get; set; }
 
     [Required]
+    [ConcurrencyCheck]
     public string PublicToken { get; set; }
 
     [Required]
+    [ConcurrencyCheck]
     public string PrivateToken { get; set; }
 
     [Required]
     public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+    /// <summary>
+    /// Timestamp used for concurrency validation.
+    /// </summary>
+    [Timestamp]
+    public byte[] Timestamp { get; set; }
 }

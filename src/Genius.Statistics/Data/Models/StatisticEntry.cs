@@ -16,6 +16,8 @@ public class StatisticEntry
     /// <summary>
     /// Unique id.
     /// </summary>
+    [Key]
+    [ConcurrencyCheck]
     public int Id { get; set; }
 
     /// <summary>
@@ -34,4 +36,10 @@ public class StatisticEntry
     /// Date of creation.
     /// </summary>
     public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+    /// <summary>
+    /// Timestamp used for concurrency validation.
+    /// </summary>
+    [Timestamp]
+    public byte[] Timestamp { get; set; }
 }

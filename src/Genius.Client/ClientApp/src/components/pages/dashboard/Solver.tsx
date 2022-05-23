@@ -273,13 +273,13 @@ class Solver extends ORouter.Component<ISolverState> {
     return Math.floor((productCount * 100) / confirmedCount);
   }
 
-  private getBadgeType(conditionId: number): string {
+  private getBadgeBackground(conditionId: number): string {
     if (
       this.solverMemory.confirming.filter(function (con) {
         return con.id === conditionId;
       }).length > 0
     ) {
-      return 'success';
+      return 'bg-success';
     }
 
     if (
@@ -287,7 +287,7 @@ class Solver extends ORouter.Component<ISolverState> {
         return con.id === conditionId;
       }).length > 0
     ) {
-      return 'danger';
+      return 'bg-danger';
     }
 
     if (
@@ -295,10 +295,10 @@ class Solver extends ORouter.Component<ISolverState> {
         return con.id === conditionId;
       }).length > 0
     ) {
-      return 'warning text-dark';
+      return 'bg-warning text-dark';
     }
 
-    return 'secondary';
+    return 'bg-secondary';
   }
 
   private renderResults(): JSX.Element {
@@ -414,7 +414,7 @@ class Solver extends ORouter.Component<ISolverState> {
                     {singleProduct.confirming.map(condition => {
                       return (
                         <span
-                          className={'-mr-1 badge bg-' + this.getBadgeType(condition.id)}
+                          className={'-mr-1 badge ' + this.getBadgeBackground(condition.id)}
                           key={condition.id}>
                           {condition.name}
                         </span>

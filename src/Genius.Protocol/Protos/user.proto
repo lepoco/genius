@@ -14,7 +14,7 @@ service User {
 
 	rpc Update(UserModel) returns (UserModel);
 
-    rpc Register(UserModel) returns (UserResponseModel);
+	rpc Register(UserModel) returns (UserResponseModel);
 
 	rpc Delete(UserModel) returns (UserResponseModel);
 }
@@ -27,8 +27,8 @@ enum UserRole {
 }
 
 enum UserLanguage {
-    ENGLISH = 0;
-    POLISH = 1;
+	ENGLISH = 0;
+	POLISH = 1;
 }
 
 message UserModel {
@@ -37,10 +37,10 @@ message UserModel {
 	string username = 3;
 	string email = 4;
 	string password = 5;
-    UserLanguage language = 6;
-    string profilePicture = 7;
-    string created_at = 8;
-    string updated_at = 9;
+	UserLanguage language = 6;
+	string profilePicture = 7;
+	string created_at = 8;
+	string updated_at = 9;
 }
 
 message UserLookupModel {

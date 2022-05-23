@@ -58,10 +58,10 @@ service Expert {
 }
 
 enum SystemType {
-    CONDITIONAL = 0;
-    CONDITIONAL_NOT_CONFIDENT = 1;
-    FUZZY = 2;
-    FUZZY_MULTI_VALUE = 3;
+	CONDITIONAL = 0;
+	CONDITIONAL_NOT_CONFIDENT = 1;
+	FUZZY = 2;
+	FUZZY_MULTI_VALUE = 3;
 }
 
 enum RelationType {
@@ -73,16 +73,16 @@ enum RelationType {
 message ExpertModel {
 	int32 id = 1;
 	string version = 2;
-    string guid = 3;
-    SystemType type = 4;
+	string guid = 3;
+	SystemType type = 4;
 	string name = 5;
 	string author = 6;
-    string description = 7;
-    string source = 8;
-    string question = 9;
+	string description = 7;
+	string source = 8;
+	string question = 9;
 	int32 confidence = 10;
 	string created_at = 11;
-    string updated_at = 12;
+	string updated_at = 12;
 }
 
 message ExpertAboutModel {
@@ -138,7 +138,7 @@ message RelationModel {
 	int32 condition_id = 4;
 	int32 weight = 5;
 	bool exclusive = 6;
-    RelationType type = 7;
+	RelationType type = 7;
 }
 
 message ExpertEmptyModel {}

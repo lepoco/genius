@@ -10,48 +10,48 @@ option csharp_namespace = "Genius.Protocol";
 package Genius.Protocol;
 
 service Statistic {
-    rpc Push(StatisticModel) returns (StatisticResponseModel);
+	rpc Push(StatisticModel) returns (StatisticResponseModel);
 
-    rpc Delete(StatisticLookupModel) returns (StatisticResponseModel);
+	rpc Delete(StatisticLookupModel) returns (StatisticResponseModel);
 
-    rpc GetSingle(StatisticLookupModel) returns (StatisticModel);
+	rpc GetSingle(StatisticLookupModel) returns (StatisticModel);
 
-    rpc GetRange(StatisticRangeLookupModel) returns (stream StatisticModel);
+	rpc GetRange(StatisticRangeLookupModel) returns (stream StatisticModel);
 
-    rpc GetContext(StatisticContextLookupModel) returns (stream StatisticModel);
+	rpc GetContext(StatisticContextLookupModel) returns (stream StatisticModel);
 }
 
 enum StatisticType {
-    UNKNOWN = 0;
-    USER = 1;
-    SYSTEM = 2;
-    EVENT = 3;
+	UNKNOWN = 0;
+	USER = 1;
+	SYSTEM = 2;
+	EVENT = 3;
 }
 
 message StatisticModel {
-    int32 id = 1;
-    StatisticType type = 2;
-    string context = 3;
-    string createdAt = 4;
+	int32 id = 1;
+	StatisticType type = 2;
+	string context = 3;
+	string createdAt = 4;
 }
 
 message StatisticResponseModel {
-    int32 id = 1;
+	int32 id = 1;
 }
 
 message StatisticLookupModel {
-    int32 id = 1;
+	int32 id = 1;
 }
 
 message StatisticRangeLookupModel {
-    StatisticType type = 1;
-    string dateFrom = 2;
-    string dateTo = 3;
+	StatisticType type = 1;
+	string dateFrom = 2;
+	string dateTo = 3;
 }
 
 message StatisticContextLookupModel {
-    StatisticType type = 1;
-    string context = 2;
-    string dateFrom = 3;
-    string dateTo = 4;
+	StatisticType type = 1;
+	string context = 2;
+	string dateFrom = 3;
+	string dateTo = 4;
 }

@@ -10,18 +10,18 @@ option csharp_namespace = "Genius.Protocol";
 package Genius.Protocol;
 
 service Cache {
-    rpc Push(CacheModel) returns (CacheLookupModel);
+	rpc Push(CacheModel) returns (CacheLookupModel);
 
-    rpc Get(CacheLookupModel) returns (stream CacheModel);
+	rpc Get(CacheLookupModel) returns (stream CacheModel);
 }
 
 message CacheModel {
-    int32 id = 1;
-    string name = 2;
-    string content = 3;
-    int32 timeout = 4;
+	int32 id = 1;
+	string name = 2;
+	string content = 3;
+	int32 timeout = 4;
 }
 
 message CacheLookupModel {
-    int32 id = 1;
+	int32 id = 1;
 }

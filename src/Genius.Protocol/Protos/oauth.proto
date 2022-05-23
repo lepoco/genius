@@ -10,28 +10,28 @@ option csharp_namespace = "Genius.Protocol";
 package Genius.Protocol;
 
 service OAuth {
-    rpc GetLoginToken(LoginTokenLookup) returns (TokenModel);
+	rpc GetLoginToken(LoginTokenLookup) returns (TokenModel);
 
-    rpc GetAccessToken(AccessTokenLookup) returns (TokenModel);
+	rpc GetAccessToken(AccessTokenLookup) returns (TokenModel);
 
-    rpc ValidateToken(TokenModel) returns (TokenResponseModel);
+	rpc ValidateToken(TokenModel) returns (TokenResponseModel);
 }
 
 message TokenModel {
-    int32 id = 1;
-    string publicToken = 3;
+	int32 id = 1;
+	string publicToken = 3;
 }
 
 message LoginTokenLookup {
-    int32 userId = 1;
-    string userPassword = 2;
+	int32 userId = 1;
+	string userPassword = 2;
 }
 
 message AccessTokenLookup {
-    int32 userId = 1;
-    string publicLoginToken = 2;
+	int32 userId = 1;
+	string publicLoginToken = 2;
 }
 
 message TokenResponseModel {
-    bool isValid = 1;
+	bool isValid = 1;
 }

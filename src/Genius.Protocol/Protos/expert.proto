@@ -57,6 +57,13 @@ service Expert {
 	rpc UpdateRelation(RelationModel) returns (RelationModel);
 }
 
+enum SystemType {
+    CONDITIONAL = 0;
+    CONDITIONAL_NOT_CONFIDENT = 1;
+    FUZZY = 2;
+    FUZZY_MULTI_VALUE = 3;
+}
+
 enum RelationType {
 	COMPILANCE = 0;
 	CONTRADICTION = 1;
@@ -66,12 +73,16 @@ enum RelationType {
 message ExpertModel {
 	int32 id = 1;
 	string version = 2;
-	string guid = 3;
-	string name = 4;
-	string description = 5;
-	string question = 6;
-	string created_at = 7;
-	string updated_at = 8;
+    string guid = 3;
+    SystemType type = 4;
+	string name = 5;
+	string author = 6;
+    string description = 7;
+    string source = 8;
+    string question = 9;
+	int32 confidence = 10;
+	string created_at = 11;
+    string updated_at = 12;
 }
 
 message ExpertAboutModel {
@@ -126,7 +137,8 @@ message RelationModel {
 	int32 product_id = 3;
 	int32 condition_id = 4;
 	int32 weight = 5;
-	RelationType type = 6;
+	bool exclusive = 6;
+    RelationType type = 7;
 }
 
 message ExpertEmptyModel {}

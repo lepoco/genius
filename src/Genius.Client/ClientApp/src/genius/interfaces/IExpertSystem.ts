@@ -17,7 +17,10 @@ export interface IExpertSystem {
   version: string;
   name: string;
   description: string;
+  author: string;
+  source: string;
   type: string;
+  confidence: number;
   question: string;
   createdAt: string;
   updatedAt: string;

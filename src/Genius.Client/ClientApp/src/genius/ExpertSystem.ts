@@ -33,12 +33,19 @@ export class ExpertSystem implements IExpertSystem {
   public conditionsCount: number;
   public relationsCount: number;
 
+  public author: string;
+  public source: string;
+  public confidence: number;
+
   public constructor(
     systemId: number = 0,
     systemGuid: string = '',
     systemVersion: string = '1.0.0',
     systemName: string = '',
     systemDescription: string = '',
+    author: string = '',
+    source: string = '',
+    confidence: number = 0,
     systemType: string = '',
     systemQuestion: string = '',
     systemCreatedAt: string = '',
@@ -46,12 +53,16 @@ export class ExpertSystem implements IExpertSystem {
     systemConditions: IExpertCondition[] = [],
     systemProducts: IExpertProduct[] = [],
     systemRelations: IExpertRelation[] = [],
+    
   ) {
     this.id = systemId;
     this.guid = systemGuid;
     this.version = systemVersion;
     this.name = systemName;
     this.description = systemDescription;
+    this.author = author;
+    this.source = source;
+    this.confidence = confidence;
     this.type = systemType;
     this.question = systemQuestion;
     this.createdAt = systemCreatedAt;

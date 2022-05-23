@@ -66,7 +66,7 @@ public class ImportController : ControllerBase
         if (importedData?.System?.Id < 1)
             return BadRequest("Serialization failed.");
 
-        var mergeStatus = await SystemImporter.MergeSystems(_grpcClient, iSystemId, importedData);
+        var mergeStatus = await SystemImporter.MergeSystemsAsync(_grpcClient, iSystemId, importedData);
 
         if (!mergeStatus)
             return BadRequest("Merging failed.");
@@ -80,7 +80,9 @@ public class ImportController : ControllerBase
 
     [HttpPost]
     [Route("new")]
-    public async Task<IActionResult> ImportNewSystem([FromForm] string systemId, [FromForm] IFormFile file)
+    public async Task<IActionResult> ImportNewSystem([FromForm] int systemId, [FromForm] IFormFile file,
+        [FromForm] string systemName, [FromForm] string systemDescription, [FromForm] string systemQuestion,
+        [FromForm] string systemAuthor, [FromForm] string systemSource, [FromForm] string systemType, [FromForm] int systemConfidence)
     {
         if (file == null)
             return BadRequest("File not found.");
@@ -95,10 +97,30 @@ public class ImportController : ControllerBase
         if (importedData == null)
             return BadRequest("Serialization failed.");
 
-        if (importedData?.System?.Id < 1)
+        if (String.IsNullOrWhiteSpace(importedData.System?.Name))
             return BadRequest("Serialization failed.");
 
-        return Ok("Success");
+        if (String.IsNullOrWhiteSpace(importedData.System.Description))
+            importedData.System.Description = systemDescription ?? String.Empty;
+
+        if (String.IsNullOrWhiteSpace(importedData.System.Question))
+            importedData.System.Question = systemQuestion ?? String.Empty;
+
+        if (String.IsNullOrWhiteSpace(importedData.System.Source))
+            importedData.System.Source = systemSource ?? String.Empty;
+
+        if (String.IsNullOrWhiteSpace(importedData.System.Author))
+            importedData.System.Author = systemAuthor ?? String.Empty;
+
+        if (importedData.System?.Confidence < 1)
+            importedData.System.Confidence = systemConfidence;
+
+        var importResult = await SystemImporter.ImportSystemAsync(_grpcClient, importedData);
+
+        if (importResult < 1)
+            return StatusCode(400, 0);
+
+        return Ok(importResult);
     }
 
     private async Task<string> ReadFileContent(IFormFile file)

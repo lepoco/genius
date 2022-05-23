@@ -9,4 +9,18 @@ export interface IImportRequest {
   systemId: number;
 
   file: File;
+
+  systemName: string;
+
+  systemDescription: string;
+
+  systemQuestion: string;
+
+  systemAuthor: string;
+
+  systemSource: string;
+
+  systemType: string;
+
+  systemConfidence: number;
 }

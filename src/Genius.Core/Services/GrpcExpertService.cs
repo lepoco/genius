@@ -47,13 +47,13 @@ public class GrpcExpertService : Genius.Protocol.Expert.ExpertBase
         {
             Name = request.Name,
             Description = request.Description,
-            Question = request.Question ?? "",
-            Author = String.Empty,
-            DataSource = String.Empty,
+            Question = request.Question ?? String.Empty,
+            Author = request.Author ?? String.Empty,
+            DataSource = request.Source ?? String.Empty,
             CreatedAt = DateTime.Now,
             UpdatedAt = DateTime.Now,
-            Version = "1.0.0",
-            Confidence = 256,
+            Version = request.Version ?? "2.0.0",
+            Confidence = request.Confidence > 0 ? request.Confidence : 256,
             Type = Genius.Core.Data.Models.Expert.SystemType.Conditional,
             Guid = Guid.NewGuid().ToString()
         };

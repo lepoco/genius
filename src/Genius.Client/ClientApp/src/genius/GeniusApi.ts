@@ -584,11 +584,45 @@ export class GeniusApi {
 
     console.debug('\\GeniusApi\\importFromFile\\response', response);
 
+    return new ImportResponse(importData.systemId ?? 0, importData?.systemId > 0, '');
+  }
+
+  public static async createNewFromFile(
+    importData: IImportRequest
+  ): Promise<IImportResponse> {
+    const formData = GeniusDataParser.buildFormData({
+      file: importData.file,
+      systemId: importData.systemId,
+      systemName: importData.systemName,
+      systemDescription: importData.systemDescription,
+      systemQuestion: importData.systemQuestion,
+      systemAuthor: importData.systemAuthor,
+      systemSource: importData.systemSource,
+      systemType: importData.systemType,
+      systemConfidence: importData.systemConfidence,
+    });
+
+    console.debug('\\GeniusApi\\importFromFile\\importData', importData);
+
+    const response = await fetch('api/import/new', {
+      method: 'POST',
+      body: formData,
+    });
+
+    console.debug('\\GeniusApi\\importFromFile\\response', response);
+
     const responseText = await response.text();
 
     console.debug('\\GeniusApi\\importFromFile\\responseText', responseText);
 
-    return new ImportResponse(importData.systemId ?? 0, false, 'Unknown');
+    var parsedResponseNumber = parseInt(responseText);
+    
+    if(parsedResponseNumber > 0)
+    {
+
+    }
+
+    return new ImportResponse(importData.systemId ?? 0, importData?.systemId > 0, '');
   }
 
   private static async fetchSystemObject(
@@ -603,6 +637,9 @@ export class GeniusApi {
     expertState.version = dataObject.version ?? '';
     expertState.name = dataObject.name ?? '';
     expertState.description = dataObject.description ?? '';
+    expertState.author = dataObject.author ?? '';
+    expertState.source = dataObject.source ?? '';
+    expertState.confidence = dataObject.confidence ?? 0;
     expertState.type = dataObject.type ?? '';
     expertState.question = dataObject.question ?? '';
     expertState.createdAt = dataObject.createdAt ?? '';

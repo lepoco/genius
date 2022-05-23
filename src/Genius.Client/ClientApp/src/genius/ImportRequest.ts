@@ -12,8 +12,39 @@ export class ImportRequest implements IImportRequest {
 
   public file: File;
 
-  public constructor(systemId: number, file: File) {
+  public systemName: string;
+
+  public systemDescription: string;
+
+  public systemQuestion: string;
+
+  public systemAuthor: string;
+
+  public systemSource: string;
+
+  public systemType: string;
+
+  public systemConfidence: number;
+
+  public constructor(
+    systemId: number,
+    file: File,
+    systemName: string = '',
+    systemDescription: string = '',
+    systemQuestion: string = '',
+    systemAuthor: string = '',
+    systemSource: string = '',
+    systemType: string = '',
+    systemConfidence: number = 0,
+  ) {
     this.systemId = systemId;
     this.file = file;
+    this.systemName = systemName;
+    this.systemDescription = systemDescription;
+    this.systemQuestion = systemQuestion;
+    this.systemAuthor = systemAuthor;
+    this.systemSource = systemSource;
+    this.systemType = systemType;
+    this.systemConfidence = systemConfidence;
   }
 }

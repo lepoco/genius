@@ -15,8 +15,9 @@ import {
   ExpertProduct,
   IExpertProduct,
   ImportRequest,
+  ExpertSystem,
+  IExpertSystem,
 } from '../../../genius/Genius';
-import { IExpertPageState } from '../../../genius/interfaces/IExpertPageState';
 import Task from '../../common/Task';
 import Loader from '../../common/Loader';
 import Modal from '../../common/Modal';
@@ -25,8 +26,10 @@ import { Edit16Regular } from '@fluentui/react-icons';
 /**
  * Represents the variables contained in the component state.
  */
-interface ISystemEditState extends IExpertPageState {
-  importing?: boolean;
+interface ISystemEditState {
+  importing: boolean;
+  systemLoaded: boolean;
+  currentSystem: IExpertSystem;
 }
 
 class ProductWithConditions {
@@ -73,23 +76,10 @@ class SystemEdit extends ORouter.PureComponent<ISystemEditState> {
     this.state = {
       importing: false,
       systemLoaded: false,
-      id: 0,
-      guid: '',
-      version: '',
-      name: '',
-      description: '',
-      type: '',
-      question: '',
-      createdAt: '',
-      updatedAt: '',
-      conditions: [],
-      products: [],
-      relations: [],
-      productsCount: 0,
-      conditionsCount: 0,
-      relationsCount: 0,
+      currentSystem: new ExpertSystem(),
     };
 
+    this.renderContent = this.renderContent.bind(this);
     this.formOnSubmit = this.formOnSubmit.bind(this);
     this.importButtonOnClick = this.importButtonOnClick.bind(this);
     this.importInputOnChange = this.importInputOnChange.bind(this);
@@ -116,19 +106,7 @@ class SystemEdit extends ORouter.PureComponent<ISystemEditState> {
 
     this.setState({
       systemLoaded: true,
-
-      id: system.id ?? 0,
-      version: system.version ?? '',
-      name: system.name ?? '',
-      description: system.description ?? '',
-      guid: system.guid ?? '',
-      question: system.question ?? '',
-      type: system.type ?? '',
-      createdAt: system.createdAt ?? '',
-      updatedAt: system.updatedAt ?? '',
-      conditions: system.conditions ?? [],
-      products: system.products ?? [],
-      relations: system.relations ?? [],
+      currentSystem: system,
     });
 
     return true;
@@ -173,7 +151,7 @@ class SystemEdit extends ORouter.PureComponent<ISystemEditState> {
     // }
 
     const importResponse = await Genius.Api.importFromFile(
-      new ImportRequest(this.state.id ?? 0, selectedFile),
+      new ImportRequest(0, selectedFile),
     );
 
     console.log('\\SystemEdit\\importInputOnChange\\importResponse', importResponse);
@@ -188,11 +166,11 @@ class SystemEdit extends ORouter.PureComponent<ISystemEditState> {
   private async formOnSubmit(event: React.FormEvent<HTMLFormElement>): Promise<boolean> {
     event.preventDefault();
 
-    if (this.state.id === undefined) {
+    if (this.state.currentSystem.id === undefined) {
       return false;
     }
 
-    if (this.newProduct.name === '' || this.state.id < 1) {
+    if (this.newProduct.name === '' || this.state.currentSystem.id < 1) {
       return false;
     }
 
@@ -202,7 +180,7 @@ class SystemEdit extends ORouter.PureComponent<ISystemEditState> {
 
     let productToAdd = new ExpertProduct(
       0,
-      this.state.id,
+      this.state.currentSystem.id,
       this.newProduct.name,
       this.newProduct.description,
       this.newProduct.notes,
@@ -221,14 +199,19 @@ class SystemEdit extends ORouter.PureComponent<ISystemEditState> {
 
     productToAdd.id = apiResult;
 
-    let currentProducts = this.state.products;
+    let currentProducts = this.state.currentSystem.products;
     currentProducts?.push(productToAdd);
 
-    let updatedRelations = await Genius.Api.getSystemRelations(this.state.id);
+    let updatedRelations = await Genius.Api.getSystemRelations(
+      this.state.currentSystem.id,
+    );
+
+    var updatedSystem = this.state.currentSystem;
+    updatedSystem.relations = updatedRelations;
+    updatedSystem.products = currentProducts;
 
     this.setState({
-      relations: updatedRelations,
-      products: currentProducts,
+      currentSystem: updatedSystem,
     });
 
     // console.debug('\\SystemEdit\\formOnSubmit\\relations', this.state.relations);
@@ -271,7 +254,7 @@ class SystemEdit extends ORouter.PureComponent<ISystemEditState> {
   }
 
   private renderProductsTable(): JSX.Element {
-    let products: IExpertProduct[] = this.state.products ?? [];
+    let products: IExpertProduct[] = this.state.currentSystem.products ?? [];
 
     if (products.length < 1) {
       return (
@@ -313,7 +296,7 @@ class SystemEdit extends ORouter.PureComponent<ISystemEditState> {
                 <Link
                   to={
                     '/dashboard/product/' +
-                    (this.state.guid ?? '0') +
+                    (this.state.currentSystem.guid ?? '0') +
                     '/' +
                     (singleProduct.id ?? '0')
                   }
@@ -331,8 +314,8 @@ class SystemEdit extends ORouter.PureComponent<ISystemEditState> {
   /**
    * Renders the content containing data downloaded from the server.
    */
-  private renderContent(state: IExpertPageState): JSX.Element {
-    if ((state.id ?? 0) < 1) {
+  private renderContent(): JSX.Element {
+    if ((this.state.currentSystem.id ?? 0) < 1) {
       return <p>No systems found</p>;
     }
 
@@ -341,18 +324,46 @@ class SystemEdit extends ORouter.PureComponent<ISystemEditState> {
         <div className="col-12">
           <div className="-reveal">
             <span>System name</span>
-            <h5 className="-font-secondary -fw-700">{state.name ?? ''}</h5>
+            <h5 className="-font-secondary -fw-700">
+              {this.state.currentSystem.name ?? ''}
+            </h5>
           </div>
           <div className="-reveal">
             <span>Creation date:</span>
             <h5 className="-font-secondary -fw-700 -pb-3">
-              {state.createdAt ?? '__unknown'}
+              {this.state.currentSystem.createdAt ?? '__unknown'}
             </h5>
+          </div>
+          <div className="-reveal">
+            {this.state.currentSystem.author != undefined &&
+            this.state.currentSystem.author !== '' ? (
+              <>
+                <span>Author:</span>
+                <h5 className="-font-secondary -fw-700 -pb-3">
+                  {this.state.currentSystem.author ?? '__unknown'}
+                </h5>
+              </>
+            ) : (
+              <></>
+            )}
+          </div>
+          <div className="-reveal">
+            {this.state.currentSystem.source != undefined &&
+            this.state.currentSystem.source !== '' ? (
+              <>
+                <span>Source of the data:</span>
+                <h5 className="-font-secondary -fw-700 -pb-3">
+                  {this.state.currentSystem.source ?? '__unknown'}
+                </h5>
+              </>
+            ) : (
+              <></>
+            )}
           </div>
 
           <div className="-mb-3">
             <a
-              href={'/api/export/' + state.guid ?? '#'}
+              href={'/api/export/' + this.state.currentSystem.guid ?? '#'}
               className="btn btn-dark btn-mobile -lg-mr-1 -btn-export">
               Export
             </a>
@@ -363,10 +374,10 @@ class SystemEdit extends ORouter.PureComponent<ISystemEditState> {
             </button>
             <Link
               className="btn btn-outline-dark btn-mobile -btn-import -lg-mr-1"
-              to={'/dashboard/sys/' + state.guid ?? '#'}>
+              to={'/dashboard/sys/' + this.state.currentSystem.guid ?? '#'}>
               Run
             </Link>
-            <Link to={'/dashboard/delete/' + state.guid ?? '#'}>
+            <Link to={'/dashboard/delete/' + this.state.currentSystem.guid ?? '#'}>
               Remove the expert system
             </Link>
           </div>
@@ -457,7 +468,7 @@ class SystemEdit extends ORouter.PureComponent<ISystemEditState> {
               ref={element => {
                 this.conditionsCloud = element;
               }}
-              systemId={this.state.id ?? 0}
+              systemId={this.state.currentSystem.id ?? 0}
               conditionsSelected={[]}
               onUpdate={this.conditionsInputOnUpdate}
             />
@@ -474,7 +485,7 @@ class SystemEdit extends ORouter.PureComponent<ISystemEditState> {
               </button>
               <Link
                 className="btn btn-outline-dark btn-mobile"
-                to={'/dashboard/conditions/' + this.state.guid}>
+                to={'/dashboard/conditions/' + this.state.currentSystem.guid}>
                 Edit all conditions
               </Link>
             </div>
@@ -516,7 +527,7 @@ class SystemEdit extends ORouter.PureComponent<ISystemEditState> {
     const contents = !this.state.systemLoaded ? (
       <Loader center={false} />
     ) : (
-      this.renderContent(this.state)
+      this.renderContent()
     );
 
     return (

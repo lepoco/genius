@@ -111,6 +111,22 @@ function Invoke-Build {
   }
 }
 
+function Invoke-Test {
+  Write-Log -Message "Invoke-Test: Started" -Type "empty"
+
+  & $env:BUILDCOMMAND test src/Genius.sln --no-restore --verbosity normal
+
+  if ($lastexitcode -eq 0) {
+    Write-Log -Message "Invoke-Test: Completed" -Type "success"
+  }
+  else {
+    Write-Log -Message "Invoke-Test: Failed" -Type "error"
+    Write-Log -Message "Terminating..." -Type "error"
+
+    exit
+  }
+}
+
 function Invoke-DatabaseUpdate {
   if ($UpdateDatabase -eq "no") {
     Write-Log -Message "Invoke-DatabaseUpdate: Database will not be updated." -Type "warning"
@@ -171,6 +187,7 @@ function Invoke-CloneNpm {
 Initialize-BuildCommand
 Invoke-Restore
 Invoke-Build
+Invoke-Test
 Invoke-DatabaseUpdate
 Initialize-NpmCommand
 Invoke-BuildNpm

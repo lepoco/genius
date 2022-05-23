@@ -78,6 +78,29 @@ public class ImportController : ControllerBase
         return Ok("Success");
     }
 
+    [HttpPost]
+    [Route("new")]
+    public async Task<IActionResult> ImportNewSystem([FromForm] string systemId, [FromForm] IFormFile file)
+    {
+        if (file == null)
+            return BadRequest("File not found.");
+
+        var fileContent = await ReadFileContent(file);
+
+        if (String.IsNullOrEmpty(fileContent))
+            return BadRequest("File empty.");
+
+        var importedData = TryToParseFile(fileContent);
+
+        if (importedData == null)
+            return BadRequest("Serialization failed.");
+
+        if (importedData?.System?.Id < 1)
+            return BadRequest("Serialization failed.");
+
+        return Ok("Success");
+    }
+
     private async Task<string> ReadFileContent(IFormFile file)
     {
         var result = new StringBuilder();

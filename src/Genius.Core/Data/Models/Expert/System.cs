@@ -6,7 +6,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Genius.Data.Models.Expert;
+namespace Genius.Core.Data.Models.Expert;
 
 /// <summary>
 /// Represents an expert system.
@@ -16,43 +16,65 @@ public class System
     /// <summary>
     /// Unique system identifier.
     /// </summary>
+    [Key]
     public int Id { get; set; }
-
-    /// <summary>
-    /// Version of the Genius service, at which the system was created.
-    /// </summary>
-    [Required]
-    public string Version { get; set; } = "1.0.0";
-
-    /// <summary>
-    /// Name of the expert system.
-    /// </summary>
-    [Required]
-    public string Name { get; set; } = "";
-
-    /// <summary>
-    /// Description of the expert system.
-    /// </summary>
-    [Required]
-    public string Description { get; set; } = "";
 
     /// <summary>
     /// Unique GUID of the system.
     /// </summary>
     [Required]
-    public string Guid { get; set; } = "";
+    [ConcurrencyCheck]
+    public string Guid { get; set; }
+
+    /// <summary>
+    /// Version of the Genius service, at which the system was created.
+    /// </summary>
+    [Required]
+    public string Version { get; set; } = "2.0.0";
+
+    /// <summary>
+    /// Name of the expert system.
+    /// </summary>
+    [Required]
+    [ConcurrencyCheck]
+    public string Name { get; set; } = String.Empty;
+
+    /// <summary>
+    /// Author of the expert system.
+    /// </summary>
+    [Required]
+    public string Author { get; set; } = String.Empty;
+
+    /// <summary>
+    /// Description of the expert system.
+    /// </summary>
+    [Required]
+    public string Description { get; set; } = String.Empty;
+
+    /// <summary>
+    /// Source of the used data.
+    /// </summary>
+    [Required]
+    public string DataSource { get; set; } = String.Empty;
 
     /// <summary>
     /// Question to ask by system.
     /// </summary>
     [Required]
-    public string Question { get; set; } = "";
+    public string Question { get; set; } = String.Empty;
 
     /// <summary>
-    /// Type of the expert system, based on which the solver is choosen.
+    /// Type of the expert system, based on which the solver is chosen.
     /// </summary>
     [Required]
     public SystemType Type { get; set; } = SystemType.Conditional;
+
+    /// <summary>
+    /// The number of conditions sufficient to meet the expectation.
+    /// </summary>
+    [Required]
+    [Range(1, 256)]
+    public int Confidence { get; set; } = 256;
 
     /// <summary>
     /// Date of creation.
@@ -63,4 +85,10 @@ public class System
     /// Date of update.
     /// </summary>
     public DateTime UpdatedAt { get; set; } = DateTime.Now;
+
+    /// <summary>
+    /// Timestamp used for concurrency validation.
+    /// </summary>
+    [Timestamp]
+    public byte[] Timestamp { get; set; }
 }

@@ -3,14 +3,26 @@
 // Copyright (C) 2022 Leszek Pomianowski.
 // All Rights Reserved.
 
-namespace Genius.Data.Models.Expert;
+namespace Genius.Core.Data.Models.Expert;
 
+/// <summary>
+/// Available types of relations.
+/// </summary>
 public enum RelationType
 {
+    /// <summary>
+    /// The condition confirms the product.
+    /// </summary>
     Compliance,
 
+    /// <summary>
+    /// The condition negates the product.
+    /// </summary>
     Contradiction,
 
+    /// <summary>
+    /// The condition is inert to the product.
+    /// </summary>
     Disregard
 }
 

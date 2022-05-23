@@ -3,7 +3,7 @@
 // Copyright (C) 2022 Leszek Pomianowski.
 // All Rights Reserved.
 
-namespace Genius.Data.Models.Expert;
+namespace Genius.Core.Data.Models.Expert;
 
 /// <summary>
 /// Represents a method of solving a question in a given expert system.
@@ -11,9 +11,14 @@ namespace Genius.Data.Models.Expert;
 public enum SystemType
 {
     /// <summary>
-    /// The easiest solution, based on AND, OR, OR logic.
+    /// Based on AND / OR logic.
     /// </summary>
     Conditional,
+
+    /// <summary>
+    /// Based on AND / OR logic. Not requiring full compliance of the results.
+    /// </summary>
+    ConditionalNonConfident,
 
     /// <summary>
     /// Each relationship meets the condition to some extent, on a scale from 0 to 100.

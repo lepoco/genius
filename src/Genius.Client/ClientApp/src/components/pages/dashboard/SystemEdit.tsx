@@ -360,7 +360,7 @@ class SystemEdit extends ORouter.PureComponent<ISystemEditState> {
               <></>
             )}
           </div>
-          <div class="-mb-3"></div>
+          <div className="-mb-3"></div>
 
           <div className="-mb-3">
             <a

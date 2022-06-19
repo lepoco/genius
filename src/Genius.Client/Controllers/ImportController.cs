@@ -8,6 +8,7 @@ using System.IO;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Genius.Client.Api;
 using Genius.Client.Export;
 using Genius.Client.Import;
 using Genius.Client.Interfaces;
@@ -43,39 +44,39 @@ public class ImportController : ControllerBase
     public async Task<IActionResult> ImportSystem([FromForm] string systemId, [FromForm] IFormFile file)
     {
         if (String.IsNullOrEmpty(systemId))
-            return BadRequest("System not found.");
+            return BadRequest(new RestResponse { Result = 0, Status = RestStatus.Failed, IsError = true, ErrorMessage = "ID of the system not found." });
 
         Int32.TryParse(systemId, out int iSystemId);
 
         if (iSystemId < 1)
-            return BadRequest("System not found.");
+            return BadRequest(new RestResponse { Result = 0, Status = RestStatus.Failed, IsError = true, ErrorMessage = "ID of the system not found." });
 
         if (file == null)
-            return BadRequest("File not found.");
+            return BadRequest(new RestResponse { Result = 0, Status = RestStatus.Failed, IsError = true, ErrorMessage = "File not found." });
 
         var fileContent = await ReadFileContent(file);
 
         if (String.IsNullOrEmpty(fileContent))
-            return BadRequest("File empty.");
+            return BadRequest(new RestResponse { Result = 0, Status = RestStatus.Failed, IsError = true, ErrorMessage = "File is empty." });
 
         var importedData = TryToParseFile(fileContent);
 
         if (importedData == null)
-            return BadRequest("Serialization failed.");
+            return BadRequest(new RestResponse { Result = 0, Status = RestStatus.Failed, IsError = true, ErrorMessage = "Serialization failed." });
 
         if (importedData?.System?.Id < 1)
-            return BadRequest("Serialization failed.");
+            return BadRequest(new RestResponse { Result = 0, Status = RestStatus.Failed, IsError = true, ErrorMessage = "Serialization failed." });
 
         var mergeStatus = await SystemImporter.MergeSystemsAsync(_grpcClient, iSystemId, importedData);
 
         if (!mergeStatus)
-            return BadRequest("Merging failed.");
+            return BadRequest(new RestResponse { Result = 0, Status = RestStatus.Failed, IsError = true, ErrorMessage = "Merging operation failed." });
 
         _logger.LogInformation($"Import of the system {importedData.System?.Name} finished.");
 
         await _statistics.AddAsync(Genius.Protocol.StatisticType.System, $"import.system.{systemId}");
 
-        return Ok("Success");
+        return Ok(new RestResponse { Result = iSystemId, Status = RestStatus.Success, Message = "System was merged successfully" });
     }
 
     [HttpPost]
@@ -85,20 +86,20 @@ public class ImportController : ControllerBase
         [FromForm] string systemAuthor, [FromForm] string systemSource, [FromForm] string systemType, [FromForm] int systemConfidence)
     {
         if (file == null)
-            return BadRequest("File not found.");
+            return BadRequest(new RestResponse { Result = 0, Status = RestStatus.Failed, IsError = true, ErrorMessage = "File not found." });
 
         var fileContent = await ReadFileContent(file);
 
         if (String.IsNullOrEmpty(fileContent))
-            return BadRequest("File empty.");
+            return BadRequest(new RestResponse { Result = 0, Status = RestStatus.Failed, IsError = true, ErrorMessage = "File empty." });
 
         var importedData = TryToParseFile(fileContent);
 
         if (importedData == null)
-            return BadRequest("Serialization failed.");
+            return BadRequest(new RestResponse { Result = 0, Status = RestStatus.Failed, IsError = true, ErrorMessage = "Serialization failed." });
 
         if (String.IsNullOrWhiteSpace(importedData.System?.Name))
-            return BadRequest("Serialization failed.");
+            return BadRequest(new RestResponse { Result = 0, Status = RestStatus.Failed, IsError = true, ErrorMessage = "Serialization failed." });
 
         if (String.IsNullOrWhiteSpace(importedData.System.Description))
             importedData.System.Description = systemDescription ?? String.Empty;
@@ -118,9 +119,9 @@ public class ImportController : ControllerBase
         var importResult = await SystemImporter.ImportSystemAsync(_grpcClient, importedData);
 
         if (importResult < 1)
-            return StatusCode(400, 0);
+            return BadRequest(new RestResponse { Result = 0, Status = RestStatus.Failed, IsError = true, ErrorMessage = "Unable to import the system" });
 
-        return Ok(importResult);
+        return Ok(new RestResponse { Result = importResult, Status = RestStatus.Success, Message = "System was imported successfully" });
     }
 
     private async Task<string> ReadFileContent(IFormFile file)

@@ -114,36 +114,33 @@ export class SystemAdd extends ORouter.PureComponent<ISystemAddState> {
       this.state.systemQuestion,
       this.state.systemAuthor,
       this.state.systemSource,
-      this.state.systemType
-      );
-
-    const importResponse = await Genius.Api.createNewFromFile(
-      importRequest,
+      this.state.systemType,
     );
+
+    console.log('\\SystemAdd\\importInputOnChange\\importRequest', importRequest);
+
+    const importResponse = await Genius.Api.createNewFromFile(importRequest);
 
     console.log('\\SystemAdd\\importInputOnChange\\importResponse', importResponse);
 
-    await Task.delay(1000);
-
     this.setState({ importing: false });
 
-    
-   if (!importResponse.success) {
-     return false;
-   }
+    if (!importResponse.success) {
+      return false;
+    }
 
-   const system = await Genius.Api.getSystemById(
-     importResponse.systemId ?? 0,
-     false,
-     false,
-     false,
-   );
+    const system = await Genius.Api.getSystemById(
+      importResponse.systemId ?? 0,
+      false,
+      false,
+      false,
+    );
 
-   if (system.id < 1) return false;
+    if (system.id < 1) return false;
 
-   this.router.navigate('/dashboard/sys/' + system.guid);
+    this.router.navigate('/dashboard/sys/' + system.guid);
 
-   return true;
+    return true;
   }
 
   private async formOnSubmit(event: React.FormEvent<HTMLFormElement>): Promise<boolean> {

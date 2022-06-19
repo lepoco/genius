@@ -17,6 +17,7 @@ import { IImportRequest } from './interfaces/IImportRequest';
 import { ImportResponse } from './ImportResponse';
 import { ExpertRelations } from './ExpertRelations';
 import { ExpertAbout } from './ExpertAbout';
+import { RestResponse, RestStatus } from '../common/RestResponse';
 
 /**
  * Contains logic responsible for polling the internal API that connects via gRPC to the Genius microservice.
@@ -602,27 +603,30 @@ export class GeniusApi {
       systemConfidence: importData.systemConfidence,
     });
 
-    console.debug('\\GeniusApi\\importFromFile\\importData', importData);
+    console.debug('\\GeniusApi\\createNewFromFile\\importData', importData);
 
     const response = await fetch('api/import/new', {
       method: 'POST',
       body: formData,
     });
 
-    console.debug('\\GeniusApi\\importFromFile\\response', response);
+    const restResponse = RestResponse.fetch(await response.json());
 
-    const responseText = await response.text();
+    console.debug('\\GeniusApi\\createNewFromFile\\response', response);
+    console.debug('\\GeniusApi\\createNewFromFile\\restResponse', restResponse);
 
-    console.debug('\\GeniusApi\\importFromFile\\responseText', responseText);
+    //const responseText = await response.text();
 
-    var parsedResponseNumber = parseInt(responseText);
+    //console.debug('\\GeniusApi\\createNewFromFile\\responseText', responseText);
+
+   // var parsedResponseNumber = parseInt(responseText);
     
-    if(parsedResponseNumber > 0)
+    if(!restResponse.isError && restResponse.status == RestStatus.Success)
     {
-
+      return new ImportResponse(restResponse.result, true, restResponse.message);
     }
 
-    return new ImportResponse(importData.systemId ?? 0, importData?.systemId > 0, '');
+    return new ImportResponse(0, false, restResponse.errorMessage);
   }
 
   private static async fetchSystemObject(

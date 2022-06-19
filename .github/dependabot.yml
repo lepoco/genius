@@ -6,20 +6,20 @@
 version: 2
 
 updates:
-  # Maintain dependencies for GitHub Actions
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "daily"
+  # # Maintain dependencies for GitHub Actions
+  # - package-ecosystem: "github-actions"
+  #   directory: "/"
+  #   schedule:
+  #     interval: "daily"
 
-  # Maintain dependencies for npm
-  - package-ecosystem: "npm"
-    directory: "src/Genius.Client/ClientApp/"
-    schedule:
-      interval: "daily"
+  # # Maintain dependencies for npm
+  # - package-ecosystem: "npm"
+  #   directory: "src/Genius.Client/ClientApp/"
+  #   schedule:
+  #     interval: "daily"
 
-  # Maintain dependencies for nuget
-  - package-ecosystem: "nuget"
-    directory: "/"
-    schedule:
-      interval: "daily"
+  # # Maintain dependencies for nuget
+  # - package-ecosystem: "nuget"
+  #   directory: "/"
+  #   schedule:
+  #     interval: "daily"

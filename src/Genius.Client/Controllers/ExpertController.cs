@@ -290,6 +290,54 @@ public class ExpertController : ControllerBase
     }
 
     [HttpGet]
+    [Route("product/{id}/conditions")]
+    public async Task<IEnumerable<ConditionModel>> GetProductConditions([FromRoute] int id)
+    {
+        if (id < 1)
+            return new ConditionModel[] { };
+
+        var product = await _grpcClient.GetProductAsync(new ProductLookupModel { Id = id });
+
+        if (product == null || product.Id < 1)
+            return new ConditionModel[] { };
+
+        using var call = _grpcClient.GetProductConditions(new ProductLookupModel { Id = product.Id });
+
+        _logger.LogInformation($"Conditions of the product with ID {product.Id} requested using {typeof(ExpertController)}.");
+
+        var productConditions = new List<ConditionModel>();
+
+        while (await call.ResponseStream.MoveNext())
+            productConditions.Add(call.ResponseStream.Current);
+
+        return productConditions;
+    }
+
+    [HttpGet]
+    [Route("product/{id}/conditions/count")]
+    public async Task<int> GetProductConditionsCount([FromRoute] int id)
+    {
+        if (id < 1)
+            return 0;
+
+        var product = await _grpcClient.GetProductAsync(new ProductLookupModel { Id = id });
+
+        if (product == null || product.Id < 1)
+            return 0;
+
+        using var call = _grpcClient.GetProductConditions(new ProductLookupModel { Id = product.Id });
+
+        _logger.LogInformation($"Conditions of the product with ID {product.Id} requested using {typeof(ExpertController)}.");
+
+        var productConditions = new List<ConditionModel>();
+
+        while (await call.ResponseStream.MoveNext())
+            productConditions.Add(call.ResponseStream.Current);
+
+        return productConditions.Count();
+    }
+
+    [HttpGet]
     [Route("product/{id}")]
     public async Task<ProductModel> GetSingleProduct([FromRoute] int id)
     {

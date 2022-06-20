@@ -5,8 +5,9 @@
 
 using System.Linq;
 using System.Threading.Tasks;
-using Genius.Core.Expert;
 using Genius.Core.Expert.Interfaces;
+using Genius.Core.Expert.Solvers;
+using Genius.Protocol;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
 using SolverQuestion = Genius.Protocol.SolverQuestion;
@@ -28,16 +29,54 @@ public class GrpcSolverService : Genius.Protocol.Solver.SolverBase
 
     public override async Task<SolverResponse> Ask(SolverQuestion solverQuestion, ServerCallContext context)
     {
-        // TODO: If ES types differ, change solver
+        ISolverResponse response;
 
-        var response = await _genius.Solve<ConditionalSolver>(new Expert.SolverQuestion
+        switch (solverQuestion.Type)
         {
-            IsMultiple = solverQuestion?.Multiple ?? true,
-            SystemId = solverQuestion?.SystemId ?? 0,
-            Confirming = solverQuestion?.Confirming.ToArray() ?? new int[] { },
-            Negating = solverQuestion?.Negating.ToArray() ?? new int[] { },
-            Indifferent = solverQuestion?.Indifferent.ToArray() ?? new int[] { }
-        });
+            case SolverType.ConditionalStrict:
+                response = await _genius.Solve<StrictConditionalSolver>(new Expert.SolverQuestion
+                {
+                    IsMultiple = solverQuestion?.Multiple ?? true,
+                    SystemId = solverQuestion?.SystemId ?? 0,
+                    Confirming = solverQuestion?.Confirming?.ToArray() ?? new int[] { },
+                    Negating = solverQuestion?.Negating?.ToArray() ?? new int[] { },
+                    Indifferent = solverQuestion?.Indifferent?.ToArray() ?? new int[] { }
+                });
+                break;
+
+            case SolverType.ConditionalNotConfident:
+                response = await _genius.Solve<ConditionalNotConfidentSolver>(new Expert.SolverQuestion
+                {
+                    IsMultiple = solverQuestion?.Multiple ?? true,
+                    SystemId = solverQuestion?.SystemId ?? 0,
+                    Confirming = solverQuestion?.Confirming?.ToArray() ?? new int[] { },
+                    Negating = solverQuestion?.Negating?.ToArray() ?? new int[] { },
+                    Indifferent = solverQuestion?.Indifferent?.ToArray() ?? new int[] { }
+                });
+                break;
+
+            case SolverType.Fuzzy:
+                response = await _genius.Solve<FuzzySolver>(new Expert.SolverQuestion
+                {
+                    IsMultiple = solverQuestion?.Multiple ?? true,
+                    SystemId = solverQuestion?.SystemId ?? 0,
+                    Confirming = solverQuestion?.Confirming?.ToArray() ?? new int[] { },
+                    Negating = solverQuestion?.Negating?.ToArray() ?? new int[] { },
+                    Indifferent = solverQuestion?.Indifferent?.ToArray() ?? new int[] { }
+                });
+                break;
+
+            default: // Conditional
+                response = await _genius.Solve<ConditionalSolver>(new Expert.SolverQuestion
+                {
+                    IsMultiple = solverQuestion?.Multiple ?? true,
+                    SystemId = solverQuestion?.SystemId ?? 0,
+                    Confirming = solverQuestion?.Confirming?.ToArray() ?? new int[] { },
+                    Negating = solverQuestion?.Negating?.ToArray() ?? new int[] { },
+                    Indifferent = solverQuestion?.Indifferent?.ToArray() ?? new int[] { }
+                });
+                break;
+        }
 
         return new SolverResponse
         {

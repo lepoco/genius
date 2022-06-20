@@ -502,6 +502,28 @@ public class GrpcExpertService : Genius.Protocol.Expert.ExpertBase
         };
     }
 
+    public override async Task GetProductConditions(ProductLookupModel request, IServerStreamWriter<ConditionModel> responseStream, ServerCallContext context)
+    {
+        if (request == null || request.Id < 1)
+            return;
+
+        var productConditionIds = await _expertService.Context.Relations.Where(relation => relation.ProductId == request.Id)
+            .GroupBy(relation => relation.ConditionId).Select(group => group.Key).ToArrayAsync();
+
+        var productConditions = await _expertService.Context.Conditions.Where(condition => productConditionIds.Contains(condition.Id)).ToArrayAsync();
+
+        foreach (Data.Models.Expert.Condition singleCondition in productConditions)
+        {
+            await responseStream.WriteAsync(new ConditionModel
+            {
+                Id = singleCondition.Id,
+                SystemId = singleCondition.SystemId,
+                Name = singleCondition.Name ?? String.Empty,
+                Description = singleCondition.Description ?? String.Empty
+            });
+        }
+    }
+
     #endregion
 
     #region Conditions
@@ -737,9 +759,11 @@ public class GrpcExpertService : Genius.Protocol.Expert.ExpertBase
         if (product == null || product.Id < 1)
             return new ProductLookupModel { Id = 0, SystemId = 0 };
 
-        _expertService.Context.Products.Remove(product);
+        // Remove all relations related to provided product
+        _expertService.Context.Relations.RemoveRange(
+            _expertService.Context.Relations.Where(relation => relation.ProductId == product.Id));
 
-        // TODO: Remove conditions, products and relations
+        _expertService.Context.Products.Remove(product);
 
         await _expertService.Context.SaveChangesAsync();
 

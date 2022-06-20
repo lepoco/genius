@@ -18,6 +18,7 @@ import { ImportResponse } from './ImportResponse';
 import { ExpertRelations } from './ExpertRelations';
 import { ExpertAbout } from './ExpertAbout';
 import { RestResponse, RestStatus } from '../common/RestResponse';
+import { ExpertCondition } from './ExpertCondition';
 
 /**
  * Contains logic responsible for polling the internal API that connects via gRPC to the Genius microservice.
@@ -387,6 +388,40 @@ export class GeniusApi {
     return GeniusDataParser.fetchRelationsObject(data);
   }
 
+  public static async getProductConditions(
+    productId: number,
+  ): Promise<IExpertCondition[]> {
+    const response = await fetch(
+      GeniusApi.BASE_EXPERT_GATEWAY + 'product/' + productId + '/conditions/count',
+    );
+
+    const data = await response.json();
+
+    if (!(data instanceof Object)) {
+      return [];
+    }
+
+    let conditionsList: IExpertCondition[] = [];
+
+    for (let key in data) {
+      conditionsList.push(GeniusDataParser.fetchConditionObject(data[key]));
+    }
+
+    return conditionsList;
+  }
+
+  public static async getProductConditionsCount(productId: number): Promise<number> {
+    const response = await fetch(
+      GeniusApi.BASE_EXPERT_GATEWAY + 'product/' + productId + '/conditions/count',
+    );
+
+    const data = await response.text();
+
+    console.debug('\\GeniusApi\\getProductConditionsCount\\data', data);
+
+    return parseInt(data);
+  }
+
   public static async getProductsByIds(productIds: number[]): Promise<IExpertProduct[]> {
     let products: IExpertProduct[] = [];
 
@@ -589,7 +624,7 @@ export class GeniusApi {
   }
 
   public static async createNewFromFile(
-    importData: IImportRequest
+    importData: IImportRequest,
   ): Promise<IImportResponse> {
     const formData = GeniusDataParser.buildFormData({
       file: importData.file,
@@ -619,10 +654,9 @@ export class GeniusApi {
 
     //console.debug('\\GeniusApi\\createNewFromFile\\responseText', responseText);
 
-   // var parsedResponseNumber = parseInt(responseText);
-    
-    if(!restResponse.isError && restResponse.status == RestStatus.Success)
-    {
+    // var parsedResponseNumber = parseInt(responseText);
+
+    if (!restResponse.isError && restResponse.status == RestStatus.Success) {
       return new ImportResponse(restResponse.result, true, restResponse.message);
     }
 

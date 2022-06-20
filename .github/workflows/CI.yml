@@ -1,4 +1,4 @@
-name: CI - .NET Ubuntu
+# name: CI - .NET Ubuntu
 
 # on:
 #   push:

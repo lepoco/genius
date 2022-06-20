@@ -23,7 +23,7 @@ public interface IExpertService
     /// </summary>
     /// <typeparam name="T">Specific solver implementation</typeparam>
     /// <returns></returns>
-    public T GetSolver<T>();
+    public T GetSolver<T>() where T : class;
 
     /// <summary>
     /// Asks a question to the solver of type T.
@@ -31,5 +31,5 @@ public interface IExpertService
     /// <typeparam name="T">Specified custom solver.</typeparam>
     /// <param name="question">Instance of solver question.</param>
     /// <returns>Resolved question.</returns>
-    public Task<ISolverResponse> Solve<T>(ISolverQuestion question);
+    public Task<ISolverResponse> Solve<T>(ISolverQuestion question) where T : class;
 }

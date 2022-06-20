@@ -19,6 +19,7 @@ import {
   ISolverResultingProduct,
   SolverQuestion,
 } from '../../../genius/Genius';
+import { GeniusApi } from '../../../genius/GeniusApi';
 
 // TODO: Display graph os used conditions
 // TODO: DIsplay confirming, negating, and indifferent
@@ -273,6 +274,25 @@ class Solver extends ORouter.Component<ISolverState> {
     return Math.floor((productCount * 100) / confirmedCount);
   }
 
+  private async calcConfirmability(
+    resultingProduct: ISolverResultingProduct,
+  ): Promise<number> {
+    let confirmedConditionsCount = 0;
+    let allProductConditions = await GeniusApi.getProductConditions(resultingProduct.id);
+
+    for (const singleConditions of resultingProduct.confirming) {
+      if (
+        this.solverMemory.confirming.filter(function (con) {
+          return con.id === singleConditions.id;
+        }).length > 0
+      ) {
+        confirmedConditionsCount++;
+      }
+    }
+
+    return Math.floor((confirmedConditionsCount * 100) / allProductConditions.length);
+  }
+
   private getBadgeBackground(conditionId: number): string {
     if (
       this.solverMemory.confirming.filter(function (con) {
@@ -365,6 +385,8 @@ class Solver extends ORouter.Component<ISolverState> {
         <div>
           {this.state.solvedProducts.map((singleProduct, i) => {
             const resultCompliance = this.calcCompliance(singleProduct);
+            //const resultConfirmability = this.calcConfirmability(singleProduct);
+            //const resultConfirmability = 60;
 
             return (
               <div
@@ -390,6 +412,25 @@ class Solver extends ORouter.Component<ISolverState> {
                         </div>
                       )}
                     </div>
+                    {/* <div className="d-flex flex-column justify-content-center align-items-center">
+                      <div className="single-chart">
+                        <svg viewBox="0 0 36 36" className="circular-chart blue">
+                          <path
+                            className="circle-bg"
+                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                          />
+                          <path
+                            className="circle"
+                            strokeDasharray={resultConfirmability + ', 100'}
+                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                          />
+                          <text x="18" y="20.35" className="percentage">
+                            {resultConfirmability.toString() + '%'}
+                          </text>
+                        </svg>
+                      </div>
+                      <div>Confirmability</div>
+                    </div> */}
                     <div className="d-flex flex-column justify-content-center align-items-center">
                       <div className="single-chart">
                         <svg viewBox="0 0 36 36" className="circular-chart blue">
@@ -414,7 +455,9 @@ class Solver extends ORouter.Component<ISolverState> {
                     {singleProduct.confirming.map(condition => {
                       return (
                         <span
-                          className={'-mr-1 badge ' + this.getBadgeBackground(condition.id)}
+                          className={
+                            '-mr-1 badge ' + this.getBadgeBackground(condition.id)
+                          }
                           key={condition.id}>
                           {condition.name}
                         </span>

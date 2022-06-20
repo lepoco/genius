@@ -68,12 +68,18 @@ export class GeniusSolver {
       indifferent: indifferentIds,
     });
 
+    console.debug('\\GeniusSolver\\ask\\formData', formData);
+
     let response = await fetch(GeniusSolver.BASE_SOLVER_GATEWAY + 'ask', {
       method: 'POST',
       body: formData,
     });
 
+    console.debug('\\GeniusSolver\\ask\\response', response);
+
     const responseData = await response.json();
+
+    console.debug('\\GeniusSolver\\ask\\responseData', responseData);
 
     // console.debug('\\GeniusSolver\\ask\\responseData', responseData);
 

@@ -44,7 +44,9 @@ service Expert {
 
 	rpc GetProductRelations(ProductLookupModel) returns (ProductRelationsModel);
 
-	rpc UpdateProduct(ProductModel) returns (ProductModel);
+	rpc GetProductConditions(ProductLookupModel) returns (stream ConditionModel);
+
+    rpc UpdateProduct(ProductModel) returns (ProductModel);
 
 	rpc DeleteProduct(ProductLookupModel) returns (ProductLookupModel);
 
@@ -59,9 +61,10 @@ service Expert {
 
 enum SystemType {
 	CONDITIONAL = 0;
-	CONDITIONAL_NOT_CONFIDENT = 1;
-	FUZZY = 2;
-	FUZZY_MULTI_VALUE = 3;
+    CONDITIONAL_STRICT = 1;
+	CONDITIONAL_NOT_CONFIDENT = 2;
+	FUZZY = 3;
+	FUZZY_MULTI_VALUE = 4;
 }
 
 enum RelationType {

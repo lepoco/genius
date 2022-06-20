@@ -13,12 +13,21 @@ service Solver {
 	rpc Ask(SolverQuestion) returns (SolverResponse);
 }
 
+enum SolverType {
+    CONDITIONAL = 0;
+    CONDITIONAL_STRICT = 1;
+    CONDITIONAL_NOT_CONFIDENT = 2;
+    FUZZY = 3;
+    FUZZY_MULTI_VALUE = 4;
+}
+
 message SolverQuestion {
 	int32 system_id = 1;
 	bool multiple = 2;
-	repeated int32 confirming = 3;
-	repeated int32 negating = 4;
-	repeated int32 indifferent = 5;
+    SolverType type = 3;
+    repeated int32 confirming = 4;
+	repeated int32 negating = 5;
+	repeated int32 indifferent = 6;
 }
 
 message SolverResponse {

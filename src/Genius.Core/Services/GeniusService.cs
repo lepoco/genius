@@ -26,12 +26,12 @@ public class GeniusService : IExpertService
         Context = expertContext;
     }
 
-    public async Task<ISolverResponse> Solve<T>(ISolverQuestion question)
+    public async Task<ISolverResponse> Solve<T>(ISolverQuestion question) where T : class
     {
         return await (GetSolver<T>() as ISolver)!.Solve(question);
     }
 
-    public T GetSolver<T>()
+    public T GetSolver<T>() where T : class
     {
         if (!typeof(ISolver).IsAssignableFrom(typeof(T)))
             throw new InvalidCastException();

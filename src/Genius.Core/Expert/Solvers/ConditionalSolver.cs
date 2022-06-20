@@ -9,19 +9,17 @@ using Genius.Core.Data.Models.Expert;
 using Genius.Core.Expert.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace Genius.Core.Expert;
+namespace Genius.Core.Expert.Solvers;
 
 /// <summary>
 /// Solves questions on the basis of the provided <see cref="Condition"/>'s by searching for a suitable <see cref="Product"/> or by returning the next <see cref="Condition"/> to ask.
 /// </summary>
 public class ConditionalSolver : SolverBase
 {
-    private ISolverQuestion _question;
-
     /// <inheritdoc />
     public override async Task<ISolverResponse> Solve(ISolverQuestion solverQuestion)
     {
-        _question = solverQuestion;
+        AskedQuestion = solverQuestion;
 
         if (solverQuestion.SystemId < 1)
             return GenerateEmptyResponse();
@@ -64,15 +62,15 @@ public class ConditionalSolver : SolverBase
         var filteredAvailableRelations = relationsForAvailableProducts;
 
         // Remove all relations that already occurs as confirming
-        if (_question.Confirming.Any())
+        if (AskedQuestion.Confirming.Any())
             filteredAvailableRelations = filteredAvailableRelations
-                .Where(relation => !_question.Confirming.Contains(relation.ConditionId))
+                .Where(relation => !AskedQuestion.Confirming.Contains(relation.ConditionId))
                 .ToArray();
 
         // Remove all relations that already occurs as negating
-        if (_question.Negating.Any())
+        if (AskedQuestion.Negating.Any())
             filteredAvailableRelations = filteredAvailableRelations
-                .Where(relation => !_question.Negating.Contains(relation.ConditionId))
+                .Where(relation => !AskedQuestion.Negating.Contains(relation.ConditionId))
                 .ToArray();
 
         // Group relations by condition and order them by most common
@@ -90,7 +88,7 @@ public class ConditionalSolver : SolverBase
 
         // Delete all indifferent, if this makes it impossible to ask a condition, maybe we should ask for one again
         availableConditionsIds =
-            availableConditionsIds.Where(con => !_question.Indifferent.Contains(con)).ToArray();
+            availableConditionsIds.Where(con => !AskedQuestion.Indifferent.Contains(con)).ToArray();
 
         return availableConditionsIds;
     }
@@ -98,22 +96,22 @@ public class ConditionalSolver : SolverBase
     private async Task<int[]> FindResultingProductsIds()
     {
         // Take all system relations
-        var systemRelations = await ExpertContext.Relations.Where(rel => rel.SystemId == _question.SystemId)
+        var systemRelations = await ExpertContext.Relations.Where(rel => rel.SystemId == AskedQuestion.SystemId)
             .ToArrayAsync();
 
         // Group relations by products
         var relationGroups = systemRelations.GroupBy(rel => rel.ProductId);
 
         // If there are confirming conditions, get groups that contain it
-        if (_question.Confirming.Any())
+        if (AskedQuestion.Confirming.Any())
             relationGroups = relationGroups
-                .Where(group => group.Any(rel => _question.Confirming.Contains(rel.ConditionId)))
+                .Where(group => group.Any(rel => AskedQuestion.Confirming.Contains(rel.ConditionId)))
                 .ToArray();
 
         // If there are negating conditions, remove groups that contain it
-        if (_question.Negating.Any())
+        if (AskedQuestion.Negating.Any())
             relationGroups = relationGroups
-                .Where(group => !group.Any(rel => _question.Negating.Contains(rel.ConditionId)))
+                .Where(group => !group.Any(rel => AskedQuestion.Negating.Contains(rel.ConditionId)))
                 .ToArray();
 
         // Order by groups with the most conditions and select product IDs.
@@ -128,13 +126,13 @@ public class ConditionalSolver : SolverBase
     {
         // Get all system conditions and group them by most popular
         var mostCommonConditions = await ExpertContext.Relations
-            .Where(relation => relation.SystemId == _question.SystemId)
+            .Where(relation => relation.SystemId == AskedQuestion.SystemId)
             .GroupBy(q => q.ConditionId)
             .OrderByDescending(gp => gp.Count())
             .Select(g => g.Key) // Key of the group, i.e. the key by which it is grouped
             .ToArrayAsync();
 
-        var productsCount = await ExpertContext.Products.Where(prod => prod.SystemId == _question.SystemId)
+        var productsCount = await ExpertContext.Products.Where(prod => prod.SystemId == AskedQuestion.SystemId)
             .CountAsync();
         var nextConditionId = 0;
 
@@ -153,36 +151,5 @@ public class ConditionalSolver : SolverBase
         return nextConditionId < 1
             ? GenerateEmptyResponse()
             : GenerateResponse(new[] { nextConditionId }, new int[] { });
-    }
-
-    /// <summary>
-    /// Generates an empty answer, with no conditions or products.
-    /// </summary>
-    private SolverResponse GenerateEmptyResponse()
-    {
-        return GenerateResponse(new int[] { }, new int[] { });
-    }
-
-    /// <summary>
-    /// Generates a new response based on the parameters provided.
-    /// </summary>
-    private SolverResponse GenerateResponse(int[] nextConditions, int[] resultingProducts,
-        SolverStatus status = SolverStatus.Unknown)
-    {
-        if (status == SolverStatus.Unknown && nextConditions.Any())
-            status = SolverStatus.NewQuestion;
-
-        if (status == SolverStatus.Unknown && resultingProducts.Any())
-            status = SolverStatus.Solved;
-
-        return new SolverResponse
-        {
-            SystemId = _question.SystemId,
-            IsMultiple = _question.IsMultiple,
-            Status = status,
-            IsSolved = resultingProducts.Any(),
-            ResultingProducts = resultingProducts,
-            NextConditions = nextConditions
-        };
     }
 }

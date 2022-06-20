@@ -58,6 +58,7 @@ public class SolverController : ControllerBase
 
         var question = new SolverQuestion
         {
+            Type = SolverType.Conditional,
             SystemId = systemId,
             Multiple = HttpContext.Request.Form["multiple"] == "true" || HttpContext.Request.Form["multiple"] == "1",
             Confirming = { idsConfirming },
@@ -65,7 +66,9 @@ public class SolverController : ControllerBase
             Indifferent = { idsIndifferent },
         };
 
-        return await _grpcClient.AskAsync(question);
+        var solverResponse = await _grpcClient.AskAsync(question);
+
+        return solverResponse;
     }
 
     private IEnumerable<int> FetchRawArray(string rawArray)
